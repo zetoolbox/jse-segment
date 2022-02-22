@@ -13,10 +13,7 @@ interface ProcessEnv {
 const SUBJECT_ID_TEST = '9876389478394' as const;
 
 (async () => {
-    const sender = getSegmentSender(
-        (process.env as ProcessEnv).SEGMENT_KEY ||
-            '40xTtPNoN2mTE7OG6vep4XevrqGyQqIE'
-    );
+    const sender = getSegmentSender((process.env as ProcessEnv).SEGMENT_KEY);
 
     await sender.send<EventProperties[EventName.inscription]>({
         eventName: EventName.inscription,
