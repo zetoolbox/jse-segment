@@ -9,8 +9,8 @@ type ElementStatus = null | 'pending' | 'completed';
 type RaisonRejetStatutLead = '';
 type StatutLeads = 'en-attente-relecture' | 'valide' | 'rejete';
 
-interface EventPayload {
-    inscriptionXXX: {
+interface EventTypePayload {
+    inscription: {
         nom: UserModel['lastName'];
         prenom: UserModel['firstName'];
         email: UserModel['email'];
@@ -19,14 +19,14 @@ interface EventPayload {
         dateCreationCompte: Date | string;
         tailleEntreprise: number;
         statutJuridique: BusinessPlanModel['legalStatus'];
-        codeNAF: BusinessPlanProjectLocation['irisCode']; // ?
+        codeNAF: string | BusinessPlanProjectLocation['irisCode']; // ?
         codePostal: BusinessPlanProjectLocation['postCode'];
-        lienBPCompteAdmin: 'string';
+        lienBPCompteAdmin: string;
         caissesRegionalesAssociees: string[];
         lienSnapshotDernierBP: string;
         secteurActivite: BusinessPlanModel['industryType'];
     };
-    inscription: {
+    inscription_test: {
         email: UserModel['email'];
     };
     connexionApp: {
@@ -41,11 +41,11 @@ interface EventPayload {
         codePromoUtilise: string;
     };
 
-    telechargeBusinessPlan: {
-        dateDernierPDfTelecharge: Date | string;
+    telechargementBusinessPlanDownload: {
+        dateDernierPDFTelecharge: Date | string;
     };
     telechargementBusinessPlanPreview: {
-        statutLeads: StatutLeads;
+        statutLeadsTelechargementBP: StatutLeads;
     };
     cliqueSurBoutonDemandePourEnvoyerDossierCA: {
         statutLeads: StatutLeads;
@@ -66,7 +66,7 @@ interface EventPayload {
     clickedBoutonRenvoyerEmailConfirmation: {
         clicked: true; //?
     };
-    scoreUtilisateurChange: {};
+    
     statutCompteUpdatedEnValideDansBackendApp: {
         dateValidationCompteOuEmail: Date | string;
         compteOuEmailValide: boolean;
@@ -82,16 +82,16 @@ interface EventPayload {
         titreNomProjet: string;
     };
     champPageProjetUpdated: {
-        descriptionCourteProjet: string;
+        descriptionCourteProjet: string;        
     };
     champPageSocieteUpdated: {
         statutJuridique: BusinessPlanModel['legalStatus'];
         dateNaissance: Date | string;
     };
-    champPageEtudeMarcheUpdated: {};
+    
     champPagePrevisionnelUpdated: {
-        chiffreAffariesAnnee1: number;
-        appelPersonnel: number;
+        chiffreAffairesAnnee1: number;
+        apportPersonnel: number;
     };
     optInCommuniationOnboarding: {
         accepteEmailMarketing: boolean;
@@ -113,7 +113,7 @@ interface EventPayload {
     };
 }
 
-export interface EventType extends EventPayload {}
+export interface EventProperties extends EventTypePayload {}
 
 /*interface triggersSansDestination {
     motPasseOublie: {};
@@ -126,5 +126,7 @@ export interface EventType extends EventPayload {}
     clickedBoutonPartenaires: {};
     clickedBoutonTableauxFinanciers: {};
     changeSonImplantation: {};
+    scoreUtilisateurChange: {};
+    champPageEtudeMarcheUpdated: {};
 }
 */
