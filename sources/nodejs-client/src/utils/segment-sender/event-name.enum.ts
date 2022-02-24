@@ -3,6 +3,7 @@ export const enum EventName {
     'connexionApp' = 'connexionApp',
     'motDePasseOublie' = 'motDePasseOublie',
     'coachingPlanifie' = 'coachingPlanifie',
+    'paiementEffectue' = 'paiementEffectue',
     'telechargementBusinessPlanDownload' = 'telechargementBusinessPlanDownload',
     'telechargementBusinessPlanPreview' = 'telechargementBusinessPlanPreview',
     'cliqueSurBoutonDemandePourEnvoyerDossierCA' = 'cliqueSurBoutonDemandePourEnvoyerDossierCA',

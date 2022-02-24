@@ -3,32 +3,33 @@ import {
     getSegmentSender,
     EventName,
     EventProperties,
-} from './utils/segment-sender/segment-sender.utils';
+} from './utils/segment-sender';
 
 interface ProcessEnv {
     [key: string]: string;
     SEGMENT_KEY: string;
 }
 
-const SUBJECT_ID_TEST = '9876389478394' as const;
+//const KNOWN_SUBJECT_ID_TEST = '9876389478394' as const;
+const JSE_USERID = '654321000000';
 
 (async () => {
     const sender = getSegmentSender((process.env as ProcessEnv).SEGMENT_KEY);
 
     await sender.send<EventProperties[EventName.inscription]>({
         eventName: EventName.inscription,
-        subjectId: SUBJECT_ID_TEST,
+        jseId: JSE_USERID,
         properties: {
             caissesRegionalesAssociees: [''],
             codeNAF: '',
-            codePostal: '',
+            codePostal: '34000',
             dateCreationCompte: new Date().toISOString(),
             dateSouscriptionFormuleChoisie: new Date().toISOString(),
             formuleChoisie: '',
             lienBPCompteAdmin: 'https://...',
-            nom: 'doe',
-            prenom: 'john',
-            email: 'joris@zetoolbox8.fr',
+            nom: 'grouilletNew',
+            prenom: 'jorisNew',
+            email: 'joris@zetoolbox123.fr',
             lienSnapshotDernierBP: 'https://...',
             secteurActivite: undefined,
             statutJuridique: undefined,

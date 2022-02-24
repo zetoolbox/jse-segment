@@ -38,9 +38,10 @@ interface EventTypePayload {
         statutCoaching: 'rdv-pris' | 'rdv-effectue' | 'rdv-manque'; //?
         dateDernierCoachingRealise: Date | string;
         dateProchainCoaching: Date | string;
+    };
+    paiementEffectue: {
         codePromoUtilise: string;
     };
-
     telechargementBusinessPlanDownload: {
         dateDernierPDFTelecharge: Date | string;
     };
@@ -66,7 +67,7 @@ interface EventTypePayload {
     clickedBoutonRenvoyerEmailConfirmation: {
         clicked: true; //?
     };
-    
+
     statutCompteUpdatedEnValideDansBackendApp: {
         dateValidationCompteOuEmail: Date | string;
         compteOuEmailValide: boolean;
@@ -82,13 +83,13 @@ interface EventTypePayload {
         titreNomProjet: string;
     };
     champPageProjetUpdated: {
-        descriptionCourteProjet: string;        
+        descriptionCourteProjet: string;
     };
     champPageSocieteUpdated: {
         statutJuridique: BusinessPlanModel['legalStatus'];
         dateNaissance: Date | string;
     };
-    
+
     champPagePrevisionnelUpdated: {
         chiffreAffairesAnnee1: number;
         apportPersonnel: number;

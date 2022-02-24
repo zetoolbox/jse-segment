@@ -11,46 +11,55 @@ class SegmentSender {
 
     public async send<TEventProperties>({
         eventName,
-        subjectId,
+        jseId,
         properties,
     }: {
         eventName: EventName;
-        subjectId: SubjectId;
+        jseId: SubjectId;
         properties: TEventProperties;
+        isCreation?: boolean;
     }): Promise<any> {
+        const isCreation: boolean = eventName == EventName.inscription;
         const allocate = this.allocatePayloads(properties);
 
         console.log(eventName);
         const bulkSend = [];
         if (allocate.identify.toSend === true) {
             bulkSend.push(
-                this.identify(subjectId, allocate.identify.scopedProps)
+                this.identify(
+                    jseId,
+                    allocate.identify.scopedProps,
+                    isCreation ?? false
+                )
             );
         }
         if (allocate.track.toSend === true) {
             bulkSend.push(
                 this.track(
                     eventName as EventName,
-                    subjectId,
-                    allocate.track.scopedProps
+                    jseId,
+                    allocate.track.scopedProps,
+                    isCreation ?? false
                 )
             );
         }
+        console.log('bulk : ', bulkSend.length);
         return Promise.all(bulkSend);
     }
     private async identify(
-        userId: SubjectId,
-        traits: IdentifyScopedProperties
+        jseId: SubjectId,
+        traits: IdentifyScopedProperties,
+        isCreation: boolean
     ): Promise<any> {
         const _handleCallback =
             (error?: Error) => (resolve: any, reject: any) =>
                 error ? reject(error) : resolve(true);
 
         const payload = {
-            userId: userId.toString(),
+            [isCreation !== true ? 'userId' : 'anonymousId']: jseId.toString(),
             traits,
         };
-        console.log(`identify(#${userId}) : payload is : `, payload);
+        console.log(`identify(#${jseId}) : payload is : `, payload);
 
         return new Promise((resolve, reject) => {
             this._client.identify(payload, (error?: Error) =>
@@ -60,8 +69,9 @@ class SegmentSender {
     }
     private async track<TEventProperties>(
         eventName: EventName,
-        subjectId: SubjectId,
-        properties: TEventProperties
+        jseId: SubjectId,
+        properties: TEventProperties,
+        isCreation: boolean
     ): Promise<any> {
         const _handleCallback =
             (error?: Error) => (resolve: any, reject: any) =>
@@ -69,12 +79,13 @@ class SegmentSender {
 
         return new Promise((resolve, reject) => {
             const payload = {
-                userId: subjectId.toString(),
+                [isCreation !== true ? 'userId' : 'anonymousId']:
+                    jseId.toString(),
                 event: eventName.toString(),
                 properties,
             };
             console.log(
-                `track('${eventName}') for #${subjectId} : payload is : `,
+                `track('${eventName}') for #${jseId} : payload is : `,
                 payload
             );
             this._client.track(payload, (error?: Error) =>
@@ -120,18 +131,17 @@ class SegmentSender {
 
         if (this.hasAnyIdentifyProps(properties)) {
             split.identify.toSend = true;
-            split.identify.scopedProps =
-                this.propsToIdentifyTypeProps(properties);
+            split.identify.scopedProps = this.setupIdentifyProps(properties);
         }
         if (this.hasAnyTrackProps(properties)) {
             split.track.toSend = true;
-            split.track.scopedProps = properties;
+            split.track.scopedProps = this.setupTrackProps(properties);
         }
 
         return split;
     }
 
-    private propsToIdentifyTypeProps<TEventProperties>(
+    private setupIdentifyProps<TEventProperties>(
         jseProperties: TEventProperties
     ): IdentifyScopedProperties {
         const map = {
@@ -156,15 +166,51 @@ class SegmentSender {
         };
 
         for (const [jseKey, segmentKey] of Object.entries(map) as JseObject[]) {
-            if (
-                jseKey in jseProperties &&
-                isPropValueAcceptable(jseProperties[jseKey])
-            ) {
-                segmentIdentifyScopedProps;
+            if (jseKey in map && isPropValueAcceptable(jseProperties[jseKey])) {
                 segmentIdentifyScopedProps[segmentKey] = jseProperties[jseKey];
             }
         }
         return segmentIdentifyScopedProps;
+    }
+
+    private setupTrackProps<TEventProperties>(
+        jseProperties: TEventProperties
+    ): IdentifyScopedProperties {
+        const map: Record<string, string> = {
+            nom: 'lastName',
+            prenom: 'firstName',
+            email: 'email',
+            dateNaissance: 'birthday',
+            adresse: 'address',
+            telephone: 'phone',
+            fonction: 'role',
+            siteWeb: 'website',
+        };
+
+        let scopedProps: Record<string, any> = {};
+        type JseObject = [keyof TEventProperties, string];
+
+        const isPropValueAcceptable = (value: any) => {
+            if (typeof value === 'string') {
+                return value.toLowerCase() !== '';
+            }
+            return value !== null && value !== undefined;
+        };
+
+        for (const [jsePropKey, jsePropValue] of Object.entries(
+            jseProperties
+        ) as JseObject[]) {
+            if (!isPropValueAcceptable(jsePropValue)) {
+                continue;
+            }
+            // which key to use  : this of Segment identify-reserved key or JSE's
+            const whichKeytoUse = (
+                jsePropKey in map ? map[jsePropKey as string] : jsePropKey
+            ) as string;
+
+            scopedProps[whichKeytoUse] = jseProperties[jsePropKey];
+        }
+        return scopedProps;
     }
 
     private hasAnyIdentifyProps<TEventProperties>(
@@ -190,7 +236,6 @@ class SegmentSender {
 let inst: SegmentSender | null = null;
 
 export function getSegmentSender(apiKey: string): SegmentSender {
-    console.log('KEU : ', apiKey);
     return inst ?? (inst = new SegmentSender(apiKey));
 }
 
@@ -215,6 +260,3 @@ function getSegmentClient(apiKey: string): Analytics {
         (_instanceSegmentClient = new Analytics(apiKey))
     );
 }
-
-export * from './payloads';
-export * from './event-name.enum';
