@@ -1,3 +1,4 @@
+import { ObjectId } from 'bson';
 import {
     BusinessPlanModel,
     BusinessPlanOffer,
@@ -8,23 +9,25 @@ import {
 type ElementStatus = null | 'pending' | 'completed';
 type RaisonRejetStatutLead = '';
 type StatutLeads = 'en-attente-relecture' | 'valide' | 'rejete';
+type SubjectId = string | ObjectId;
 
 interface EventTypePayload {
     inscription: {
+        businessPlanId: SubjectId;
         nom: UserModel['lastName'];
         prenom: UserModel['firstName'];
         email: UserModel['email'];
-        formuleChoisie: BusinessPlanOffer['offerType']; // ?
+        formuleChoisie: BusinessPlanOffer['offerType'] | "Payant"; // ?
         dateSouscriptionFormuleChoisie: Date | string;
         dateCreationCompte: Date | string;
         tailleEntreprise: number;
-        statutJuridique: BusinessPlanModel['legalStatus'];
+        statutJuridique: BusinessPlanModel['legalStatus'] | 'SAS';
         codeNAF: string | BusinessPlanProjectLocation['irisCode']; // ?
         codePostal: BusinessPlanProjectLocation['postCode'];
         lienBPCompteAdmin: string;
-        caissesRegionalesAssociees: string[];
+        //caissesRegionalesAssociees: string[];
         lienSnapshotDernierBP: string;
-        secteurActivite: BusinessPlanModel['industryType'];
+        secteurActivite: BusinessPlanModel['industryType'] | 'Industrie';
     };
     inscription_test: {
         email: UserModel['email'];

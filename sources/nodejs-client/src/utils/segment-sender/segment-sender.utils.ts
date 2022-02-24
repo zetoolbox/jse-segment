@@ -43,8 +43,11 @@ class SegmentSender {
                 )
             );
         }
-        console.log('bulk : ', bulkSend.length);
-        return Promise.all(bulkSend);
+        let responses: any[] = [];
+        for (const applyPromise of bulkSend) {
+            responses = [...responses, await applyPromise];
+        }
+        return responses;
     }
     private async identify(
         jseId: SubjectId,
