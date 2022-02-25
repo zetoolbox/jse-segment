@@ -38,7 +38,7 @@ utils.person = {
         const json = await utils.fetch({
             method: "GET",
             endpoint: "persons/search",
-            querystring: `term=${jseUserId}&fields=custom_fields&exact_match=true&start=0&limit=2`,
+            querystring: `term=${jseUserId}&fields=custom_fields&exact_match=true&start=0&limit=1`,
         });
 
         if (json.success === true && json.data.items.length > 0) {
@@ -131,11 +131,9 @@ utils.businessPlan = {
 
         //console.log("custom field found : ", JSON.stringify(customField));
         if (Array.isArray(customField?.options) && customField?.options.length > 0) {
-            console.log(" CF check : option : ", optionValue.toLowerCase());
             const found = customField.options.find(
                 (option) => option.label.toLowerCase() === optionValue.toLowerCase()
             );
-            console.log("fond option ", JSON.stringify(found));
             return found.id;
         }
         return optionValue;
@@ -145,20 +143,16 @@ utils.businessPlan = {
         const json = await utils.fetch({
             method: "GET",
             endpoint: "deals/search",
-            querystring: `term=${jseBusinessPlanId}&fields=custom_fields&exact_match=true&start=0&limit=2`,
+            querystring: `term=${jseBusinessPlanId}&fields=custom_fields&exact_match=true&start=0&limit=1`,
         });
-        console.log("BP res : ", JSON.stringify(json));
         if (json.success === true && json.data.items.length > 0) {
             return json.data.items[0].item;
         }
         return null;
     },
 
-    upsert: async (jseBusinessPlanId, jseUserId, properties) => {
-        const businessPlanFound = await utils.businessPlan.find(jseBusinessPlanId);
-        const personFound = await utils.person.find(jseUserId);
-
-        const mapJseFieldToCustomFieldValueFormatter = {
+    getMapJsePropsToCustomFields: ({ properties, personFound, businessPlanFound }) => {
+        return {
             title: async () => ({
                 title: properties.title || `Affaire de ${personFound?.name}`,
             }),
@@ -203,17 +197,28 @@ utils.businessPlan = {
                           "3ade93c4c1fc0a1bc4108cbf41c48752680aa171": value,
                       },
         };
+    },
+
+    upsert: async (jseBusinessPlanId, jseUserId, properties) => {
+        const businessPlanFound = await utils.businessPlan.find(jseBusinessPlanId);
+        const personFound = await utils.person.find(jseUserId);
+
+        const mapJsePropsToCustomFields = utils.businessPlan.getMapJsePropsToCustomFields({
+            properties,
+            businessPlanFound,
+            personFound,
+        });
 
         let payload = {};
 
         for (const [jsePropName, jsePropValue] of Object.entries(properties)) {
-            if (!(jsePropName in mapJseFieldToCustomFieldValueFormatter)) {
+            if (!(jsePropName in mapJsePropsToCustomFields)) {
                 continue;
             }
-            const pipedriveValueFormatter = mapJseFieldToCustomFieldValueFormatter[jsePropName];
+            const pipedriveValueFormatter = mapJsePropsToCustomFields[jsePropName];
             payload = {
                 ...payload,
-                ...(await pipedriveValueFormatter(jsePropValue ?? undefined)),
+                ...(await pipedriveValueFormatter(jsePropValue ?? undefined, businessPlanFound)),
             };
         }
 
@@ -223,7 +228,7 @@ utils.businessPlan = {
 
         const businessPlanPayload = {
             ...payload,
-            ...(await mapJseFieldToCustomFieldValueFormatter.title()),
+            ...(await mapJsePropsToCustomFields.title()),
             ...businessPlanRelations,
         };
 
@@ -251,7 +256,7 @@ const inscription = async (jseUserId, properties, eventType) => {
                 jseUserId,
                 properties
             );
-            //console.log("businessPlanUpserted : ", JSON.stringify(businessPlanUpserted));
+            console.log("businessPlanUpserted : ", JSON.stringify(businessPlanUpserted));
             break;
     }
 };
