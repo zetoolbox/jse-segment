@@ -11,31 +11,35 @@ interface ProcessEnv {
 }
 
 //const KNOWN_SUBJECT_ID_TEST = '9876389478394' as const;
-const JSE_USERID = '654321000000';
+const JSE_USER_ID = 'jse-uid-11223344';
+
+const JSE_BP_ID = 'jse-bpid-11223344';
 
 (async () => {
     const sender = getSegmentSender((process.env as ProcessEnv).SEGMENT_KEY);
 
     await sender.send<EventProperties[EventName.inscription]>({
         eventName: EventName.inscription,
-        jseId: JSE_USERID,
+        jseId: JSE_USER_ID,
         properties: {
-            caissesRegionalesAssociees: [''],
-            codeNAF: '',
+            ///caissesRegionalesAssociees: [''],
+            businessPlanId: JSE_BP_ID,
+            formuleChoisie: 'Payant',
+            codeNAF: '98797979',
             codePostal: '34000',
             dateCreationCompte: new Date().toISOString(),
             dateSouscriptionFormuleChoisie: new Date().toISOString(),
-            formuleChoisie: '',
             lienBPCompteAdmin: 'https://...',
-            nom: 'grouilletNew',
-            prenom: 'jorisNew',
-            email: 'joris@zetoolbox123.fr',
+            nom: 'Grouilletti',
+            prenom: 'Jorizzi',
+            email: 'joris@zetoolbox.fr',
             lienSnapshotDernierBP: 'https://...',
-            secteurActivite: undefined,
-            statutJuridique: undefined,
-            tailleEntreprise: 0,
+            secteurActivite: 'Industrie',
+            statutJuridique: 'SAS',
+            tailleEntreprise: 2,
         },
     });
+
     /*
     await sender.send<EventProperties[EventName.connexionApp]>({
         eventName: EventName.connexionApp,
