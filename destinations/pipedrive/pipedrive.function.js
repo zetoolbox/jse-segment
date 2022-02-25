@@ -1,11 +1,11 @@
 // Learn more about destination functions API at
 // https://segment.com/docs/connections/destinations/destination-functions
 
-const utils = {};
+const api = {};
 
-utils.API_TOKEN = "";
+api.API_TOKEN = "";
 
-utils.fetch = async ({ method, endpoint, querystring, payload }) => {
+api.fetch = async ({ method, endpoint, querystring, payload }) => {
     const requestOptions = {
         method,
         headers: {
@@ -17,25 +17,24 @@ utils.fetch = async ({ method, endpoint, querystring, payload }) => {
                 : JSON.stringify(payload),
     };
 
-    console.log("FETCH");
-    console.log("endpoint : ", endpoint);
-    const url = `https://api.pipedrive.com/v1/${endpoint}?api_token=${utils.API_TOKEN}${
+    const url = `https://api.pipedrive.com/v1/${endpoint}?api_token=${api.API_TOKEN}${
         querystring ? "&" + querystring : ""
     }`;
-    console.log("url to fetch ", url, " / ", method);
-    console.log("payload : ", JSON.stringify(requestOptions.body));
     try {
         const httpResponse = await fetch(url, requestOptions);
-        return httpResponse.json();
+        if (Number(httpResponse.status) !== 204) {
+            return httpResponse.json();
+        }
+        return httpResponse;
     } catch (error) {
         console.log("ERROR : ", error.message);
         throw new RetryError(error.message);
     }
 };
 
-utils.person = {
+api.person = {
     find: async (jseUserId) => {
-        const json = await utils.fetch({
+        const json = await api.fetch({
             method: "GET",
             endpoint: "persons/search",
             querystring: `term=${jseUserId}&fields=custom_fields&exact_match=true&start=0&limit=1`,
@@ -90,12 +89,12 @@ utils.person = {
             ...personRelations,
         };
 
-        const personFound = await utils.person.find(jseUserId);
+        const personFound = await api.person.find(jseUserId);
 
         const httpMethod = personFound !== null ? "PUT" : "POST";
         const httpEndpoint = personFound !== null ? `persons/${personFound.id}` : "persons";
 
-        const upsertedPerson = await utils.fetch({
+        const upsertedPerson = await api.fetch({
             method: httpMethod,
             endpoint: httpEndpoint,
             payload: JSON.stringify(pipedrivePayload),
@@ -104,21 +103,21 @@ utils.person = {
     },
 };
 
-utils.businessPlan = {
+api.businessPlan = {
     customFields: [],
     getCustomFields: async () => {
-        if (utils.businessPlan.customFields.length === 0) {
-            const { data } = await utils.fetch({
+        if (api.businessPlan.customFields.length === 0) {
+            const { data } = await api.fetch({
                 method: "GET",
                 endpoint: "dealFields",
                 querystring: "start=0&limit=0",
             });
-            utils.businessPlan.customFields = data;
+            api.businessPlan.customFields = data;
         }
-        return utils.businessPlan.customFields;
+        return api.businessPlan.customFields;
     },
     getCustomFieldByKey: async (customFieldKey) => {
-        const field = (await utils.businessPlan.getCustomFields()).find(
+        const field = (await api.businessPlan.getCustomFields()).find(
             (item) => item.key === customFieldKey
         );
         return field ?? null;
@@ -127,7 +126,7 @@ utils.businessPlan = {
         if (optionValue === undefined || optionValue === null || optionValue.trim() === "") {
             return optionValue;
         }
-        const customField = await utils.businessPlan.getCustomFieldByKey(customFieldKey);
+        const customField = await api.businessPlan.getCustomFieldByKey(customFieldKey);
 
         //console.log("custom field found : ", JSON.stringify(customField));
         if (Array.isArray(customField?.options) && customField?.options.length > 0) {
@@ -140,7 +139,7 @@ utils.businessPlan = {
     },
 
     find: async (jseBusinessPlanId) => {
-        const json = await utils.fetch({
+        const json = await api.fetch({
             method: "GET",
             endpoint: "deals/search",
             querystring: `term=${jseBusinessPlanId}&fields=custom_fields&exact_match=true&start=0&limit=1`,
@@ -166,7 +165,7 @@ utils.businessPlan = {
 
             formuleChoisie: async (option) => ({
                 "054c51771bfa8ce75fe569a61ae46afe4a4c4c3e":
-                    await utils.businessPlan.getOptionIdForCustomField(
+                    await api.businessPlan.getOptionIdForCustomField(
                         "054c51771bfa8ce75fe569a61ae46afe4a4c4c3e",
                         option
                     ),
@@ -182,7 +181,7 @@ utils.businessPlan = {
             }),
             statutJuridique: async (option) => ({
                 "5216fa2fe2ae23cd1b5c2d90099fa15ef601b75c":
-                    await utils.businessPlan.getOptionIdForCustomField(
+                    await api.businessPlan.getOptionIdForCustomField(
                         "5216fa2fe2ae23cd1b5c2d90099fa15ef601b75c",
                         option
                     ),
@@ -200,10 +199,10 @@ utils.businessPlan = {
     },
 
     upsert: async (jseBusinessPlanId, jseUserId, properties) => {
-        const businessPlanFound = await utils.businessPlan.find(jseBusinessPlanId);
-        const personFound = await utils.person.find(jseUserId);
+        const businessPlanFound = await api.businessPlan.find(jseBusinessPlanId);
+        const personFound = await api.person.find(jseUserId);
 
-        const mapJsePropsToCustomFields = utils.businessPlan.getMapJsePropsToCustomFields({
+        const mapJsePropsToCustomFields = api.businessPlan.getMapJsePropsToCustomFields({
             properties,
             businessPlanFound,
             personFound,
@@ -234,7 +233,7 @@ utils.businessPlan = {
 
         const httpMethod = businessPlanFound !== null ? "PUT" : "POST";
         const httpEndpoint = businessPlanFound !== null ? `deals/${businessPlanFound.id}` : "deals";
-        const businessPlanUpserted = await utils.fetch({
+        const businessPlanUpserted = await api.fetch({
             method: httpMethod,
             endpoint: httpEndpoint,
             payload: businessPlanPayload,
@@ -246,12 +245,12 @@ utils.businessPlan = {
 const inscription = async (jseUserId, properties, eventType) => {
     switch (eventType) {
         case "identify":
-            const personUpserted = await utils.person.upsert(jseUserId, properties);
+            const personUpserted = await api.person.upsert(jseUserId, properties);
             console.log("personUpserted : ", JSON.stringify(personUpserted));
 
             break;
         case "track":
-            const businessPlanUpserted = await utils.businessPlan.upsert(
+            const businessPlanUpserted = await api.businessPlan.upsert(
                 properties.businessPlanId,
                 jseUserId,
                 properties
@@ -262,7 +261,9 @@ const inscription = async (jseUserId, properties, eventType) => {
 };
 
 const mapAllowedEventsToActions = {
-    identify: inscription,
+    identify: {
+        inscription,
+    },
     track: {
         inscription,
     },
@@ -278,7 +279,7 @@ async function onTrack(event, settings) {
     const jseBusinessPlanId = event.anonymousId ?? event.userId;
     console.log("TRACK");
     if (eventName in mapAllowedEventsToActions.track) {
-        utils.API_TOKEN = settings.apiToken || settings.API_TOKEN;
+        api.API_TOKEN = settings.apiToken || settings.API_TOKEN;
         console.log(`${eventName} is a track event`);
         await mapAllowedEventsToActions.track[eventName](jseBusinessPlanId, properties, event.type);
     }
@@ -291,8 +292,8 @@ async function onTrack(event, settings) {
  */
 async function onIdentify(event, settings) {
     console.log("IDENTIFY");
-    utils.API_TOKEN = settings.apiToken || settings.API_TOKEN;
-    await mapAllowedEventsToActions.identify(
+    api.API_TOKEN = settings.apiToken || settings.API_TOKEN;
+    await mapAllowedEventsToActions.identify.inscription(
         event.anonymousId || event.userId,
         event.traits,
         event.type
