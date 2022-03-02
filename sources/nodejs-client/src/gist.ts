@@ -10,7 +10,7 @@ interface ProcessEnv {
     SEGMENT_KEY: string;
 }
 
-//const KNOWN_SUBJECT_ID_TEST = '9876389478394' as const;
+//const KNOWN_JSE_USER_ID = '9876389478394' as const;
 const JSE_USER_ID = 'jse-uid-11223344';
 
 const JSE_BP_ID = 'jse-bpid-11223344';
@@ -27,8 +27,8 @@ const JSE_BP_ID = 'jse-bpid-11223344';
             formuleChoisie: 'Payant',
             codeNAF: '98797979',
             codePostal: '34000',
-            dateCreationCompte: new Date().toISOString(),
-            dateSouscriptionFormuleChoisie: new Date().toISOString(),
+            dateCreationCompte: new Date(),
+            dateSouscriptionFormuleChoisie: new Date(),
             lienBPCompteAdmin: 'https://...',
             nom: 'Grouilletti',
             prenom: 'Jorizzi',
@@ -40,57 +40,64 @@ const JSE_BP_ID = 'jse-bpid-11223344';
         },
     });
 
-    /*
     await sender.send<EventProperties[EventName.connexionApp]>({
         eventName: EventName.connexionApp,
-        subjectId: SUBJECT_ID_TEST,
+        jseId: JSE_USER_ID,
         properties: {
-            dateDerniereConnexionOuUpdate: new Date().toISOString(),
+            dateDerniereConnexionOuUpdate: new Date(),
             nombreConnexions: 22,
         },
     });
 
     await sender.send<EventProperties[EventName.coachingPlanifie]>({
         eventName: EventName.coachingPlanifie,
-        subjectId: SUBJECT_ID_TEST,
+        jseId: JSE_USER_ID,
         properties: {
-            codePromoUtilise: '',
-            dateDernierCoachingRealise: new Date().toISOString(),
-            dateProchainCoaching: new Date().toISOString(),
+            dateDernierCoachingRealise: new Date(),
+            dateProchainCoaching: new Date(),
             statutCoaching: 'rdv-pris',
         },
     });
 
+    await sender.send<EventProperties[EventName.paiementEffectue]>({
+        eventName: EventName.paiementEffectue,
+        jseId: JSE_USER_ID,
+        properties: {
+            codePromoUtilise: 'SOME-CODE-PROMO',
+        },
+    });
+    /*
     await sender.send<EventProperties[EventName.telechargementBusinessPlanDownload]>({
         eventName: EventName.telechargementBusinessPlanDownload,
-        subjectId: SUBJECT_ID_TEST,
+        subjectId: JSE_USER_ID,
         properties: {
-            dateDernierPDFTelecharge: new Date().toISOString(),
+            dateDernierPDFTelecharge: new Date(),
         },
     });
 
     await sender.send<EventProperties[EventName.telechargementBusinessPlanPreview]>({
         eventName: EventName.telechargementBusinessPlanPreview,
-        subjectId: SUBJECT_ID_TEST,
+        subjectId: JSE_USER_ID,
         properties: {
             statutLeadsTelechargementBP: 'en-attente-relecture',
         },
     });
-
+v
     await sender.send<
         EventProperties[EventName.cliqueSurBoutonDemandePourEnvoyerDossierCA]
     >({
         eventName: EventName.cliqueSurBoutonDemandePourEnvoyerDossierCA,
-        subjectId: SUBJECT_ID_TEST,
+        subjectId: JSE_USER_ID,
         properties: {
+            demandeEnvoiProjetCA: '',
             raisonRejetStatutLead: '',
-            statutLeads: 'rejete',
+            statutLeadsEnvoyeAuCA: 'rejete',
         },
     });
 
     await sender.send<EventProperties[EventName.upsellSonOffreEnPayant]>({
         eventName: EventName.upsellSonOffreEnPayant,
-        subjectId: SUBJECT_ID_TEST,
+        subjectId: JSE_USER_ID,
         properties: {
             formuleChoisie: undefined,
         },
@@ -100,7 +107,7 @@ const JSE_BP_ID = 'jse-bpid-11223344';
         EventProperties[EventName.clickedBoutonSuivantDansFunnelOnboarding]
     >({
         eventName: EventName.clickedBoutonSuivantDansFunnelOnboarding,
-        subjectId: SUBJECT_ID_TEST,
+        subjectId: JSE_USER_ID,
         properties: {
             bouton: 'domaine-activite',
         },
@@ -110,7 +117,7 @@ const JSE_BP_ID = 'jse-bpid-11223344';
         EventProperties[EventName.clickedBoutonRenvoyerEmailConfirmation]
     >({
         eventName: EventName.clickedBoutonRenvoyerEmailConfirmation,
-        subjectId: SUBJECT_ID_TEST,
+        subjectId: JSE_USER_ID,
         properties: {
             clicked: true,
         },
@@ -120,21 +127,10 @@ const JSE_BP_ID = 'jse-bpid-11223344';
         EventProperties[EventName.statutCompteUpdatedEnValideDansBackendApp]
     >({
         eventName: EventName.statutCompteUpdatedEnValideDansBackendApp,
-        subjectId: SUBJECT_ID_TEST,
+        subjectId: JSE_USER_ID,
         properties: {
-            compteOuEmailValide: false,
-            dateValidationCompteOuEmail: new Date().toISOString(),
-        },
-    });
-
-    await sender.send<
-        EventProperties[EventName.statutCompteUpdatedEnValideDansBackendApp]
-    >({
-        eventName: EventName.statutCompteUpdatedEnValideDansBackendApp,
-        subjectId: SUBJECT_ID_TEST,
-        properties: {
-            compteOuEmailValide: false,
-            dateValidationCompteOuEmail: new Date().toISOString(),
+            compteValide: false,
+            dateValidationCompte: new Date(),
         },
     });
 
@@ -142,16 +138,16 @@ const JSE_BP_ID = 'jse-bpid-11223344';
         EventProperties[EventName.pourcentageCompletionBPUpdatedDansBackendApp]
     >({
         eventName: EventName.pourcentageCompletionBPUpdatedDansBackendApp,
-        subjectId: SUBJECT_ID_TEST,
+        subjectId: JSE_USER_ID,
         properties: {
-            statutBPGlobal: 'pending',
+            BPGlobal: 'pending',
             tauxCompletionBP: 50,
         },
     });
 
     await sender.send<EventProperties[EventName.scoringLeadUpdatedDansBackendApp]>({
         eventName: EventName.scoringLeadUpdatedDansBackendApp,
-        subjectId: SUBJECT_ID_TEST,
+        subjectId: JSE_USER_ID,
         properties: {
             scoringJSE: 42,
         },
@@ -159,7 +155,7 @@ const JSE_BP_ID = 'jse-bpid-11223344';
 
     await sender.send<EventProperties[EventName.champPageGardeUpdated]>({
         eventName: EventName.champPageGardeUpdated,
-        subjectId: SUBJECT_ID_TEST,
+        subjectId: JSE_USER_ID,
         properties: {
             titreNomProjet: '',
         },
@@ -167,33 +163,34 @@ const JSE_BP_ID = 'jse-bpid-11223344';
 
     await sender.send<EventProperties[EventName.champPageProjetUpdated]>({
         eventName: EventName.champPageProjetUpdated,
-        subjectId: SUBJECT_ID_TEST,
+        subjectId: JSE_USER_ID,
         properties: {
             descriptionCourteProjet: '',
+            dateLancementActivite: new Date()
         },
     });
 
     await sender.send<EventProperties[EventName.champPageSocieteUpdated]>({
         eventName: EventName.champPageSocieteUpdated,
-        subjectId: SUBJECT_ID_TEST,
+        subjectId: JSE_USER_ID,
         properties: {
-            dateNaissance: new Date().toISOString(),
+            dateNaissance: new Date(),
             statutJuridique: undefined,
         },
     });
 
     await sender.send<EventProperties[EventName.champPageSocieteUpdated]>({
         eventName: EventName.champPageSocieteUpdated,
-        subjectId: SUBJECT_ID_TEST,
+        subjectId: JSE_USER_ID,
         properties: {
-            dateNaissance: new Date().toISOString(),
+            dateNaissance: new Date(),
             statutJuridique: undefined,
         },
     });
 
     await sender.send<EventProperties[EventName.champPagePrevisionnelUpdated]>({
         eventName: EventName.champPagePrevisionnelUpdated,
-        subjectId: SUBJECT_ID_TEST,
+        subjectId: JSE_USER_ID,
         properties: {
             apportPersonnel: 42_000,
             chiffreAffairesAnnee1: 1_000_000,
@@ -202,7 +199,7 @@ const JSE_BP_ID = 'jse-bpid-11223344';
 
     await sender.send<EventProperties[EventName.optInCommuniationOnboarding]>({
         eventName: EventName.optInCommuniationOnboarding,
-        subjectId: SUBJECT_ID_TEST,
+        subjectId: JSE_USER_ID,
         properties: {
             accepteEmailMarketing: true,
         },
@@ -210,7 +207,7 @@ const JSE_BP_ID = 'jse-bpid-11223344';
 
     await sender.send<EventProperties[EventName.pagePrevisionnelComplete100pcent]>({
         eventName: EventName.pagePrevisionnelComplete100pcent,
-        subjectId: SUBJECT_ID_TEST,
+        subjectId: JSE_USER_ID,
         properties: {
             previsionnel: 'completed',
         },
@@ -218,7 +215,7 @@ const JSE_BP_ID = 'jse-bpid-11223344';
 
     await sender.send<EventProperties[EventName.pageProjetComplete100pcent]>({
         eventName: EventName.pageProjetComplete100pcent,
-        subjectId: SUBJECT_ID_TEST,
+        subjectId: JSE_USER_ID,
         properties: {
             projet: 'completed',
         },
@@ -226,7 +223,7 @@ const JSE_BP_ID = 'jse-bpid-11223344';
 
     await sender.send<EventProperties[EventName.pageSocieteComplete100pcent]>({
         eventName: EventName.pageSocieteComplete100pcent,
-        subjectId: SUBJECT_ID_TEST,
+        subjectId: JSE_USER_ID,
         properties: {
             societe: 'completed',
         },
@@ -234,7 +231,7 @@ const JSE_BP_ID = 'jse-bpid-11223344';
 
     await sender.send<EventProperties[EventName.pageEtudeMarcheComplete100pcent]>({
         eventName: EventName.pageEtudeMarcheComplete100pcent,
-        subjectId: SUBJECT_ID_TEST,
+        subjectId: JSE_USER_ID,
         properties: {
             etudeMarche: 'completed',
         },
@@ -242,7 +239,7 @@ const JSE_BP_ID = 'jse-bpid-11223344';
 
     await sender.send<EventProperties[EventName.pageGardeComplete100pcent]>({
         eventName: EventName.pageGardeComplete100pcent,
-        subjectId: SUBJECT_ID_TEST,
+        subjectId: JSE_USER_ID,
         properties: {
             pageGarde: 'pending',
         },

@@ -2,6 +2,8 @@ import Analytics from 'analytics-node';
 import { ObjectId } from 'bson';
 import { EventName } from './event-name.enum';
 
+import { intercomCommonFields, intercomMapCustomFields } from './intercom-fields';
+
 class SegmentSender {
     private _client: Analytics;
 
@@ -146,16 +148,10 @@ class SegmentSender {
 
     private setupIdentifyProps<TEventProperties>(
         jseProperties: TEventProperties
-    ): IdentifyScopedProperties {
+    ): IdentifyScopedProperties {        
         const map = {
-            nom: 'lastName',
-            prenom: 'firstName',
-            email: 'email',
-            dateNaissance: 'birthday',
-            adresse: 'address',
-            telephone: 'phone',
-            fonction: 'role',
-            siteWeb: 'website',
+            ...intercomCommonFields,
+            ...intercomMapCustomFields
         };
 
         let segmentIdentifyScopedProps: Record<string, any> = {};
@@ -168,9 +164,20 @@ class SegmentSender {
             return value !== null && value !== undefined;
         };
 
-        for (const [jseKey, segmentKey] of Object.entries(map) as JseObject[]) {
-            if (jseKey in map && isPropValueAcceptable(jseProperties[jseKey])) {
-                segmentIdentifyScopedProps[segmentKey] = jseProperties[jseKey];
+        for (const [jsePropKey, segmentKey] of Object.entries(map) as JseObject[]) {
+            if (jsePropKey in map && isPropValueAcceptable(jseProperties[jsePropKey])) {
+                let value = jseProperties[jsePropKey];
+                let adaptedValue = null;
+                if (value instanceof Date) {
+                    adaptedValue = (value as Date)[
+                        this.isIntercomProperty(jsePropKey as string)
+                            ? 'toDateString'
+                            : 'toISOString'
+                    ]();
+                } else {
+                    adaptedValue = value;
+                }
+                segmentIdentifyScopedProps[segmentKey] = adaptedValue;
             }
         }
         return segmentIdentifyScopedProps;
@@ -211,7 +218,18 @@ class SegmentSender {
                 jsePropKey in map ? map[jsePropKey as string] : jsePropKey
             ) as string;
 
-            scopedProps[whichKeytoUse] = jseProperties[jsePropKey];
+            let value = jseProperties[jsePropKey];
+            let adaptedValue = null;
+            if (value instanceof Date) {
+                adaptedValue = (value as Date)[
+                    this.isIntercomProperty(jsePropKey as string)
+                        ? 'toDateString'
+                        : 'toISOString'
+                ]();
+            } else {
+                adaptedValue = value;
+            }
+            scopedProps[whichKeytoUse] = adaptedValue;
         }
         return scopedProps;
     }
@@ -233,6 +251,10 @@ class SegmentSender {
             (propName) =>
                 traits.includes(propName.toString().toLowerCase()) === false
         );
+    }
+
+    private isIntercomProperty(jsePropName: string) {
+        return jsePropName in intercomMapCustomFields;
     }
 }
 

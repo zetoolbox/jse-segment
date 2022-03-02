@@ -7,9 +7,19 @@ import {
 } from '../../models';
 
 type ElementStatus = null | 'pending' | 'completed';
-type RaisonRejetStatutLead = '';
-type StatutLeads = 'en-attente-relecture' | 'valide' | 'rejete';
+type RaisonRejetStatutLead =
+    | 'Page de garde'
+    | 'Projet'
+    | 'Société'
+    | 'Etude de marché'
+    | 'Prévisionnel';
+type StatutLeadsTelechargementBP =
+    | 'En attente de relecture'
+    | 'Validé'
+    | 'Rejeté';
+type StatutLeadsEnvoyeCA = 'En attente de relecture' | 'Validé' | 'Rejeté';
 type SubjectId = string | ObjectId;
+type StatutCoaching = null | 'rdv pris' | 'rdv effectue' | 'rdv manqué';
 
 interface EventTypePayload {
     inscription: {
@@ -17,7 +27,13 @@ interface EventTypePayload {
         nom: UserModel['lastName'];
         prenom: UserModel['firstName'];
         email: UserModel['email'];
-        formuleChoisie: BusinessPlanOffer['offerType'] | "Payant"; // ?
+        formuleChoisie:
+            | BusinessPlanOffer['offerType']
+            | null
+            | 'Payant'
+            | 'Gratuit sans Business case'
+            | 'Gratuit avec Business case'
+            | 'Payant'; // ?
         dateSouscriptionFormuleChoisie: Date | string;
         dateCreationCompte: Date | string;
         tailleEntreprise: number;
@@ -38,7 +54,7 @@ interface EventTypePayload {
     };
 
     coachingPlanifie: {
-        statutCoaching: 'rdv-pris' | 'rdv-effectue' | 'rdv-manque'; //?
+        statutCoaching: StatutCoaching; //?
         dateDernierCoachingRealise: Date | string;
         dateProchainCoaching: Date | string;
     };
@@ -49,10 +65,11 @@ interface EventTypePayload {
         dateDernierPDFTelecharge: Date | string;
     };
     telechargementBusinessPlanPreview: {
-        statutLeadsTelechargementBP: StatutLeads;
+        statutLeadsTelechargementBP: StatutLeadsTelechargementBP;
     };
     cliqueSurBoutonDemandePourEnvoyerDossierCA: {
-        statutLeads: StatutLeads;
+        demandeEnvoiProjetCA: string;
+        statutLeadsEnvoyeAuCA: StatutLeadsEnvoyeCA;
         raisonRejetStatutLead: string | RaisonRejetStatutLead;
     };
 
@@ -73,11 +90,11 @@ interface EventTypePayload {
 
     statutCompteUpdatedEnValideDansBackendApp: {
         dateValidationCompteOuEmail: Date | string;
-        compteOuEmailValide: boolean;
+        compteValide: boolean;
     };
     pourcentageCompletionBPUpdatedDansBackendApp: {
         tauxCompletionBP: number;
-        statutBPGlobal: ElementStatus;
+        BPGlobal: ElementStatus;
     };
     scoringLeadUpdatedDansBackendApp: {
         scoringJSE: number;
@@ -87,6 +104,7 @@ interface EventTypePayload {
     };
     champPageProjetUpdated: {
         descriptionCourteProjet: string;
+        dateLancementActivite: Date | string;
     };
     champPageSocieteUpdated: {
         statutJuridique: BusinessPlanModel['legalStatus'];
