@@ -10,239 +10,284 @@ interface ProcessEnv {
     SEGMENT_KEY: string;
 }
 
-//const KNOWN_SUBJECT_ID_TEST = '9876389478394' as const;
-const JSE_USER_ID = 'jse-uid-11223344';
+const JSE_USER_ID = 'jse-uid-987654';
+const JSE_BP_ID = 'jse-bpid-987654';
+const JSE_USER_EMAIL = 'joris@askalia.net';
+const DATE_TEST = new Date('2022-04-08');
 
-const JSE_BP_ID = 'jse-bpid-11223344';
+const IDENTIFIERS = {
+    jseUserId: JSE_USER_ID,
+    jseBpId: JSE_BP_ID,
+    jseUserEmail: JSE_USER_EMAIL,
+};
 
 (async () => {
     const sender = getSegmentSender((process.env as ProcessEnv).SEGMENT_KEY);
 
+    // VERIFIED
     await sender.send<EventProperties[EventName.inscription]>({
         eventName: EventName.inscription,
-        jseId: JSE_USER_ID,
+        ...IDENTIFIERS,
         properties: {
             ///caissesRegionalesAssociees: [''],
             businessPlanId: JSE_BP_ID,
-            formuleChoisie: 'Payant',
-            codeNAF: '98797979',
-            codePostal: '34000',
-            dateCreationCompte: new Date().toISOString(),
-            dateSouscriptionFormuleChoisie: new Date().toISOString(),
+            formuleChoisie: 'Payant', // v
+            codeNAF: '98797979', // v
+            codePostal: '34000', // v
+            dateCreationCompte: new Date(), // v
+            dateSouscriptionFormuleChoisie: new Date(),
             lienBPCompteAdmin: 'https://...',
-            nom: 'Grouilletti',
-            prenom: 'Jorizzi',
-            email: 'joris@zetoolbox.fr',
+            nom: 'Grou',
+            prenom: 'Jo',
+            email: JSE_USER_EMAIL,
             lienSnapshotDernierBP: 'https://...',
             secteurActivite: 'Industrie',
-            statutJuridique: 'SAS',
-            tailleEntreprise: 2,
+            statutJuridique: 'SARL', // v
+            tailleEntreprise: 'Moyen',
         },
+        ///dryRun: true
     });
-
     /*
+    // VERIFIED   
     await sender.send<EventProperties[EventName.connexionApp]>({
         eventName: EventName.connexionApp,
-        subjectId: SUBJECT_ID_TEST,
+        jseUserId: JSE_USER_ID,
+        jseBpId: JSE_BP_ID,
         properties: {
-            dateDerniereConnexionOuUpdate: new Date().toISOString(),
-            nombreConnexions: 22,
+            dateDerniereConnexionOuUpdate: new Date('2022-06-22'),
+            nombreConnexions: 400,
         },
+        //dryRun: true,
     });
 
+
+    // VERIFIED
     await sender.send<EventProperties[EventName.coachingPlanifie]>({
         eventName: EventName.coachingPlanifie,
-        subjectId: SUBJECT_ID_TEST,
+        jseUserId: JSE_USER_ID,
+        jseBpId: JSE_BP_ID,
         properties: {
-            codePromoUtilise: '',
-            dateDernierCoachingRealise: new Date().toISOString(),
-            dateProchainCoaching: new Date().toISOString(),
-            statutCoaching: 'rdv-pris',
+            dateDernierCoachingRealise: DATE_TEST, // V
+            dateProchainCoaching: DATE_TEST, //V
+            statutCoaching: 'rdv pris', //V
         },
+        //dryRun: true
     });
 
+    // VERIFIED
+    await sender.send<EventProperties[EventName.paiementEffectue]>({
+        eventName: EventName.paiementEffectue,
+        jseUserId: JSE_USER_ID,
+        jseUserEmail: JSE_USER_EMAIL,
+        jseBpId: JSE_BP_ID,
+        properties: {
+            codePromoUtilise: 'MY-CODE-PROMO',
+        },
+    });
+    
+    // VERIFIED
     await sender.send<EventProperties[EventName.telechargementBusinessPlanDownload]>({
         eventName: EventName.telechargementBusinessPlanDownload,
-        subjectId: SUBJECT_ID_TEST,
+        jseUserId: JSE_USER_ID,
+        jseBpId: JSE_BP_ID,
         properties: {
-            dateDernierPDFTelecharge: new Date().toISOString(),
+            dateDernierPDFTelecharge: new Date(),
         },
     });
+   
 
+    // VERIFIED
     await sender.send<EventProperties[EventName.telechargementBusinessPlanPreview]>({
         eventName: EventName.telechargementBusinessPlanPreview,
-        subjectId: SUBJECT_ID_TEST,
+        jseUserId: JSE_USER_ID,
+        jseBpId: JSE_BP_ID,
         properties: {
-            statutLeadsTelechargementBP: 'en-attente-relecture',
+            statutLeadsTelechargementBP: 'En attente de relecture',
         },
     });
+   
 
+    // VERIFIED
     await sender.send<
         EventProperties[EventName.cliqueSurBoutonDemandePourEnvoyerDossierCA]
     >({
         eventName: EventName.cliqueSurBoutonDemandePourEnvoyerDossierCA,
-        subjectId: SUBJECT_ID_TEST,
+        jseUserId: JSE_USER_ID,
+        jseBpId: JSE_BP_ID,
+        jseUserEmail: JSE_USER_EMAIL,
         properties: {
-            raisonRejetStatutLead: '',
-            statutLeads: 'rejete',
+            demandeEnvoiProjetCA: 'demande envoi projet CA',
+            raisonRejetStatutLead: 'Page de garde',
+            statutLeadEnvoyeAuCA: 'Rejeté',            
         },
     });
+   
 
+    // VERIFIED
     await sender.send<EventProperties[EventName.upsellSonOffreEnPayant]>({
         eventName: EventName.upsellSonOffreEnPayant,
-        subjectId: SUBJECT_ID_TEST,
+        ...IDENTIFIERS,
         properties: {
-            formuleChoisie: undefined,
+            formuleChoisie: 'Gratuit avec Business case',
         },
     });
+    
 
+    // NOT YET SPECIFIED IN NOTION
     await sender.send<
         EventProperties[EventName.clickedBoutonSuivantDansFunnelOnboarding]
     >({
         eventName: EventName.clickedBoutonSuivantDansFunnelOnboarding,
-        subjectId: SUBJECT_ID_TEST,
+        ...IDENTIFIERS,
         properties: {
             bouton: 'domaine-activite',
         },
     });
-
+    
+    /* NOT YET SPECIFIED IN NOTION
     await sender.send<
         EventProperties[EventName.clickedBoutonRenvoyerEmailConfirmation]
     >({
         eventName: EventName.clickedBoutonRenvoyerEmailConfirmation,
-        subjectId: SUBJECT_ID_TEST,
+        ...IDENTIFIERS,
         properties: {
             clicked: true,
         },
     });
-
+  
+    // VERIFIED
     await sender.send<
         EventProperties[EventName.statutCompteUpdatedEnValideDansBackendApp]
     >({
         eventName: EventName.statutCompteUpdatedEnValideDansBackendApp,
-        subjectId: SUBJECT_ID_TEST,
+        ...IDENTIFIERS,
         properties: {
-            compteOuEmailValide: false,
-            dateValidationCompteOuEmail: new Date().toISOString(),
+            compteValide: true,
+            dateValidationCompte: DATE_TEST,
         },
     });
 
-    await sender.send<
-        EventProperties[EventName.statutCompteUpdatedEnValideDansBackendApp]
-    >({
-        eventName: EventName.statutCompteUpdatedEnValideDansBackendApp,
-        subjectId: SUBJECT_ID_TEST,
-        properties: {
-            compteOuEmailValide: false,
-            dateValidationCompteOuEmail: new Date().toISOString(),
-        },
-    });
-
+    // VERIFIED
     await sender.send<
         EventProperties[EventName.pourcentageCompletionBPUpdatedDansBackendApp]
     >({
         eventName: EventName.pourcentageCompletionBPUpdatedDansBackendApp,
-        subjectId: SUBJECT_ID_TEST,
+        ...IDENTIFIERS,
         properties: {
-            statutBPGlobal: 'pending',
+            BPGlobal: 'pending',
             tauxCompletionBP: 50,
         },
     });
-
+   
+    // VERIFIED
     await sender.send<EventProperties[EventName.scoringLeadUpdatedDansBackendApp]>({
         eventName: EventName.scoringLeadUpdatedDansBackendApp,
-        subjectId: SUBJECT_ID_TEST,
+        ...IDENTIFIERS,
         properties: {
             scoringJSE: 42,
         },
     });
-
+    
+    // VERIFIED
     await sender.send<EventProperties[EventName.champPageGardeUpdated]>({
         eventName: EventName.champPageGardeUpdated,
-        subjectId: SUBJECT_ID_TEST,
+        ...IDENTIFIERS,
         properties: {
-            titreNomProjet: '',
+            titreNomProjet: 'titre nom projet',
         },
     });
-
+    
+    // VERIFIED
     await sender.send<EventProperties[EventName.champPageProjetUpdated]>({
         eventName: EventName.champPageProjetUpdated,
-        subjectId: SUBJECT_ID_TEST,
+        ...IDENTIFIERS,
         properties: {
-            descriptionCourteProjet: '',
+            descriptionCourteProjet: 'blabla',
+            dateLancementActivite: DATE_TEST,
         },
     });
-
+    
+    // VERIFIED 
     await sender.send<EventProperties[EventName.champPageSocieteUpdated]>({
         eventName: EventName.champPageSocieteUpdated,
-        subjectId: SUBJECT_ID_TEST,
+        ...IDENTIFIERS,
         properties: {
-            dateNaissance: new Date().toISOString(),
-            statutJuridique: undefined,
+            dateNaissance: DATE_TEST,
+            statutJuridique: "SAS",
         },
     });
-
+    
+    /*
     await sender.send<EventProperties[EventName.champPageSocieteUpdated]>({
         eventName: EventName.champPageSocieteUpdated,
-        subjectId: SUBJECT_ID_TEST,
+        ...IDENTIFIERS,
         properties: {
-            dateNaissance: new Date().toISOString(),
-            statutJuridique: undefined,
+            dateNaissance: DATE_TEST,
+            statutJuridique: "SAS",
         },
     });
+    
 
+    // VERIFIED     
     await sender.send<EventProperties[EventName.champPagePrevisionnelUpdated]>({
         eventName: EventName.champPagePrevisionnelUpdated,
-        subjectId: SUBJECT_ID_TEST,
+        ...IDENTIFIERS,
         properties: {
             apportPersonnel: 42_000,
             chiffreAffairesAnnee1: 1_000_000,
         },
     });
-
+    
+    // VERIFIED
     await sender.send<EventProperties[EventName.optInCommuniationOnboarding]>({
         eventName: EventName.optInCommuniationOnboarding,
-        subjectId: SUBJECT_ID_TEST,
+        ...IDENTIFIERS,
         properties: {
             accepteEmailMarketing: true,
         },
     });
-
+    
+    // VERIFIED
     await sender.send<EventProperties[EventName.pagePrevisionnelComplete100pcent]>({
         eventName: EventName.pagePrevisionnelComplete100pcent,
-        subjectId: SUBJECT_ID_TEST,
+        ...IDENTIFIERS,
         properties: {
             previsionnel: 'completed',
         },
     });
-
+    
+    // VERIFIED
     await sender.send<EventProperties[EventName.pageProjetComplete100pcent]>({
         eventName: EventName.pageProjetComplete100pcent,
-        subjectId: SUBJECT_ID_TEST,
+        ...IDENTIFIERS,
         properties: {
-            projet: 'completed',
+            projet: 'pending',
         },
     });
-
+    
+    // VERIFIED
     await sender.send<EventProperties[EventName.pageSocieteComplete100pcent]>({
         eventName: EventName.pageSocieteComplete100pcent,
-        subjectId: SUBJECT_ID_TEST,
+        ...IDENTIFIERS,
         properties: {
             societe: 'completed',
         },
     });
-
+    
+    // VERIFIED
     await sender.send<EventProperties[EventName.pageEtudeMarcheComplete100pcent]>({
         eventName: EventName.pageEtudeMarcheComplete100pcent,
-        subjectId: SUBJECT_ID_TEST,
+        ...IDENTIFIERS,
         properties: {
             etudeMarche: 'completed',
         },
     });
+    
 
+    // VERIFIED
     await sender.send<EventProperties[EventName.pageGardeComplete100pcent]>({
         eventName: EventName.pageGardeComplete100pcent,
-        subjectId: SUBJECT_ID_TEST,
+        ...IDENTIFIERS,
         properties: {
             pageGarde: 'pending',
         },

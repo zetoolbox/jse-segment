@@ -7,21 +7,38 @@ import {
 } from '../../models';
 
 type ElementStatus = null | 'pending' | 'completed';
-type RaisonRejetStatutLead = '';
-type StatutLeads = 'en-attente-relecture' | 'valide' | 'rejete';
+type RaisonRejetStatutLead =
+    | 'Page de garde'
+    | 'Projet'
+    | 'Société'
+    | 'Etude de marché'
+    | 'Prévisionnel';
+type StatutLeadsTelechargementBP =
+    | 'En attente de relecture'
+    | 'Validé'
+    | 'Rejeté';
+type StatutLeadsEnvoyeCA = 'En attente de relecture' | 'Validé' | 'Rejeté';
 type SubjectId = string | ObjectId;
+type StatutCoaching = null | 'rdv pris' | 'rdv effectue' | 'rdv manqué';
+type FormuleChoisie =
+    | BusinessPlanOffer['offerType']
+    | null
+    | 'Payant'
+    | 'Gratuit sans Business case'
+    | 'Gratuit avec Business case'    
+type TailleEntreprise = 'Petit' | 'Moyen' | 'Grand' | 'Très grand';
 
-interface EventTypePayload {
+export interface EventProperties {
     inscription: {
         businessPlanId: SubjectId;
         nom: UserModel['lastName'];
         prenom: UserModel['firstName'];
         email: UserModel['email'];
-        formuleChoisie: BusinessPlanOffer['offerType'] | "Payant"; // ?
+        formuleChoisie: FormuleChoisie;
         dateSouscriptionFormuleChoisie: Date | string;
         dateCreationCompte: Date | string;
-        tailleEntreprise: number;
-        statutJuridique: BusinessPlanModel['legalStatus'] | 'SAS';
+        tailleEntreprise: TailleEntreprise;
+        statutJuridique: BusinessPlanModel['legalStatus'] | 'SAS' | 'SARL';
         codeNAF: string | BusinessPlanProjectLocation['irisCode']; // ?
         codePostal: BusinessPlanProjectLocation['postCode'];
         lienBPCompteAdmin: string;
@@ -38,7 +55,7 @@ interface EventTypePayload {
     };
 
     coachingPlanifie: {
-        statutCoaching: 'rdv-pris' | 'rdv-effectue' | 'rdv-manque'; //?
+        statutCoaching: StatutCoaching; //?
         dateDernierCoachingRealise: Date | string;
         dateProchainCoaching: Date | string;
     };
@@ -49,15 +66,16 @@ interface EventTypePayload {
         dateDernierPDFTelecharge: Date | string;
     };
     telechargementBusinessPlanPreview: {
-        statutLeadsTelechargementBP: StatutLeads;
+        statutLeadsTelechargementBP: StatutLeadsTelechargementBP;
     };
     cliqueSurBoutonDemandePourEnvoyerDossierCA: {
-        statutLeads: StatutLeads;
-        raisonRejetStatutLead: string | RaisonRejetStatutLead;
+        demandeEnvoiProjetCA: string;
+        statutLeadEnvoyeAuCA: StatutLeadsEnvoyeCA;
+        raisonRejetStatutLead?: RaisonRejetStatutLead;
     };
 
     upsellSonOffreEnPayant: {
-        formuleChoisie: BusinessPlanOffer['offerType'];
+        formuleChoisie: BusinessPlanOffer['offerType'] | FormuleChoisie;
     };
     clickedBoutonSuivantDansFunnelOnboarding: {
         bouton:
@@ -72,12 +90,12 @@ interface EventTypePayload {
     };
 
     statutCompteUpdatedEnValideDansBackendApp: {
-        dateValidationCompteOuEmail: Date | string;
-        compteOuEmailValide: boolean;
+        dateValidationCompte: Date | string;
+        compteValide: boolean;
     };
     pourcentageCompletionBPUpdatedDansBackendApp: {
         tauxCompletionBP: number;
-        statutBPGlobal: ElementStatus;
+        BPGlobal: ElementStatus;
     };
     scoringLeadUpdatedDansBackendApp: {
         scoringJSE: number;
@@ -87,9 +105,10 @@ interface EventTypePayload {
     };
     champPageProjetUpdated: {
         descriptionCourteProjet: string;
+        dateLancementActivite: Date | string;
     };
     champPageSocieteUpdated: {
-        statutJuridique: BusinessPlanModel['legalStatus'];
+        statutJuridique: BusinessPlanModel['legalStatus'] | 'SAS' | 'SARL';
         dateNaissance: Date | string;
     };
 
@@ -116,21 +135,3 @@ interface EventTypePayload {
         pageGarde: ElementStatus;
     };
 }
-
-export interface EventProperties extends EventTypePayload {}
-
-/*interface triggersSansDestination {
-    motPasseOublie: {};
-    entreeTunnelInscription: {};
-    utiliseCodePromo: {};
-    clickedBoutonOffre: {};
-    adresseEmailValidee: {};
-    interagiViaBulleAide: {};
-    clickedBoutonMonCompte: {};
-    clickedBoutonPartenaires: {};
-    clickedBoutonTableauxFinanciers: {};
-    changeSonImplantation: {};
-    scoreUtilisateurChange: {};
-    champPageEtudeMarcheUpdated: {};
-}
-*/

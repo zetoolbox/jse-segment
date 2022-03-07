@@ -1,6 +1,7 @@
 import Analytics from 'analytics-node';
 import { ObjectId } from 'bson';
 import { EventName } from './event-name.enum';
+import { Intercom } from './intercom/intercom-wrapper';
 
 class SegmentSender {
     private _client: Analytics;
@@ -11,120 +12,150 @@ class SegmentSender {
 
     public async send<TEventProperties>({
         eventName,
-        jseId,
+        jseUserId,
+        jseUserEmail,
+        jseBpId,
         properties,
+        dryRun,
     }: {
         eventName: EventName;
-        jseId: SubjectId;
+        jseUserId: SubjectId;
+        jseUserEmail?: string;
+        jseBpId: SubjectId;
         properties: TEventProperties;
-        isCreation?: boolean;
-    }): Promise<any> {
-        const isCreation: boolean = eventName == EventName.inscription;
-        const allocate = this.allocatePayloads(properties);
+        dryRun?: boolean;
+    }): Promise<boolean[]> {
+        const isCreation: boolean = eventName === EventName.inscription;
+        const allocate = this.reallocatePayloads(properties);
 
-        console.log(eventName);
         const bulkSend = [];
         if (allocate.identify.toSend === true) {
-            bulkSend.push(
-                this.identify(
-                    jseId,
-                    allocate.identify.scopedProps,
-                    isCreation ?? false
-                )
-            );
+            let index = 0;
+            for (const propsChunk of allocate.identify.scopedProps) {
+                bulkSend.push(
+                    this.identify({
+                        jseUserId,
+                        traits: propsChunk,
+                        isCreation: isCreation === true && index === 0,
+                        dryRun,
+                    })
+                );
+                ++index;
+            }
         }
         if (allocate.track.toSend === true) {
             bulkSend.push(
-                this.track(
-                    eventName as EventName,
-                    jseId,
-                    allocate.track.scopedProps,
-                    isCreation ?? false
-                )
+                this.track({
+                    eventName: eventName as EventName,
+                    jseUserId,
+                    jseUserEmail,
+                    jseBpId,
+                    properties: allocate.track.scopedProps,
+                    isCreation,
+                    dryRun,
+                })
             );
         }
-        let responses: any[] = [];
+        const httpResponses: boolean[] = [];
+        console.log('Calls to do : ', bulkSend.length);
+        let callIdx = 0;
         for (const applyPromise of bulkSend) {
-            responses = [...responses, await applyPromise];
+            const called = await applyPromise;
+            console.log(
+                `* call ${++callIdx}/${bulkSend.length} : `,
+                called === true ? 'done' : 'failed'
+            );
+            httpResponses.push(called);
         }
-        return responses;
+        return httpResponses;
     }
-    private async identify(
-        jseId: SubjectId,
-        traits: IdentifyScopedProperties,
-        isCreation: boolean
-    ): Promise<any> {
+    private async identify({
+        jseUserId,
+        traits,
+        isCreation,
+        dryRun,
+    }: {
+        jseUserId: SubjectId;
+        traits: IdentifyScopedProperties;
+        isCreation: boolean;
+        dryRun?: boolean;
+    }): Promise<boolean> {
         const _handleCallback =
             (error?: Error) => (resolve: any, reject: any) =>
                 error ? reject(error) : resolve(true);
 
         const payload = {
-            [isCreation !== true ? 'userId' : 'anonymousId']: jseId.toString(),
+            [isCreation !== true ? 'userId' : 'anonymousId']:
+                jseUserId.toString(),
             traits,
         };
-        console.log(`identify(#${jseId}) : payload is : `, payload);
+        console.log(`identify(#${jseUserId}) : payload is : `, payload);
 
+        if (dryRun === true) {
+            return Promise.resolve(true);
+        }
         return new Promise((resolve, reject) => {
             this._client.identify(payload, (error?: Error) =>
                 _handleCallback(error)(resolve, reject)
             );
         });
     }
-    private async track<TEventProperties>(
-        eventName: EventName,
-        jseId: SubjectId,
-        properties: TEventProperties,
-        isCreation: boolean
-    ): Promise<any> {
+    private async track<TEventProperties>({
+        eventName,
+        jseUserId,
+        jseUserEmail,
+        jseBpId,
+        properties,
+        isCreation,
+        dryRun,
+    }: {
+        eventName: EventName;
+        jseUserId: SubjectId;
+        jseUserEmail?: string;
+        jseBpId: SubjectId | null;
+        properties: TEventProperties;
+        isCreation: boolean;
+        dryRun?: boolean;
+    }): Promise<boolean> {
+        const payload = {
+            [isCreation !== true ? 'userId' : 'anonymousId']:
+                jseUserId.toString(),
+            event: eventName.toString(),
+            properties: {
+                ...properties,
+                ...(jseBpId ? { jseBpId } : undefined),
+                ...(jseUserEmail ? { jseUserEmail } : {}),
+            },
+        };
+        console.log(
+            `track('${eventName}') for #uid:${jseUserId} | #email: ${
+                jseUserEmail ?? 'none'
+            } | #bpid: ${jseBpId}} : \npayload is : `,
+            payload
+        );
+
+        if (dryRun === true) {
+            return Promise.resolve(true);
+        }
+
         const _handleCallback =
             (error?: Error) => (resolve: any, reject: any) =>
                 error ? reject(error) : resolve(true);
 
         return new Promise((resolve, reject) => {
-            const payload = {
-                [isCreation !== true ? 'userId' : 'anonymousId']:
-                    jseId.toString(),
-                event: eventName.toString(),
-                properties,
-            };
-            console.log(
-                `track('${eventName}') for #${jseId} : payload is : `,
-                payload
-            );
             this._client.track(payload, (error?: Error) =>
                 _handleCallback(error)(resolve, reject)
             );
         });
     }
 
-    private getIntercomReservedIdentifyProperties() {
-        return [
-            'address',
-            'age',
-            'avatar',
-            'birthday',
-            'company',
-            'description',
-            'email',
-            'firstName',
-            'gender',
-            'id',
-            'lastName',
-            'name',
-            'phone',
-            'title',
-            'username',
-            'website',
-        ];
-    }
-
-    private allocatePayloads<TEventProperties>(
+    private reallocatePayloads<TEventProperties>(
         properties: TEventProperties
     ): AllocateProperties<TEventProperties> {
         const split: AllocateProperties<TEventProperties> = {
             identify: {
                 toSend: false,
-                scopedProps: {},
+                scopedProps: [],
             },
             track: {
                 toSend: false,
@@ -146,20 +177,11 @@ class SegmentSender {
 
     private setupIdentifyProps<TEventProperties>(
         jseProperties: TEventProperties
-    ): IdentifyScopedProperties {
-        const map = {
-            nom: 'lastName',
-            prenom: 'firstName',
-            email: 'email',
-            dateNaissance: 'birthday',
-            adresse: 'address',
-            telephone: 'phone',
-            fonction: 'role',
-            siteWeb: 'website',
-        };
+    ): Partial<TEventProperties>[] {
+        const map = Intercom.getAllFields();
 
-        let segmentIdentifyScopedProps: Record<string, any> = {};
-        type JseObject = [keyof TEventProperties, string];
+        type JseObjectAsEntry = [keyof TEventProperties, string];
+        let segmentIdentifyScopedProps: any = {};
 
         const isPropValueAcceptable = (value: any) => {
             if (typeof value === 'string') {
@@ -168,28 +190,36 @@ class SegmentSender {
             return value !== null && value !== undefined;
         };
 
-        for (const [jseKey, segmentKey] of Object.entries(map) as JseObject[]) {
-            if (jseKey in map && isPropValueAcceptable(jseProperties[jseKey])) {
-                segmentIdentifyScopedProps[segmentKey] = jseProperties[jseKey];
+        for (const [jsePropKey, segmentKey] of Object.entries(
+            map
+        ) as JseObjectAsEntry[]) {
+            if (
+                jsePropKey in map &&
+                isPropValueAcceptable(jseProperties[jsePropKey])
+            ) {
+                let value = jseProperties[jsePropKey];
+                let adaptedValue = null;
+                if (value instanceof Date) {
+                    adaptedValue = (value as Date)[
+                        this.isIntercomProperty(jsePropKey as string)
+                            ? 'toDateString'
+                            : 'toISOString'
+                    ]();
+                } else {
+                    adaptedValue = value;
+                }
+                segmentIdentifyScopedProps[segmentKey] = adaptedValue;
             }
         }
-        return segmentIdentifyScopedProps;
+
+        return Intercom.chunkPayload<TEventProperties>(
+            segmentIdentifyScopedProps
+        );
     }
 
     private setupTrackProps<TEventProperties>(
         jseProperties: TEventProperties
     ): IdentifyScopedProperties {
-        const map: Record<string, string> = {
-            nom: 'lastName',
-            prenom: 'firstName',
-            email: 'email',
-            dateNaissance: 'birthday',
-            adresse: 'address',
-            telephone: 'phone',
-            fonction: 'role',
-            siteWeb: 'website',
-        };
-
         let scopedProps: Record<string, any> = {};
         type JseObject = [keyof TEventProperties, string];
 
@@ -206,12 +236,19 @@ class SegmentSender {
             if (!isPropValueAcceptable(jsePropValue)) {
                 continue;
             }
-            // which key to use  : this of Segment identify-reserved key or JSE's
-            const whichKeytoUse = (
-                jsePropKey in map ? map[jsePropKey as string] : jsePropKey
-            ) as string;
 
-            scopedProps[whichKeytoUse] = jseProperties[jsePropKey];
+            const value = jseProperties[jsePropKey];
+            let adaptedValue = null;
+            if (value instanceof Date) {
+                adaptedValue = (value as Date)[
+                    this.isIntercomProperty(jsePropKey as string)
+                        ? 'toDateString'
+                        : 'toISOString'
+                ]();
+            } else {
+                adaptedValue = value;
+            }
+            scopedProps[jsePropKey as string] = adaptedValue;
         }
         return scopedProps;
     }
@@ -219,19 +256,25 @@ class SegmentSender {
     private hasAnyIdentifyProps<TEventProperties>(
         jseProperties: TEventProperties
     ): boolean {
-        const traits = this.getIntercomReservedIdentifyProperties();
+        const traits = Intercom.getAllFieldsKeys();
         return Object.keys(jseProperties).some((propName) =>
-            traits.includes(propName.toString().toLowerCase())
+            traits.includes(propName.toString())
         );
     }
 
     private hasAnyTrackProps<TEventProperties>(
         jseProperties: TEventProperties
     ): boolean {
-        const traits = this.getIntercomReservedIdentifyProperties();
+        const traits = Intercom.getIntercomReservedIdentifyProperties();
         return Object.keys(jseProperties).some(
             (propName) =>
                 traits.includes(propName.toString().toLowerCase()) === false
+        );
+    }
+
+    private isIntercomProperty(jsePropName: string) {
+        return Intercom.getIntercomReservedIdentifyProperties().includes(
+            jsePropName
         );
     }
 }
@@ -248,7 +291,7 @@ type IdentifyScopedProperties = Record<string, any>;
 type AllocateProperties<TEventProperties> = {
     identify: {
         toSend: boolean;
-        scopedProps: IdentifyScopedProperties;
+        scopedProps: IdentifyScopedProperties[];
     };
     track: {
         toSend: boolean;
