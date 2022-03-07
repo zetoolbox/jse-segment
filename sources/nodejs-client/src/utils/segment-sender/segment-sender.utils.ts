@@ -2,7 +2,10 @@ import Analytics from 'analytics-node';
 import { ObjectId } from 'bson';
 import { EventName } from './event-name.enum';
 
-import { intercomCommonFields, intercomMapCustomFields } from './intercom-fields';
+import {
+    intercomCommonFields,
+    intercomMapCustomFields,
+} from './intercom-fields';
 
 class SegmentSender {
     private _client: Analytics;
@@ -13,86 +16,128 @@ class SegmentSender {
 
     public async send<TEventProperties>({
         eventName,
-        jseId,
+        jseUserId,
+        jseUserEmail,
+        jseBpId,
         properties,
+        dryRun,
     }: {
         eventName: EventName;
-        jseId: SubjectId;
+        jseUserId: SubjectId;
+        jseUserEmail?: string;
+        jseBpId: SubjectId;
         properties: TEventProperties;
         isCreation?: boolean;
-    }): Promise<any> {
+        dryRun?: boolean;
+    }): Promise<boolean[]> {
         const isCreation: boolean = eventName == EventName.inscription;
         const allocate = this.allocatePayloads(properties);
 
-        console.log(eventName);
         const bulkSend = [];
         if (allocate.identify.toSend === true) {
             bulkSend.push(
-                this.identify(
-                    jseId,
-                    allocate.identify.scopedProps,
-                    isCreation ?? false
-                )
+                this.identify({
+                    jseUserId,
+                    traits: allocate.identify.scopedProps,
+                    isCreation: isCreation ?? false,
+                    dryRun,
+                })
             );
         }
         if (allocate.track.toSend === true) {
             bulkSend.push(
-                this.track(
-                    eventName as EventName,
-                    jseId,
-                    allocate.track.scopedProps,
-                    isCreation ?? false
-                )
+                this.track({
+                    eventName: eventName as EventName,
+                    jseUserId,
+                    jseUserEmail,
+                    jseBpId,
+                    properties: allocate.track.scopedProps,
+                    isCreation: isCreation ?? false,
+                    dryRun,
+                })
             );
         }
-        let responses: any[] = [];
+        const httpResponses: boolean[] = [];
         for (const applyPromise of bulkSend) {
-            responses = [...responses, await applyPromise];
+            const called = await applyPromise;
+            httpResponses.push(called);
         }
-        return responses;
+        return httpResponses;
     }
-    private async identify(
-        jseId: SubjectId,
-        traits: IdentifyScopedProperties,
-        isCreation: boolean
-    ): Promise<any> {
+    private async identify({
+        jseUserId,
+        traits,
+        isCreation,
+        dryRun,
+    }: {
+        jseUserId: SubjectId;
+        traits: IdentifyScopedProperties;
+        isCreation: boolean;
+        dryRun?: boolean;
+    }): Promise<boolean> {
         const _handleCallback =
             (error?: Error) => (resolve: any, reject: any) =>
                 error ? reject(error) : resolve(true);
 
         const payload = {
-            [isCreation !== true ? 'userId' : 'anonymousId']: jseId.toString(),
+            [isCreation !== true ? 'userId' : 'anonymousId']:
+                jseUserId.toString(),
             traits,
         };
-        console.log(`identify(#${jseId}) : payload is : `, payload);
+        console.log(`identify(#${jseUserId}) : payload is : `, payload);
 
+        if (dryRun === true) {
+            return Promise.resolve(true);
+        }
         return new Promise((resolve, reject) => {
             this._client.identify(payload, (error?: Error) =>
                 _handleCallback(error)(resolve, reject)
             );
         });
     }
-    private async track<TEventProperties>(
-        eventName: EventName,
-        jseId: SubjectId,
-        properties: TEventProperties,
-        isCreation: boolean
-    ): Promise<any> {
+    private async track<TEventProperties>({
+        eventName,
+        jseUserId,
+        jseUserEmail,
+        jseBpId,
+        properties,
+        isCreation,
+        dryRun,
+    }: {
+        eventName: EventName;
+        jseUserId: SubjectId;
+        jseUserEmail?: string;
+        jseBpId: SubjectId | null;
+        properties: TEventProperties;
+        isCreation: boolean;
+        dryRun?: boolean;
+    }): Promise<boolean> {
+        const payload = {
+            [isCreation !== true ? 'userId' : 'anonymousId']:
+                jseUserId.toString(),
+            event: eventName.toString(),
+            properties: {
+                ...properties,
+                ...(jseBpId ? { jseBpId } : undefined),
+                ...(jseUserEmail ? { jseUserEmail } : {}),
+            },
+        };
+        console.log(
+            `track('${eventName}') for #uid:${jseUserId} | #email: ${
+                jseUserEmail ?? 'none'
+            } | #bpid: ${jseBpId}} : \npayload is : `,
+            payload
+        );
+
+        if (dryRun === true) {
+            return Promise.resolve(true);
+        }
+
         const _handleCallback =
             (error?: Error) => (resolve: any, reject: any) =>
                 error ? reject(error) : resolve(true);
 
         return new Promise((resolve, reject) => {
-            const payload = {
-                [isCreation !== true ? 'userId' : 'anonymousId']:
-                    jseId.toString(),
-                event: eventName.toString(),
-                properties,
-            };
-            console.log(
-                `track('${eventName}') for #${jseId} : payload is : `,
-                payload
-            );
             this._client.track(payload, (error?: Error) =>
                 _handleCallback(error)(resolve, reject)
             );
@@ -148,12 +193,11 @@ class SegmentSender {
 
     private setupIdentifyProps<TEventProperties>(
         jseProperties: TEventProperties
-    ): IdentifyScopedProperties {        
+    ): IdentifyScopedProperties {
         const map = {
             ...intercomCommonFields,
-            ...intercomMapCustomFields
+            ...intercomMapCustomFields,
         };
-
         let segmentIdentifyScopedProps: Record<string, any> = {};
         type JseObject = [keyof TEventProperties, string];
 
@@ -164,8 +208,13 @@ class SegmentSender {
             return value !== null && value !== undefined;
         };
 
-        for (const [jsePropKey, segmentKey] of Object.entries(map) as JseObject[]) {
-            if (jsePropKey in map && isPropValueAcceptable(jseProperties[jsePropKey])) {
+        for (const [jsePropKey, segmentKey] of Object.entries(
+            map
+        ) as JseObject[]) {
+            if (
+                jsePropKey in map &&
+                isPropValueAcceptable(jseProperties[jsePropKey])
+            ) {
                 let value = jseProperties[jsePropKey];
                 let adaptedValue = null;
                 if (value instanceof Date) {
@@ -180,22 +229,40 @@ class SegmentSender {
                 segmentIdentifyScopedProps[segmentKey] = adaptedValue;
             }
         }
-        return segmentIdentifyScopedProps;
+        return Object.entries(segmentIdentifyScopedProps).reduce(
+            (partialObj, [k, v], index) => {
+                if (index < 5) {
+                    partialObj[k] = v;
+                }
+                return partialObj;
+            },
+            {} as Record<string, any>
+        );
+        /*let lotIndex = -1;
+        return Object.entries(segmentIdentifyScopedProps).reduce(
+            (partialObj, [k, v], index) => {
+                if (index === 0 || index % 4 === 0) {
+                    ++lotIndex;
+                    if (partialObj[lotIndex] === undefined) {
+                        partialObj[lotIndex] = {};
+                    }
+                }
+                partialObj[lotIndex][k] = v;
+                return partialObj;
+            },
+            {} as any
+        );*/
+        /*let truncateObject = {};
+        for (const ([k, v] of Object.entries(segmentIdentifyScopedProps)){
+            truncateObject
+        }
+        return segmentIdentifyScopedProps;*/
     }
 
     private setupTrackProps<TEventProperties>(
         jseProperties: TEventProperties
     ): IdentifyScopedProperties {
-        const map: Record<string, string> = {
-            nom: 'lastName',
-            prenom: 'firstName',
-            email: 'email',
-            dateNaissance: 'birthday',
-            adresse: 'address',
-            telephone: 'phone',
-            fonction: 'role',
-            siteWeb: 'website',
-        };
+        const map: Record<string, string> = intercomCommonFields;
 
         let scopedProps: Record<string, any> = {};
         type JseObject = [keyof TEventProperties, string];
@@ -211,14 +278,10 @@ class SegmentSender {
             jseProperties
         ) as JseObject[]) {
             if (!isPropValueAcceptable(jsePropValue)) {
-                continue;
+                //continue;
             }
-            // which key to use  : this of Segment identify-reserved key or JSE's
-            const whichKeytoUse = (
-                jsePropKey in map ? map[jsePropKey as string] : jsePropKey
-            ) as string;
 
-            let value = jseProperties[jsePropKey];
+            const value = jseProperties[jsePropKey];
             let adaptedValue = null;
             if (value instanceof Date) {
                 adaptedValue = (value as Date)[
@@ -229,7 +292,7 @@ class SegmentSender {
             } else {
                 adaptedValue = value;
             }
-            scopedProps[whichKeytoUse] = adaptedValue;
+            scopedProps[jsePropKey as string] = adaptedValue;
         }
         return scopedProps;
     }
@@ -237,9 +300,12 @@ class SegmentSender {
     private hasAnyIdentifyProps<TEventProperties>(
         jseProperties: TEventProperties
     ): boolean {
-        const traits = this.getIntercomReservedIdentifyProperties();
+        const traits = [
+            ...this.getIntercomReservedIdentifyProperties(),
+            ...Object.keys(intercomMapCustomFields),
+        ];
         return Object.keys(jseProperties).some((propName) =>
-            traits.includes(propName.toString().toLowerCase())
+            traits.includes(propName.toString())
         );
     }
 
@@ -254,7 +320,9 @@ class SegmentSender {
     }
 
     private isIntercomProperty(jsePropName: string) {
-        return jsePropName in intercomMapCustomFields;
+        return this.getIntercomReservedIdentifyProperties().includes(
+            jsePropName
+        );
     }
 }
 

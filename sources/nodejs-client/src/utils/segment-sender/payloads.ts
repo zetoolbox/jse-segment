@@ -20,6 +20,14 @@ type StatutLeadsTelechargementBP =
 type StatutLeadsEnvoyeCA = 'En attente de relecture' | 'Validé' | 'Rejeté';
 type SubjectId = string | ObjectId;
 type StatutCoaching = null | 'rdv pris' | 'rdv effectue' | 'rdv manqué';
+type FormuleChoisie =
+    | BusinessPlanOffer['offerType']
+    | null
+    | 'Payant'
+    | 'Gratuit sans Business case'
+    | 'Gratuit avec Business case'
+    | 'Payant';
+type TailleEntreprise = "Petit" | "Moyen" | "Grand" | "Très grand"
 
 interface EventTypePayload {
     inscription: {
@@ -27,16 +35,10 @@ interface EventTypePayload {
         nom: UserModel['lastName'];
         prenom: UserModel['firstName'];
         email: UserModel['email'];
-        formuleChoisie:
-            | BusinessPlanOffer['offerType']
-            | null
-            | 'Payant'
-            | 'Gratuit sans Business case'
-            | 'Gratuit avec Business case'
-            | 'Payant'; // ?
+        formuleChoisie: FormuleChoisie;
         dateSouscriptionFormuleChoisie: Date | string;
         dateCreationCompte: Date | string;
-        tailleEntreprise: number;
+        tailleEntreprise: TailleEntreprise;
         statutJuridique: BusinessPlanModel['legalStatus'] | 'SAS';
         codeNAF: string | BusinessPlanProjectLocation['irisCode']; // ?
         codePostal: BusinessPlanProjectLocation['postCode'];
@@ -69,12 +71,12 @@ interface EventTypePayload {
     };
     cliqueSurBoutonDemandePourEnvoyerDossierCA: {
         demandeEnvoiProjetCA: string;
-        statutLeadsEnvoyeAuCA: StatutLeadsEnvoyeCA;
-        raisonRejetStatutLead: string | RaisonRejetStatutLead;
+        statutLeadEnvoyeAuCA: StatutLeadsEnvoyeCA;
+        raisonRejetStatutLead?: RaisonRejetStatutLead;
     };
 
     upsellSonOffreEnPayant: {
-        formuleChoisie: BusinessPlanOffer['offerType'];
+        formuleChoisie: BusinessPlanOffer['offerType'] | FormuleChoisie;
     };
     clickedBoutonSuivantDansFunnelOnboarding: {
         bouton:
@@ -89,7 +91,7 @@ interface EventTypePayload {
     };
 
     statutCompteUpdatedEnValideDansBackendApp: {
-        dateValidationCompteOuEmail: Date | string;
+        dateValidationCompte: Date | string;
         compteValide: boolean;
     };
     pourcentageCompletionBPUpdatedDansBackendApp: {
@@ -107,7 +109,7 @@ interface EventTypePayload {
         dateLancementActivite: Date | string;
     };
     champPageSocieteUpdated: {
-        statutJuridique: BusinessPlanModel['legalStatus'];
+        statutJuridique: BusinessPlanModel['legalStatus'] | "SAS" | "SARL";
         dateNaissance: Date | string;
     };
 

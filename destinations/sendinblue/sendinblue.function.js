@@ -23,11 +23,18 @@ api.fetch = async ({ method, endpoint, querystring, payload }) => {
     };
 
     const url = `https://api.sendinblue.com/v3/${endpoint}${querystring ? "?" + querystring : ""}`;
-    console.log("URL : ", url);
+    console.log("fetch url :", url);
     console.log("payload : ", JSON.stringify(payload));
 
     try {
         const httpResponse = await fetch(url, requestOptions);
+        console.log("HTTP response status: ", httpResponse.status);
+        console.log("HTTP response : ", JSON.stringify(httpResponse));
+
+        if (Number(httpResponse.status) === 400) {
+            console.log("HTTP response : ", JSON.stringify(httpResponse));
+        }
+
         if (Number(httpResponse.status) !== 204) {
             return httpResponse.json();
         }
@@ -248,7 +255,7 @@ const allowedEvents = [
 
 api.events = {};
 
-api.events.track = async (jseEmailAsId, jseProperties) => {
+api.events.handleTrack = async (jseEmailAsId, jseProperties) => {
     await api.contact.upsert(jseEmailAsId, jseProperties);
 };
 /**
@@ -266,7 +273,7 @@ async function onTrack(event, settings) {
     if (allowedEvents.includes(eventName) && jseEmailAsId !== undefined) {
         api.API_KEY = settings.apiKey || settings.API_KEY;
         console.log(`${eventName} is a track event`);
-        await api.events.track(jseEmailAsId, jseProperties);
+        await api.events.handleTrack(jseEmailAsId, jseProperties);
     }
 }
 

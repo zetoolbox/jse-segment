@@ -24,11 +24,16 @@ api.fetch = async ({ method, endpoint, querystring, payload }) => {
         querystring ? "&" + querystring : ""
     }`;
 
+    console.log("fetch url :", url);
+    console.log("payload : ", JSON.stringify(payload));
+
     try {
         const httpResponse = await fetch(url, requestOptions);
-        console.log("http response STATUS: ", httpResponse.status);
-        if (String(httpResponse.status) === "400") {
-            console.log("HTTP res : ", JSON.stringify(httpResponse));
+        console.log("http response status: ", httpResponse.status);
+        console.log("HTTP response : ", JSON.stringify(httpResponse));
+
+        if (Number(httpResponse.status) === 400) {
+            console.log("HTTP response : ", JSON.stringify(httpResponse));
         }
         if (Number(httpResponse.status) !== 204) {
             return httpResponse.json();
@@ -91,9 +96,6 @@ api.person = {
 
         if (Array.isArray(customField?.options) && customField?.options.length > 0) {
             const foundOption = customField.options.find((option) => {
-                if (typeof value.toLowerCase !== "function") {
-                    console.log("NOT = ", typeof value, value);
-                }
                 switch (typeof value) {
                     case "string":
                         return option.label.toLowerCase() === value.toLowerCase();
@@ -104,7 +106,6 @@ api.person = {
                         );
                 }
             });
-            console.log("foundOption: ", typeof foundOption);
             return { [customFieldKey]: foundOption?.id };
         }
         return null;
@@ -112,8 +113,8 @@ api.person = {
 
     getMapJseFieldToCustomFieldValueFormatter(properties) {
         return {
-            nom: (value) => ({ name: `${properties.prenom} ${properties.nom}` }),
-            prenom: (value) => ({ name: `${properties.prenom} ${properties.nom}` }),
+            nom: () => ({ name: `${properties.prenom} ${properties.nom}` }),
+            prenom: () => ({ name: `${properties.prenom} ${properties.nom}` }),
             email: (value) => ({
                 email: [
                     {
@@ -166,7 +167,6 @@ api.person = {
                 ...(await pipedriveValueFormatter(jsePropValue ?? undefined)),
             };
         }
-        console.log("person : upsert : payload : ", JSON.stringify(payload));
 
         const personRelations = !jseUserId
             ? {}
@@ -183,7 +183,7 @@ api.person = {
         const httpMethod = personFound !== null ? "PUT" : "POST";
         const httpEndpoint = personFound !== null ? `persons/${personFound?.id}` : "persons";
 
-        const upsertedPerson = await api.fetch({
+        const { data: upsertedPerson } = await api.fetch({
             method: httpMethod,
             endpoint: httpEndpoint,
             payload: JSON.stringify(pipedrivePayload),
@@ -407,9 +407,9 @@ api.businessPlan = {
         };
     },
 
-    upsert: async ({ jseBpId, jseUserId, properties }) => {
+    upsert: async ({ jseBpId, jseUserId, properties, contactUpserted }) => {
         const businessPlanFound = await api.businessPlan.find(jseBpId);
-        const personFound = await api.person.find(jseUserId);
+        const personFound = contactUpserted ? contactUpserted : await api.person.find(jseUserId);
 
         const mapJsePropsToCustomFields = api.businessPlan.getMapJsePropsToCustomFields({
             properties,
@@ -443,7 +443,7 @@ api.businessPlan = {
         const httpMethod = businessPlanFound !== null ? "PUT" : "POST";
         const httpEndpoint =
             businessPlanFound !== null ? `deals/${businessPlanFound?.id}` : "deals";
-        const businessPlanUpserted = await api.fetch({
+        const { data: businessPlanUpserted } = await api.fetch({
             method: httpMethod,
             endpoint: httpEndpoint,
             payload: businessPlanPayload,
@@ -452,20 +452,23 @@ api.businessPlan = {
     },
 };
 
+api.events = {};
+
 api.events.handleTrack = async ({ jseUserId, jseBpId, jseUserEmail, jseProperties }) => {
     let contactUpserted = null;
-    console.log("PP : ", typeof jseProperties);
-    if (jseUserEmail !== undefined) {
-        contactUpserted = await api.person.upsert({
-            jseUserId,
-            properties: jseProperties,
-        });
-    }
+    //if (jseUserEmail !== undefined) {
+    contactUpserted = await api.person.upsert({
+        jseUserId,
+        properties: jseProperties,
+    });
+
+    //}
 
     const bpUpserted = await api.businessPlan.upsert({
         jseBpId,
         jseUserId,
         properties: jseProperties,
+        contactUpserted,
     });
     return { bpUpserted, contactUpserted };
 };
