@@ -7,6 +7,7 @@ export const intercomCommonFields = {
     telephone: 'phone',
     fonction: 'role',
     siteWeb: 'website',
+    sexe: 'gender',
 };
 
 export const intercomMapCustomFields = {
@@ -21,7 +22,7 @@ export const intercomMapCustomFields = {
     tailleEntreprise: 'Company size',
     statutJuridique: 'Statut juridique',
     tauxCompletionBP: 'Taux complétion BP',
-    codeNAF: 'Code NAF',
+    codeNAF: 'Code naf',
     secteurActivite: 'Company industry',
     scoringJSE: 'Scoring JSE',
     titreNomProjet: 'Titre nom du projet',
@@ -38,4 +39,5 @@ export const intercomMapCustomFields = {
     projet: 'Projet',
     pageGarde: 'Page de garde',
     codePromoUtilise: 'Code promo utilisé',
+    jseUserId: 'User id',
 };

@@ -25,11 +25,10 @@ type FormuleChoisie =
     | null
     | 'Payant'
     | 'Gratuit sans Business case'
-    | 'Gratuit avec Business case'
-    | 'Payant';
-type TailleEntreprise = "Petit" | "Moyen" | "Grand" | "Très grand"
+    | 'Gratuit avec Business case'    
+type TailleEntreprise = 'Petit' | 'Moyen' | 'Grand' | 'Très grand';
 
-interface EventTypePayload {
+export interface EventProperties {
     inscription: {
         businessPlanId: SubjectId;
         nom: UserModel['lastName'];
@@ -39,7 +38,7 @@ interface EventTypePayload {
         dateSouscriptionFormuleChoisie: Date | string;
         dateCreationCompte: Date | string;
         tailleEntreprise: TailleEntreprise;
-        statutJuridique: BusinessPlanModel['legalStatus'] | 'SAS';
+        statutJuridique: BusinessPlanModel['legalStatus'] | 'SAS' | 'SARL';
         codeNAF: string | BusinessPlanProjectLocation['irisCode']; // ?
         codePostal: BusinessPlanProjectLocation['postCode'];
         lienBPCompteAdmin: string;
@@ -109,7 +108,7 @@ interface EventTypePayload {
         dateLancementActivite: Date | string;
     };
     champPageSocieteUpdated: {
-        statutJuridique: BusinessPlanModel['legalStatus'] | "SAS" | "SARL";
+        statutJuridique: BusinessPlanModel['legalStatus'] | 'SAS' | 'SARL';
         dateNaissance: Date | string;
     };
 
@@ -136,21 +135,3 @@ interface EventTypePayload {
         pageGarde: ElementStatus;
     };
 }
-
-export interface EventProperties extends EventTypePayload {}
-
-/*interface triggersSansDestination {
-    motPasseOublie: {};
-    entreeTunnelInscription: {};
-    utiliseCodePromo: {};
-    clickedBoutonOffre: {};
-    adresseEmailValidee: {};
-    interagiViaBulleAide: {};
-    clickedBoutonMonCompte: {};
-    clickedBoutonPartenaires: {};
-    clickedBoutonTableauxFinanciers: {};
-    changeSonImplantation: {};
-    scoreUtilisateurChange: {};
-    champPageEtudeMarcheUpdated: {};
-}
-*/

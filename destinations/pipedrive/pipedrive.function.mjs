@@ -454,15 +454,12 @@ api.businessPlan = {
 
 api.events = {};
 
-api.events.handleTrack = async ({ jseUserId, jseBpId, jseUserEmail, jseProperties }) => {
+api.events.handleTrack = async ({ jseUserId, jseBpId, jseProperties }) => {
     let contactUpserted = null;
-    //if (jseUserEmail !== undefined) {
     contactUpserted = await api.person.upsert({
         jseUserId,
         properties: jseProperties,
     });
-
-    //}
 
     const bpUpserted = await api.businessPlan.upsert({
         jseBpId,
@@ -515,7 +512,6 @@ async function onTrack(event, settings) {
     if (allowedEvents.includes(eventName)) {
         api.API_KEY = settings.apiKey || settings.API_KEY;
         console.log(`${eventName} is a track event`);
-        //await mapAllowedEventsToActions.track.track({
         await api.events.handleTrack({
             jseUserId,
             jseBpId,
@@ -533,11 +529,4 @@ async function onTrack(event, settings) {
 async function onIdentify(event, settings) {
     console.log("IDENTIFY");
     throw new EventNotSupported("identify is not handled");
-    /*api.API_KEY = settings.apiKey || settings.API_KEY;
-    await mapAllowedEventsToActions.identify.inscription(
-        event.anonymousId || event.userId,
-        event.traits,
-        event.type
-    );
-*/
 }
