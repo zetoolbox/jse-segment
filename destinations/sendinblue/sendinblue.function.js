@@ -6,6 +6,10 @@ const api = {};
 api.API_KEY = "";
 
 api.fetch = async ({ method, endpoint, querystring, payload }) => {
+    if (typeof payload === "object" && Object.keys(payload).length === 0) {
+        return Promise.resolve(true);
+    }
+
     const requestOptions = {
         method,
         headers: {
@@ -19,6 +23,8 @@ api.fetch = async ({ method, endpoint, querystring, payload }) => {
     };
 
     const url = `https://api.sendinblue.com/v3/${endpoint}${querystring ? "?" + querystring : ""}`;
+    console.log("URL : ", url);
+    console.log("payload : ", JSON.stringify(payload));
 
     try {
         const httpResponse = await fetch(url, requestOptions);
@@ -127,12 +133,12 @@ api.contact = {
         demandeEnvoiProjetCA: (value) => ({
             DEMANDE_ENVOI_PROJET_CA: value,
         }),
-        accepteEmailMarketing: (value) =>({
-            ACCEPTE_MARKETING: value
+        accepteEmailMarketing: (value) => ({
+            ACCEPTE_MARKETING: value,
         }),
         BPGlobal: (value) => ({
-            BP_GLOBAL: value
-        })
+            BP_GLOBAL: value,
+        }),
     },
 
     async upsert(jseEmailAsId, jseProperties) {
@@ -173,10 +179,10 @@ api.contact = {
     },
 };
 
-api.events.inscription = async (jseEmailAsId, properties) => {
+/*api.events.inscription = async (jseEmailAsId, properties) => {
     await api.contact.upsert(jseEmailAsId, properties);
-};
-
+};*/
+/*
 api.events.connexionApp = async (jseUserId, jseProperties) => {
     const { dateDerniereConnexionOuUpdate, nombreConnexions } = jseProperties;
     const personUpserted = await api.person.upsert(jseUserId, {
@@ -185,15 +191,66 @@ api.events.connexionApp = async (jseUserId, jseProperties) => {
     return personUpserted;
 };
 
+api.events.coachingPlanifie = async (jseUserId, jseProperties) => {
+    const { codePromoUtilise, dateDernierCoachingRealise, dateProchainCoaching, statutCoaching } =
+        jseProperties;
+    const personUpserted = await api.businessPlan.upsert(jseUserId, jseProperties);
+
+    const bpUpserted = await api.businessPlan.upsert(
+        { jseBpId, jseUserId },
+        {
+            dateDerniereConnexionOuUpdate,
+            nombreConnexions,
+        }
+    );
+    return personUpserted;
+};
+*/
+/*
 const mapAllowedEventsToActions = {
     identify: {
         inscription: api.events.inscription,
+        coachingPlanifie: coachingPlanifie,
     },
     track: {
         inscription: api.events.inscription,
+        coachingPlanifie: coachingPlanifie,
     },
 };
+*/
 
+const allowedEvents = [
+    "inscription",
+    "connexionApp",
+    "motDePasseOublie",
+    "coachingPlanifie",
+    "paiementEffectue",
+    "telechargementBusinessPlanDownload",
+    "telechargementBusinessPlanPreview",
+    "cliqueSurBoutonDemandePourEnvoyerDossierCA",
+    "upsellSonOffreEnPayant",
+    "clickedBoutonSuivantDansFunnelOnboarding",
+    "clickedBoutonRenvoyerEmailConfirmation",
+    "statutCompteUpdatedEnValideDansBackendApp",
+    "pourcentageCompletionBPUpdatedDansBackendApp",
+    "scoringLeadUpdatedDansBackendApp",
+    "champPageGardeUpdated",
+    "champPageProjetUpdated",
+    "champPageSocieteUpdated",
+    "champPagePrevisionnelUpdated",
+    "optInCommuniationOnboarding",
+    "pagePrevisionnelComplete100pcent",
+    "pageProjetComplete100pcent",
+    "pageSocieteComplete100pcent",
+    "pageEtudeMarcheComplete100pcent",
+    "pageGardeComplete100pcent",
+];
+
+api.events = {};
+
+api.events.track = async (jseEmailAsId, jseProperties) => {
+    await api.contact.upsert(jseEmailAsId, jseProperties);
+};
 /**
  * Handle track event
  * @param  {SegmentTrackEvent} event
@@ -201,14 +258,15 @@ const mapAllowedEventsToActions = {
  */
 async function onTrack(event, settings) {
     const { event: eventName, properties } = event;
-    const jseEmailAsId = event.properties.email;
+    let { jseUserId, jseBpId, jseUserEmail, ...jseProperties } = properties;
+    const jseEmailAsId = jseUserEmail;
     api.API_KEY = settings.apiKey || settings.API_KEY;
     console.log("TRACK");
 
-    if (eventName in mapAllowedEventsToActions.track && jseEmailAsId !== undefined) {
-        api.API_KEY = settings.apiToken || settings.API_KEY;
+    if (allowedEvents.includes(eventName) && jseEmailAsId !== undefined) {
+        api.API_KEY = settings.apiKey || settings.API_KEY;
         console.log(`${eventName} is a track event`);
-        await mapAllowedEventsToActions.track[eventName](jseEmailAsId, properties, event.type);
+        await api.events.track(jseEmailAsId, jseProperties);
     }
 }
 
@@ -219,6 +277,8 @@ async function onTrack(event, settings) {
  */
 async function onIdentify(event, settings) {
     console.log("IDENTIFY");
+    throw new EventNotSupported("identify is not handled.");
+    /*
     api.API_KEY = settings.apiKey || settings.API_KEY;
     const jseEmailAsId = event.traits.email;
     if (jseEmailAsId !== undefined) {
@@ -228,6 +288,5 @@ async function onIdentify(event, settings) {
             event.type
         );
     }
-
-    //throw new EventNotSupported("identify is not supported");
+    */
 }

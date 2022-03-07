@@ -6,6 +6,9 @@ const api = {};
 api.API_KEY = "";
 
 api.fetch = async ({ method, endpoint, querystring, payload }) => {
+    if (typeof payload === "object" && Object.keys(payload).length === 0) {
+        return Promise.resolve(true);
+    }
     const requestOptions = {
         method,
         headers: {
@@ -17,11 +20,16 @@ api.fetch = async ({ method, endpoint, querystring, payload }) => {
                 : JSON.stringify(payload),
     };
 
-    const url = `https://api.pipedrive.com/v1/${endpoint}?API_KEY=${api.API_KEY}${
+    const url = `https://api.pipedrive.com/v1/${endpoint}?api_token=${api.API_KEY}${
         querystring ? "&" + querystring : ""
     }`;
+
     try {
         const httpResponse = await fetch(url, requestOptions);
+        console.log("http response STATUS: ", httpResponse.status);
+        if (String(httpResponse.status) === "400") {
+            console.log("HTTP res : ", JSON.stringify(httpResponse));
+        }
         if (Number(httpResponse.status) !== 204) {
             return httpResponse.json();
         }
@@ -68,31 +76,44 @@ api.person = {
     },
 
     getKVForCustomField: async (customFieldKey, value) => {
-        if (optionValue === undefined || optionValue === null || optionValue.trim() === "") {
+        if (
+            value === undefined ||
+            value === null ||
+            (typeof value === "string" && value.trim()) === ""
+        ) {
             return value;
         }
         const customField = await api.person.getCustomFieldByKey(customFieldKey);
 
-        if (
-            customField.field_type !== "enum" ||
-            (["enum", "set"].includes(customField.field_type) && !(options in customField))
-        ) {
-            return { customFieldKey: value };
+        if (customField.options === undefined) {
+            return { [customFieldKey]: value };
         }
 
         if (Array.isArray(customField?.options) && customField?.options.length > 0) {
-            const foundOption = customField.options.find(
-                (option) => option.label.toLowerCase() === value.toLowerCase()
-            );
-            return { customFieldKey: foundOption.id };
+            const foundOption = customField.options.find((option) => {
+                if (typeof value.toLowerCase !== "function") {
+                    console.log("NOT = ", typeof value, value);
+                }
+                switch (typeof value) {
+                    case "string":
+                        return option.label.toLowerCase() === value.toLowerCase();
+                    case "boolean":
+                        return (
+                            (value === true && option.label.toLowerCase() === "oui") ||
+                            (value === false && option.label.toLowerCase() === "non")
+                        );
+                }
+            });
+            console.log("foundOption: ", typeof foundOption);
+            return { [customFieldKey]: foundOption?.id };
         }
         return null;
     },
 
     getMapJseFieldToCustomFieldValueFormatter(properties) {
         return {
-            firstName: (value) => ({ name: `${value} ${properties.lastName}` }),
-            lastName: (value) => ({ name: `${properties.firstName} ${value}` }),
+            nom: (value) => ({ name: `${properties.prenom} ${properties.nom}` }),
+            prenom: (value) => ({ name: `${properties.prenom} ${properties.nom}` }),
             email: (value) => ({
                 email: [
                     {
@@ -117,7 +138,7 @@ api.person = {
                 api.person.getKVForCustomField("cc213a198f029314025658553f1c2af96497ded2", value),
             compteValide: (value) =>
                 api.person.getKVForCustomField("d10fee2baa9f5a1705f414f005af58abc4a7f3a8", value),
-            dateCreationCompte: async (value = null) => ({
+            dateCreationCompte: (value = null) => ({
                 ...api.person.getKVForCustomField(
                     "00cfde349230f704ddff0a081a5aa9a824cace19",
                     value
@@ -129,24 +150,29 @@ api.person = {
         };
     },
 
-    upsert: async (jseUserId, properties) => {
+    upsert: async ({ jseUserId, properties }) => {
         let payload = {};
         const mapJseFieldToCustomFieldValueFormatter =
-            api.person.getMapJseFieldToCustomFieldValueFormatter(jseProperties);
+            api.person.getMapJseFieldToCustomFieldValueFormatter(properties);
+
         for (const [jsePropName, jsePropValue] of Object.entries(properties)) {
             if (!(jsePropName in mapJseFieldToCustomFieldValueFormatter)) {
                 continue;
             }
+
             const pipedriveValueFormatter = mapJseFieldToCustomFieldValueFormatter[jsePropName];
             payload = {
                 ...payload,
                 ...(await pipedriveValueFormatter(jsePropValue ?? undefined)),
             };
         }
+        console.log("person : upsert : payload : ", JSON.stringify(payload));
 
-        const personRelations = {
-            ["f0444c82088536ac96c3b17c057af9cb32a9fc06"]: jseUserId,
-        };
+        const personRelations = !jseUserId
+            ? {}
+            : {
+                  f0444c82088536ac96c3b17c057af9cb32a9fc06: jseUserId,
+              };
 
         const pipedrivePayload = {
             ...payload,
@@ -154,9 +180,8 @@ api.person = {
         };
 
         const personFound = await api.person.find(jseUserId);
-
         const httpMethod = personFound !== null ? "PUT" : "POST";
-        const httpEndpoint = personFound !== null ? `persons/${personFound.id}` : "persons";
+        const httpEndpoint = personFound !== null ? `persons/${personFound?.id}` : "persons";
 
         const upsertedPerson = await api.fetch({
             method: httpMethod,
@@ -170,14 +195,19 @@ api.person = {
 api.businessPlan = {
     customFields: [],
     getCustomFields: async () => {
-        if (api.businessPlan.customFields.length === 0) {
-            const { data } = await api.fetch({
-                method: "GET",
-                endpoint: "dealFields",
-                querystring: "start=0&limit=0",
-            });
-            api.businessPlan.customFields = data;
+        try {
+            if (api.businessPlan.customFields.length === 0) {
+                const { data } = await api.fetch({
+                    method: "GET",
+                    endpoint: "dealFields",
+                    querystring: "start=0&limit=0",
+                });
+                api.businessPlan.customFields = data;
+            }
+        } catch (error) {
+            console.log("customField Err : ", JSON.stringify(error));
         }
+
         return api.businessPlan.customFields;
     },
     getCustomFieldByKey: async (customFieldKey) => {
@@ -187,23 +217,35 @@ api.businessPlan = {
         return field ?? null;
     },
     getKVForCustomField: async (customFieldKey, value) => {
-        if (optionValue === undefined || optionValue === null || optionValue.trim() === "") {
+        if (
+            value === undefined ||
+            value === null ||
+            (typeof value === "string" && value.trim() === "")
+        ) {
             return value;
         }
+
         const customField = await api.businessPlan.getCustomFieldByKey(customFieldKey);
 
-        if (
-            customField.field_type !== "enum" ||
-            (["enum", "set"].includes(customField.field_type) && !(options in customField))
-        ) {
-            return { customFieldKey: value };
+        if (customField?.options === undefined) {
+            return { [customFieldKey]: value };
         }
 
         if (Array.isArray(customField?.options) && customField?.options.length > 0) {
-            const foundOption = customField.options.find(
-                (option) => option.label.toLowerCase() === value.toLowerCase()
-            );
-            return { customFieldKey: foundOption.id };
+            const foundOption = customField?.options.find((option) => {
+                switch (typeof value) {
+                    case "string":
+                        return option.label.toLowerCase() === value.toLowerCase();
+                    case "number":
+                        return option.label === String(value);
+                    case "boolean":
+                        return (
+                            (value === true && option.label.toLowerCase() === "oui") ||
+                            (value === false && option.label.toLowerCase() === "non")
+                        );
+                }
+            });
+            return { [customFieldKey]: foundOption?.id };
         }
         return null;
     },
@@ -227,7 +269,7 @@ api.businessPlan = {
                     properties?.title ||
                     properties?.titre ||
                     properties?.titreNomProjet ||
-                    `Affaire de ${personFound?.name}`,
+                    `Affaire de ${personFound?.name ?? ""}`,
             }),
             codeNAF: (value) =>
                 api.businessPlan.getKVForCustomField(
@@ -289,7 +331,7 @@ api.businessPlan = {
                 ),
             codePromoUtilise: (value) =>
                 api.businessPlan.getKVForCustomField(
-                    ["c835b2acaacccce3ec9ced6fcbbbbceca79269a4"],
+                    "c835b2acaacccce3ec9ced6fcbbbbceca79269a4",
                     value
                 ),
             dateProchainCoaching: (value) =>
@@ -365,8 +407,8 @@ api.businessPlan = {
         };
     },
 
-    upsert: async (jseBusinessPlanId, jseUserId, properties) => {
-        const businessPlanFound = await api.businessPlan.find(jseBusinessPlanId);
+    upsert: async ({ jseBpId, jseUserId, properties }) => {
+        const businessPlanFound = await api.businessPlan.find(jseBpId);
         const personFound = await api.person.find(jseUserId);
 
         const mapJsePropsToCustomFields = api.businessPlan.getMapJsePropsToCustomFields({
@@ -399,7 +441,8 @@ api.businessPlan = {
         };
 
         const httpMethod = businessPlanFound !== null ? "PUT" : "POST";
-        const httpEndpoint = businessPlanFound !== null ? `deals/${businessPlanFound.id}` : "deals";
+        const httpEndpoint =
+            businessPlanFound !== null ? `deals/${businessPlanFound?.id}` : "deals";
         const businessPlanUpserted = await api.fetch({
             method: httpMethod,
             endpoint: httpEndpoint,
@@ -409,65 +452,50 @@ api.businessPlan = {
     },
 };
 
-api.events = {};
-
-api.events.inscription = async (jseUserId, properties, eventType) => {
-    switch (eventType) {
-        case "identify":
-            const personUpserted = await api.person.upsert(jseUserId, properties);
-            console.log("personUpserted : ", JSON.stringify(personUpserted));
-
-            break;
-        case "track":
-            const businessPlanUpserted = await api.businessPlan.upsert(
-                properties.businessPlanId,
-                jseUserId,
-                properties
-            );
-            console.log("businessPlanUpserted : ", JSON.stringify(businessPlanUpserted));
-            break;
+api.events.handleTrack = async ({ jseUserId, jseBpId, jseUserEmail, jseProperties }) => {
+    let contactUpserted = null;
+    console.log("PP : ", typeof jseProperties);
+    if (jseUserEmail !== undefined) {
+        contactUpserted = await api.person.upsert({
+            jseUserId,
+            properties: jseProperties,
+        });
     }
-};
 
-api.events.connexionApp = async (jseUserId, jseProperties) => {
-    const { dateDerniereConnexionOuUpdate, nombreConnexions } = jseProperties;
-    const personUpserted = await api.person.upsert(jseUserId, {
-        dateDerniereConnexionOuUpdate,
-        nombreConnexions,
+    const bpUpserted = await api.businessPlan.upsert({
+        jseBpId,
+        jseUserId,
+        properties: jseProperties,
     });
-    return personUpserted;
+    return { bpUpserted, contactUpserted };
 };
 
-api.events.coachingPlanifie = async (jseUserId, jseProperties) => {
-    const { codePromoUtilise, dateDernierCoachingRealise, dateProchainCoaching, statutCoaching } =
-        jseProperties;
-    const personUpserted = await api.businessPlan.upsert(jseUserId, {
-        codePromoUtilise,
-        dateProchainCoaching,
-        statutCoaching,
-    });
-    return personUpserted;
-};
-
-api.events.paiementEffectue = async (jseUserId, jseProperties) => {
-    const { codePromoUtilise } = jseProperties;
-    const businssPlanUpserted = await api.businessPlan.upsert(jseUserId, {
-        codePromoUtilise,
-    });
-    return businssPlanUpserted;
-};
-
-const mapAllowedEventsToActions = {
-    identify: {
-        inscription: api.events.inscription,
-    },
-    track: {
-        inscription: api.events.inscription,
-        connexionApp: api.connexionApp,
-        coachingPlanifie: api.coachingPlanifie,
-        paiementEffectue: api.paiementEffectue,
-    },
-};
+const allowedEvents = [
+    "inscription",
+    "connexionApp",
+    "motDePasseOublie",
+    "coachingPlanifie",
+    "paiementEffectue",
+    "telechargementBusinessPlanDownload",
+    "telechargementBusinessPlanPreview",
+    "cliqueSurBoutonDemandePourEnvoyerDossierCA",
+    "upsellSonOffreEnPayant",
+    "clickedBoutonSuivantDansFunnelOnboarding",
+    "clickedBoutonRenvoyerEmailConfirmation",
+    "statutCompteUpdatedEnValideDansBackendApp",
+    "pourcentageCompletionBPUpdatedDansBackendApp",
+    "scoringLeadUpdatedDansBackendApp",
+    "champPageGardeUpdated",
+    "champPageProjetUpdated",
+    "champPageSocieteUpdated",
+    "champPagePrevisionnelUpdated",
+    "optInCommuniationOnboarding",
+    "pagePrevisionnelComplete100pcent",
+    "pageProjetComplete100pcent",
+    "pageSocieteComplete100pcent",
+    "pageEtudeMarcheComplete100pcent",
+    "pageGardeComplete100pcent",
+];
 
 /**
  * Handle track event
@@ -476,12 +504,21 @@ const mapAllowedEventsToActions = {
  */
 async function onTrack(event, settings) {
     const { event: eventName, properties } = event;
-    const jseBusinessPlanId = event.anonymousId ?? event.userId;
+    let { jseUserId, jseBpId, jseUserEmail, ...jseProperties } = properties;
+    jseUserId = event.anonymousId ?? event.userId;
+    jseBpId = properties.jseBpId;
+
     console.log("TRACK");
-    if (eventName in mapAllowedEventsToActions.track) {
+    if (allowedEvents.includes(eventName)) {
         api.API_KEY = settings.apiKey || settings.API_KEY;
         console.log(`${eventName} is a track event`);
-        await mapAllowedEventsToActions.track[eventName](jseBusinessPlanId, properties, event.type);
+        //await mapAllowedEventsToActions.track.track({
+        await api.events.handleTrack({
+            jseUserId,
+            jseBpId,
+            jseUserEmail,
+            jseProperties,
+        });
     }
 }
 
@@ -492,12 +529,12 @@ async function onTrack(event, settings) {
  */
 async function onIdentify(event, settings) {
     console.log("IDENTIFY");
-    api.API_KEY = settings.apiKey || settings.API_KEY;
+    throw new EventNotSupported("identify is not handled");
+    /*api.API_KEY = settings.apiKey || settings.API_KEY;
     await mapAllowedEventsToActions.identify.inscription(
         event.anonymousId || event.userId,
         event.traits,
         event.type
     );
-
-    //throw new EventNotSupported("identify is not supported");
+*/
 }
