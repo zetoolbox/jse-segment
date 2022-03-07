@@ -30,6 +30,7 @@ const IDENTIFIERS = {
 (async () => {
     const sender = getSegmentSender((process.env as ProcessEnv).SEGMENT_KEY);
 
+    /* VERIFIED */
     await sender.send<EventProperties[EventName.inscription]>({
         eventName: EventName.inscription,
         ...IDENTIFIERS,
@@ -52,8 +53,7 @@ const IDENTIFIERS = {
         },
     });
 
-    // VERIFIED
-    /*
+    // VERIFIED */    
     await sender.send<EventProperties[EventName.connexionApp]>({
         eventName: EventName.connexionApp,
         jseUserId: JSE_USER_ID,
@@ -64,10 +64,9 @@ const IDENTIFIERS = {
         },
         //dryRun: true,
     });
-    */
+
 
     // VERIFIED
-    /*
     await sender.send<EventProperties[EventName.coachingPlanifie]>({
         eventName: EventName.coachingPlanifie,
         jseUserId: JSE_USER_ID,
@@ -79,8 +78,8 @@ const IDENTIFIERS = {
         },
         //dryRun: true
     });
-    */
-    /* VERIFIED
+
+    /* VERIFIED */
     await sender.send<EventProperties[EventName.paiementEffectue]>({
         eventName: EventName.paiementEffectue,
         jseUserId: JSE_USER_ID,
@@ -90,8 +89,8 @@ const IDENTIFIERS = {
             codePromoUtilise: 'MY-CODE-PROMO',
         },
     });
-    */
-    /* VERIFIED
+    
+    /* VERIFIED */
     await sender.send<EventProperties[EventName.telechargementBusinessPlanDownload]>({
         eventName: EventName.telechargementBusinessPlanDownload,
         jseUserId: JSE_USER_ID,
@@ -100,9 +99,9 @@ const IDENTIFIERS = {
             dateDernierPDFTelecharge: new Date(),
         },
     });
-    */
+   
 
-    /* VERIFIED
+    /* VERIFIED */
     await sender.send<EventProperties[EventName.telechargementBusinessPlanPreview]>({
         eventName: EventName.telechargementBusinessPlanPreview,
         jseUserId: JSE_USER_ID,
@@ -111,9 +110,9 @@ const IDENTIFIERS = {
             statutLeadsTelechargementBP: 'En attente de relecture',
         },
     });
-    */
+   
 
-    /* VERIFIED
+    /* VERIFIED */
     await sender.send<
         EventProperties[EventName.cliqueSurBoutonDemandePourEnvoyerDossierCA]
     >({
@@ -127,9 +126,9 @@ const IDENTIFIERS = {
             statutLeadEnvoyeAuCA: 'Rejeté',            
         },
     });
-    */
+   
 
-    /* VERIFIED
+    /* VERIFIED */
     await sender.send<EventProperties[EventName.upsellSonOffreEnPayant]>({
         eventName: EventName.upsellSonOffreEnPayant,
         ...IDENTIFIERS,
@@ -137,9 +136,9 @@ const IDENTIFIERS = {
             formuleChoisie: 'Gratuit avec Business case',
         },
     });
-    */
+    
 
-    /* NOT YET SPECIFIED IN NOTION
+    /* NOT YET SPECIFIED IN NOTION */
     await sender.send<
         EventProperties[EventName.clickedBoutonSuivantDansFunnelOnboarding]
     >({
@@ -149,7 +148,7 @@ const IDENTIFIERS = {
             bouton: 'domaine-activite',
         },
     });
-    */
+    
     /* NOT YET SPECIFIED IN NOTION
     await sender.send<
         EventProperties[EventName.clickedBoutonRenvoyerEmailConfirmation]
@@ -160,8 +159,8 @@ const IDENTIFIERS = {
             clicked: true,
         },
     });
-    */
-    /* VERIFIED
+  
+    /* VERIFIED */
     await sender.send<
         EventProperties[EventName.statutCompteUpdatedEnValideDansBackendApp]
     >({
@@ -173,7 +172,7 @@ const IDENTIFIERS = {
         },
     });
     */
-    /* VERIFIED
+    /* VERIFIED */
     await sender.send<
         EventProperties[EventName.pourcentageCompletionBPUpdatedDansBackendApp]
     >({
@@ -184,8 +183,8 @@ const IDENTIFIERS = {
             tauxCompletionBP: 50,
         },
     });
-    */
-    /* VERIFIED
+   
+    /* VERIFIED */
     await sender.send<EventProperties[EventName.scoringLeadUpdatedDansBackendApp]>({
         eventName: EventName.scoringLeadUpdatedDansBackendApp,
         ...IDENTIFIERS,
@@ -193,8 +192,8 @@ const IDENTIFIERS = {
             scoringJSE: 42,
         },
     });
-    */
-    /* VERIFIED
+    
+    /* VERIFIED */
     await sender.send<EventProperties[EventName.champPageGardeUpdated]>({
         eventName: EventName.champPageGardeUpdated,
         ...IDENTIFIERS,
@@ -202,8 +201,8 @@ const IDENTIFIERS = {
             titreNomProjet: 'titre nom projet',
         },
     });
-    */
-    /* VERIFIED
+    
+    /* VERIFIED */
     await sender.send<EventProperties[EventName.champPageProjetUpdated]>({
         eventName: EventName.champPageProjetUpdated,
         ...IDENTIFIERS,
@@ -212,8 +211,8 @@ const IDENTIFIERS = {
             dateLancementActivite: DATE_TEST,
         },
     });
-    */
-    /* VERIFIED 
+    
+    /* VERIFIED */ 
     await sender.send<EventProperties[EventName.champPageSocieteUpdated]>({
         eventName: EventName.champPageSocieteUpdated,
         ...IDENTIFIERS,
@@ -222,7 +221,7 @@ const IDENTIFIERS = {
             statutJuridique: "SAS",
         },
     });
-    */
+    
     /*
     await sender.send<EventProperties[EventName.champPageSocieteUpdated]>({
         eventName: EventName.champPageSocieteUpdated,
@@ -232,9 +231,9 @@ const IDENTIFIERS = {
             statutJuridique: "SAS",
         },
     });
-    */
+    
 
-    /* VERIFIED     
+    /* VERIFIED */     
     await sender.send<EventProperties[EventName.champPagePrevisionnelUpdated]>({
         eventName: EventName.champPagePrevisionnelUpdated,
         ...IDENTIFIERS,
@@ -243,8 +242,8 @@ const IDENTIFIERS = {
             chiffreAffairesAnnee1: 1_000_000,
         },
     });
-    */
-    /* VERIFIED
+    
+    /* VERIFIED */
     await sender.send<EventProperties[EventName.optInCommuniationOnboarding]>({
         eventName: EventName.optInCommuniationOnboarding,
         ...IDENTIFIERS,
@@ -252,8 +251,8 @@ const IDENTIFIERS = {
             accepteEmailMarketing: true,
         },
     });
-    */
-    /* VERIFIED
+    
+    /* VERIFIED */
     await sender.send<EventProperties[EventName.pagePrevisionnelComplete100pcent]>({
         eventName: EventName.pagePrevisionnelComplete100pcent,
         ...IDENTIFIERS,
@@ -261,8 +260,8 @@ const IDENTIFIERS = {
             previsionnel: 'completed',
         },
     });
-    */
-    /* VERIFIED
+    
+    /* VERIFIED */
     await sender.send<EventProperties[EventName.pageProjetComplete100pcent]>({
         eventName: EventName.pageProjetComplete100pcent,
         ...IDENTIFIERS,
@@ -270,8 +269,8 @@ const IDENTIFIERS = {
             projet: 'pending',
         },
     });
-    */
-    /* VERIFIED
+    
+    /* VERIFIED */
     await sender.send<EventProperties[EventName.pageSocieteComplete100pcent]>({
         eventName: EventName.pageSocieteComplete100pcent,
         ...IDENTIFIERS,
@@ -279,8 +278,8 @@ const IDENTIFIERS = {
             societe: 'completed',
         },
     });
-    */
-    /* VERIFIED
+    
+    /* VERIFIED */
     await sender.send<EventProperties[EventName.pageEtudeMarcheComplete100pcent]>({
         eventName: EventName.pageEtudeMarcheComplete100pcent,
         ...IDENTIFIERS,
@@ -288,9 +287,9 @@ const IDENTIFIERS = {
             etudeMarche: 'completed',
         },
     });
-    */
+    
 
-    /* VERIFIED
+    /* VERIFIED */
     await sender.send<EventProperties[EventName.pageGardeComplete100pcent]>({
         eventName: EventName.pageGardeComplete100pcent,
         ...IDENTIFIERS,
@@ -298,5 +297,5 @@ const IDENTIFIERS = {
             pageGarde: 'pending',
         },
     });
-    */
+    
 })();
