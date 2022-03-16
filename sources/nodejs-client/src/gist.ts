@@ -10,9 +10,9 @@ interface ProcessEnv {
     SEGMENT_KEY: string;
 }
 
-const JSE_USER_ID = 'jse-uid-987654';
-const JSE_BP_ID = 'jse-bpid-987654';
-const JSE_USER_EMAIL = 'joris@askalia.net';
+const JSE_USER_ID = 'jse-uid-1982';
+const JSE_BP_ID = 'jse-bpid-1982';
+const JSE_USER_EMAIL = 'jorisA@zetoolbox.fr';
 const DATE_TEST = new Date('2022-04-08');
 
 const IDENTIFIERS = {
@@ -25,6 +25,7 @@ const IDENTIFIERS = {
     const sender = getSegmentSender((process.env as ProcessEnv).SEGMENT_KEY);
 
     // VERIFIED
+    
     await sender.send<EventProperties[EventName.inscription]>({
         eventName: EventName.inscription,
         ...IDENTIFIERS,
@@ -37,8 +38,8 @@ const IDENTIFIERS = {
             dateCreationCompte: new Date(), // v
             dateSouscriptionFormuleChoisie: new Date(),
             lienBPCompteAdmin: 'https://...',
-            nom: 'Grou',
-            prenom: 'Jo',
+            nom: 'GrouilletA',
+            prenom: 'JorisA',
             email: JSE_USER_EMAIL,
             lienSnapshotDernierBP: 'https://...',
             secteurActivite: 'Industrie',
@@ -47,8 +48,10 @@ const IDENTIFIERS = {
         },
         ///dryRun: true
     });
-    /*
+    
+    
     // VERIFIED   
+    
     await sender.send<EventProperties[EventName.connexionApp]>({
         eventName: EventName.connexionApp,
         jseUserId: JSE_USER_ID,
@@ -62,6 +65,7 @@ const IDENTIFIERS = {
 
 
     // VERIFIED
+    /*
     await sender.send<EventProperties[EventName.coachingPlanifie]>({
         eventName: EventName.coachingPlanifie,
         jseUserId: JSE_USER_ID,
@@ -73,6 +77,7 @@ const IDENTIFIERS = {
         },
         //dryRun: true
     });
+    
 
     // VERIFIED
     await sender.send<EventProperties[EventName.paiementEffectue]>({
