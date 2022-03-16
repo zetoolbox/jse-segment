@@ -68,10 +68,10 @@ api.contact = {
     },
 
     mapJsePropertiesToSibAttributes: {
-        lastName: (value) => ({
+        nom: (value) => ({
             LASTNAME: value,
         }),
-        firstName: (value) => ({
+        prenom: (value) => ({
             FIRSTNAME: value,
         }),
         dateDernierCoachingRealise: (value) => ({
@@ -251,5 +251,5 @@ async function onTrack(event, settings) {
  */
 async function onIdentify(event, settings) {
     console.log("IDENTIFY");
-    throw new EventNotSupported("identify is not handled.");    
+    throw new EventNotSupported("identify is not handled.");
 }
