@@ -46,12 +46,21 @@ export interface EventProperties {
         lienSnapshotDernierBP: string;
         secteurActivite: BusinessPlanModel['industryType'] | 'Industrie';
     };
-    inscription_test: {
-        email: UserModel['email'];
-    };
     connexionApp: {
         dateDerniereConnexionOuUpdate: Date | string;
         nombreConnexions: number;
+    };
+
+    motDePasseOublie : {
+        url: string
+    };
+
+    suppressionCompte: {        
+        supprime: true
+    };
+
+    confirmationCompte: {
+        url: string
     };
 
     coachingPlanifie: {

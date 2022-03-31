@@ -1,6 +1,6 @@
 import Analytics from 'analytics-node';
 import { ObjectId } from 'bson';
-import { EventName } from './event-name.enum';
+import { EventName, getEventNameHumanized } from './event-name.enum';
 import { Intercom } from './intercom/intercom-wrapper';
 
 class SegmentSender {
@@ -120,7 +120,7 @@ class SegmentSender {
         const payload = {
             [isCreation !== true ? 'userId' : 'anonymousId']:
                 jseUserId.toString(),
-            event: eventName.toString(),
+            event: getEventNameHumanized(eventName.toString()),
             properties: {
                 ...properties,
                 ...(jseBpId ? { jseBpId } : undefined),
