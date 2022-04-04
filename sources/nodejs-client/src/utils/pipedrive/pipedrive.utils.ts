@@ -75,7 +75,8 @@ export const Pipedrive = (API_KEY: string): IPipedrive => ({
 });
 
 // how-to
+/*
 (async (id: PipedriveUser['id'], API_KEY: string) => {
-    const userFound = await Pipedrive(API_KEY).findUserById(id);
-    console.log('user : ', userFound);
+    const userFound = await Pipedrive(API_KEY).findUserById(id);    
 })(14286808, (process.env as any).PIPEDRIVE_KEY);
+*/

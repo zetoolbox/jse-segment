@@ -13,7 +13,7 @@ export const Intercom = {
     },
 
     getIntercomCustomFields() {
-        return this.getIntercomCustomFields;
+        return intercomMapCustomFields;
     },
 
     getAllFields() {
@@ -34,6 +34,13 @@ export const Intercom = {
         segmentIdentifyScopedProps: TEventProperties
     ): Partial<TEventProperties>[] {
         const chunkTreshold = 5; // intercom takes up to 5 props per call., Must chunk'em when above
+        const noChunkingRequired =
+            Object.keys(segmentIdentifyScopedProps).length <= chunkTreshold;
+
+        // if no chunking required
+        if (noChunkingRequired === true) {
+            return [segmentIdentifyScopedProps];
+        }
 
         let chunk: Partial<TEventProperties> = {};
         const payloadChunks = Object.entries(segmentIdentifyScopedProps).reduce(
@@ -46,7 +53,7 @@ export const Intercom = {
                 return chunks;
             },
             [] as Partial<TEventProperties>[]
-        );
+        );        
         return payloadChunks;
     },
 };

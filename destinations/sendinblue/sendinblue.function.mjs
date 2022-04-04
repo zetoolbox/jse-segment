@@ -67,88 +67,80 @@ api.contact = {
         }
     },
 
-    mapJsePropertiesToSibAttributes: {
-        nom: (value) => ({
+    getMapJsePropertiesToSibAttributes: () => ({
+        [humanizedPropOf("nom")]: (value) => ({
             LASTNAME: value,
         }),
-        prenom: (value) => ({
+        [humanizedPropOf("prenom")]: (value) => ({
             FIRSTNAME: value,
         }),
-        dateDernierCoachingRealise: (value) => ({
+        [humanizedPropOf("dateDernierCoachingRealise")]: (value) => ({
             DATE_DERNIER_COACHING_REALISE: value,
         }),
-        dateDerniereConnexionOuUpdate: (value) => ({
+        [humanizedPropOf("dateDerniereConnexionOuUpdate")]: (value) => ({
             DATE_DERNIERE_CONNECTION: value,
         }),
-        formuleChoisie: (value) => ({
+        [humanizedPropOf("formuleChoisie")]: (value) => ({
             FORMULE_CHOISIE: value,
         }),
-        dateSouscriptionFormuleChoisie: (value) => ({
+        [humanizedPropOf("dateSouscriptionFormuleChoisie")]: (value) => ({
             DATE_SOUSCRIPTION: value,
         }),
-        dateDerniereConnexionOuUpdate: (value) => ({
+        [humanizedPropOf("dateDerniereConnexionOuUpdate")]: (value) => ({
             DATE_DERNIERE_CONNECTION: value,
         }),
-        // not yet specified in Notion
-        /*nombreConnexions: (value) => ({
-            NB_CONNEXIONS: value,
-        }),
-        // not yet specified in Notion
-        dateValidationCompte: (value) => ({
-            DATE_VALIDATION_COMPTE: value
-        })*/
-        compteValide: (value) => ({
+        [humanizedPropOf("compteValide")]: (value) => ({
             COMPTE_VALIDE: value,
         }),
-        dateCreationCompte: (value) => ({
+        [humanizedPropOf("dateCreationCompte")]: (value) => ({
             DATE_CREATION_COMPTE: value,
         }),
-        statutJuridique: (value) => ({
+        [humanizedPropOf("statutJuridique")]: (value) => ({
             STATUT_JURIDIQUE: value,
         }),
-        tauxCompletionBP: (value) => ({
+        [humanizedPropOf("tauxCompletionBP")]: (value) => ({
             TAUX_COMPLETION_BP: value,
         }),
-        codeNAF: (value) => ({
+        [humanizedPropOf("codeNAF")]: (value) => ({
             CODE_NAF: value,
         }),
-        secteurActivite: (value) => ({
+        [humanizedPropOf("secteurActivite")]: (value) => ({
             SECTEUR_ACTIVITE: value,
         }),
-        scoringJSE: (value) => ({
+        [humanizedPropOf("scoringJSE")]: (value) => ({
             SCORING_JSE: value,
         }),
-        titreNomProjet: (value) => ({
-            TITRE_NOM_PROJET: value,
+        [humanizedPropOf("nomProjet")]: (value) => ({
+            NOM_PROJET: value,
         }),
-        codePostal: (value) => ({
+        [humanizedPropOf("codePostal")]: (value) => ({
             CODE_POSTAL: value,
         }),
-        dateLancementActivite: (value) => ({
+        [humanizedPropOf("dateLancementActivite")]: (value) => ({
             DATE_LANCEMENT_ACTIVITE: value,
         }),
-        chiffreAffairesAnnee1: (value) => ({
+        [humanizedPropOf("chiffreAffairesAnnee1")]: (value) => ({
             CHIFFRE_AFFAIRES_ANNEE1: value,
         }),
-        apportPersonnel: (value) => ({
+        [humanizedPropOf("apportPersonnel")]: (value) => ({
             APPORT_PERSONNEL: value,
         }),
-        codePromoUtilise: (value) => ({
+        [humanizedPropOf("codePromoUtilise")]: (value) => ({
             CODE_PROMO_UTILISE: value,
         }),
-        dateDernierCoachingRealise: (value) => ({
+        [humanizedPropOf("dateDernierCoachingRealise")]: (value) => ({
             DATE_DERNIER_COACHING_REALISE: value,
         }),
-        demandeEnvoiProjetCA: (value) => ({
+        [humanizedPropOf("demandeEnvoiProjetCA")]: (value) => ({
             DEMANDE_ENVOI_PROJET_CA: value,
         }),
-        accepteEmailMarketing: (value) => ({
+        [humanizedPropOf("accepteEmailMarketing")]: (value) => ({
             ACCEPTE_MARKETING: value,
         }),
-        BPGlobal: (value) => ({
+        [humanizedPropOf("BPGlobal")]: (value) => ({
             BP_GLOBAL: value,
         }),
-    },
+    }),
 
     async upsert({ jseEmailAsId, jseUserId, jseProperties }) {
         const contactFound = await api.contact.find(jseEmailAsId);
@@ -156,11 +148,12 @@ api.contact = {
         let sibPayload = {
             JSE_APP_ID: jseUserId,
         };
+        const mapJsePropertiesToSibAttributes = api.contact.getMapJsePropertiesToSibAttributes();
         for (const [jsePropName, jsePropValue] of Object.entries(jseProperties)) {
-            if (!(jsePropName in api.contact.mapJsePropertiesToSibAttributes)) {
+            const sibValueFormatter = mapJsePropertiesToSibAttributes[jsePropName];
+            if (typeof sibValueFormatter !== "function") {
                 continue;
             }
-            const sibValueFormatter = api.contact.mapJsePropertiesToSibAttributes[jsePropName];
             sibPayload = {
                 ...sibPayload,
                 ...sibValueFormatter(jsePropValue),
@@ -191,6 +184,108 @@ api.contact = {
         }
     },
 };
+
+var humanizedPropOf = ((listEventPropertiesHumanized) => (propertyName) => {
+    return propertyName in listEventPropertiesHumanized
+        ? listEventPropertiesHumanized[propertyName]
+        : propertyName;
+})({
+    // inscription:
+    nom: "nom",
+    prenom: "prenom",
+    email: "email",
+    formuleChoisie: "Formule Choisie",
+    dateSouscriptionFormuleChoisie: "Date souscription à la formule choisie",
+    tailleEntreprise: "Taille entreprise",
+    statutJuridique: "Statut juridique",
+    codeNAF: "Code NAF",
+    codePostal: "Code postal",
+    lienBPCompteAdmin: "Lien vers le business plan (admin)",
+    lienSnapshotDernierBP: "Lien snapshot dernier BP",
+    secteurActivite: "Secteur activite",
+
+    // connexionApp
+    dateDerniereConnexionOuUpdate: "Date dernière connexion ou update",
+    nombreConnexions: "Nombre de connexions",
+
+    // motDePasseOublie
+    urlMotDePasseOublie: "Lien pour mot de passe oublié",
+
+    //suppressionCompte
+    supprime: "Compte supprimé",
+
+    // confirmationCompte
+    confirme: "Compte confirmé",
+    urlValidationCompte: "Lien de validation de compte",
+
+    // coachingPlanifie
+    statutCoaching: "Statut coaching",
+    dateDernierCoachingRealise: "Date dernier coaching réalisé",
+    dateProchainCoaching: "Date prochain coaching",
+
+    // paiementEffectue
+    codePromoUtilise: "Code promo utilisé",
+
+    // telechargementBusinessPlanDownload
+    dateDernierPDFTelecharge: "Date dernier BP téléchargé",
+
+    //telechargementBusinessPlanPreview
+    statutLeadsTelechargementBP: "Téléchargement BP",
+
+    // cliqueSurBoutonDemandePourEnvoyerDossierCA
+    demandeEnvoiProjetCA: "Demande envoi projet au CA",
+    statutLeadEnvoyeAuCA: "Statut lead envoyé au CA", //ok interfcom
+    raisonRejetStatutLead: "Raison rejet statut lead",
+
+    //clickedBoutonSuivantDansFunnelOnboarding
+    boutonFunnelOnboarding: "Bouton suivant funnel onboard",
+
+    //clickedBoutonRenvoyerEmailConfirmation
+    boutonEmailConfirmation: "Renvoi email confirmation cliqué",
+
+    //statutCompteUpdatedEnValideDansBackendApp
+    dateValidationCompte: "Date validation compte",
+    compteValide: "Compte valide",
+
+    // pourcentageCompletionBPUpdatedDansBackendApp
+    tauxCompletionBP: "Taux complétion BP",
+    BPGlobal: "BP global",
+
+    // scoringLeadUpdatedDansBackendApp
+    scoringJSE: "Scoring JSE",
+
+    // champPageGardeUpdated
+    nomProjet: "Nom du projet",
+
+    // champPageProjetUpdated
+    descriptionCourteProjet: "Description courte projet",
+    dateLancementActivite: "Date lancement activité",
+
+    // champPageSocieteUpdated
+    dateNaissance: "Date naissance",
+
+    //champPagePrevisionnelUpdated
+    chiffreAffairesAnnee1: "Chiffre affaires année 1",
+    apportPersonnel: "Apport personnel",
+
+    //optInCommuniationOnboarding
+    accepteEmailMarketing: "Accepte email marketing",
+
+    //pagePrevisionnelComplete100pcent
+    previsionnel: "Prévisionnel",
+
+    //pageProjetComplete100pcent
+    projet: "Projet",
+
+    //pageSocieteComplete100pcent
+    societe: "Société",
+
+    // pageEtudeMarcheComplete100pcent
+    etudeMarche: "Etude de marché",
+
+    // pageGardeComplete100pcent
+    pageGarde: "Page de garde",
+});
 
 const allowedEvents = [
     "inscription",

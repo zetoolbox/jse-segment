@@ -39,4 +39,6 @@ export const intercomMapCustomFields = {
     pageGarde: 'Page de garde', //v
     codePromoUtilise: 'Code promo utilisé', //v
     jseUserId: 'User id',
+    lienVersPageConnexion: 'Lien page de connexion',
+    lienVersPageBP: 'Lien interface BP'
 };

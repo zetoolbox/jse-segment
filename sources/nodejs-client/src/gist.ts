@@ -10,9 +10,9 @@ interface ProcessEnv {
     SEGMENT_KEY: string;
 }
 
-const JSE_USER_ID = 'jse-uid-1982';
-const JSE_BP_ID = 'jse-bpid-1982';
-const JSE_USER_EMAIL = 'jorisA@zetoolbox.fr';
+const JSE_USER_ID = 'jse-uid-1993';
+const JSE_BP_ID = 'jse-bpid-1993';
+const JSE_USER_EMAIL = 'jorisE@zetoolbox.fr';
 const DATE_TEST = new Date('2022-04-08');
 
 const IDENTIFIERS = {
@@ -25,44 +25,54 @@ const IDENTIFIERS = {
     const sender = getSegmentSender((process.env as ProcessEnv).SEGMENT_KEY);
 
     // VERIFIED
-    
+    /*
     await sender.send<EventProperties[EventName.inscription]>({
         eventName: EventName.inscription,
         ...IDENTIFIERS,
         properties: {
-            ///caissesRegionalesAssociees: [''],
-            businessPlanId: JSE_BP_ID,
-            formuleChoisie: 'Payant', // v
-            codeNAF: '98797979', // v
-            codePostal: '34000', // v
-            dateCreationCompte: new Date(), // v
+            formuleChoisie: 'Payant',
+            codeNAF: '98797979',
+            codePostal: '34000',
             dateSouscriptionFormuleChoisie: new Date(),
             lienBPCompteAdmin: 'https://...',
-            nom: 'GrouilletA',
-            prenom: 'JorisA',
+            nom: 'GrouilletE',
+            prenom: 'JorisE',
             email: JSE_USER_EMAIL,
             lienSnapshotDernierBP: 'https://...',
             secteurActivite: 'Industrie',
-            statutJuridique: 'SARL', // v
+            statutJuridique: 'SARL',
             tailleEntreprise: 'Moyen',
+            nomProjet: 'projet JorisE',
+            lienVersPageBP: "http://",
+            lienVersPageConnexion: "https://"
         },
-        ///dryRun: true
+        dryRun: true,
     });
+    */
     
-    
-    // VERIFIED   
-    
+    await sender.send<EventProperties[EventName.updateInscription]>({
+        eventName: EventName.updateInscription,
+        ...IDENTIFIERS,
+        properties: {
+            lienVersPageBP: "https://bp.com",
+            lienVersPageConnexion: "https://page.com"
+        },
+        //dryRun: true,
+    });
+
+    // VERIFIED
+    /*
     await sender.send<EventProperties[EventName.connexionApp]>({
         eventName: EventName.connexionApp,
         jseUserId: JSE_USER_ID,
         jseBpId: JSE_BP_ID,
         properties: {
-            dateDerniereConnexionOuUpdate: new Date('2022-06-22'),
-            nombreConnexions: 400,
+            dateDerniereConnexionOuUpdate: new Date('2022-04-04'),
+            nombreConnexions: 42,
         },
         //dryRun: true,
     });
-
+    */
 
     // VERIFIED
     /*
@@ -198,7 +208,7 @@ const IDENTIFIERS = {
         eventName: EventName.champPageGardeUpdated,
         ...IDENTIFIERS,
         properties: {
-            titreNomProjet: 'titre nom projet',
+            nomProjet: 'titre nom projet',
         },
     });
     
