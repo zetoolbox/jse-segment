@@ -1,3 +1,3 @@
 export * from './segment-sender.utils';
-export * from './event-name.enum';
+export * from './events';
 export * from './payloads';

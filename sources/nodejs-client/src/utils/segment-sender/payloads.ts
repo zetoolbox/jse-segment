@@ -6,6 +6,11 @@ import {
     UserModel,
 } from '../../models';
 
+type LiensDirigentVersPages = {
+    lienVersPageConnexion: string;
+    lienVersPageBP: string;
+};
+
 type ElementStatus = null | 'pending' | 'completed';
 type RaisonRejetStatutLead =
     | 'Page de garde'
@@ -25,33 +30,44 @@ type FormuleChoisie =
     | null
     | 'Payant'
     | 'Gratuit sans Business case'
-    | 'Gratuit avec Business case'    
+    | 'Gratuit avec Business case';
 type TailleEntreprise = 'Petit' | 'Moyen' | 'Grand' | 'Très grand';
 
 export interface EventProperties {
     inscription: {
-        businessPlanId: SubjectId;
         nom: UserModel['lastName'];
         prenom: UserModel['firstName'];
         email: UserModel['email'];
         formuleChoisie: FormuleChoisie;
+        nomProjet?: string;
         dateSouscriptionFormuleChoisie: Date | string;
-        dateCreationCompte: Date | string;
         tailleEntreprise: TailleEntreprise;
         statutJuridique: BusinessPlanModel['legalStatus'] | 'SAS' | 'SARL';
         codeNAF: string | BusinessPlanProjectLocation['irisCode']; // ?
         codePostal: BusinessPlanProjectLocation['postCode'];
         lienBPCompteAdmin: string;
-        //caissesRegionalesAssociees: string[];
         lienSnapshotDernierBP: string;
         secteurActivite: BusinessPlanModel['industryType'] | 'Industrie';
-    };
-    inscription_test: {
-        email: UserModel['email'];
-    };
+    } & LiensDirigentVersPages;
+
+    updateInscription: Partial<EventProperties['inscription']>;
     connexionApp: {
         dateDerniereConnexionOuUpdate: Date | string;
         nombreConnexions: number;
+        lienPageConnexionBP: string;
+    };
+
+    motDePasseOublie: {
+        urlMotDePasseOublie: string;
+    };
+
+    suppressionCompte: {
+        supprime: true;
+    };
+
+    confirmationCompte: {
+        confirme?: boolean;
+        urlValidationCompte?: string;
     };
 
     coachingPlanifie: {
@@ -64,6 +80,8 @@ export interface EventProperties {
     };
     telechargementBusinessPlanDownload: {
         dateDernierPDFTelecharge: Date | string;
+        lienVersPageConnexion: string;
+        lienVersPageBP: string;
     };
     telechargementBusinessPlanPreview: {
         statutLeadsTelechargementBP: StatutLeadsTelechargementBP;
@@ -72,13 +90,13 @@ export interface EventProperties {
         demandeEnvoiProjetCA: string;
         statutLeadEnvoyeAuCA: StatutLeadsEnvoyeCA;
         raisonRejetStatutLead?: RaisonRejetStatutLead;
-    };
+    } & LiensDirigentVersPages;
 
     upsellSonOffreEnPayant: {
         formuleChoisie: BusinessPlanOffer['offerType'] | FormuleChoisie;
     };
     clickedBoutonSuivantDansFunnelOnboarding: {
-        bouton:
+        boutonFunnelOnboarding:
             | 'domaine-activite'
             | 'secteur-activite'
             | 'lieu-implantation'
@@ -86,7 +104,7 @@ export interface EventProperties {
             | 'offre';
     };
     clickedBoutonRenvoyerEmailConfirmation: {
-        clicked: true; //?
+        boutonEmailConfirmation: true; //?
     };
 
     statutCompteUpdatedEnValideDansBackendApp: {
@@ -96,12 +114,13 @@ export interface EventProperties {
     pourcentageCompletionBPUpdatedDansBackendApp: {
         tauxCompletionBP: number;
         BPGlobal: ElementStatus;
-    };
+    } & LiensDirigentVersPages;
+
     scoringLeadUpdatedDansBackendApp: {
         scoringJSE: number;
     };
     champPageGardeUpdated: {
-        titreNomProjet: string;
+        nomProjet: string;
     };
     champPageProjetUpdated: {
         descriptionCourteProjet: string;
@@ -134,4 +153,17 @@ export interface EventProperties {
     pageGardeComplete100pcent: {
         pageGarde: ElementStatus;
     };
+}
+
+import { EventPropertiesHumanized } from './humanize/property-name-humanized.data';
+
+export function getPropertyNameHumanized(
+    propertypName: keyof typeof EventPropertiesHumanized | string
+): string {
+    const _propertyName =
+        propertypName as keyof typeof EventPropertiesHumanized;
+
+    return _propertyName in EventPropertiesHumanized
+        ? EventPropertiesHumanized[_propertyName]
+        : _propertyName;
 }

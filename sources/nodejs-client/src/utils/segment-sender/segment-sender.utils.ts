@@ -1,6 +1,7 @@
 import Analytics from 'analytics-node';
 import { ObjectId } from 'bson';
-import { EventName } from './event-name.enum';
+import { EventName, getEventNameHumanized } from './events';
+import { getPropertyNameHumanized } from './payloads';
 import { Intercom } from './intercom/intercom-wrapper';
 
 class SegmentSender {
@@ -35,6 +36,7 @@ class SegmentSender {
                 bulkSend.push(
                     this.identify({
                         jseUserId,
+                        jseUserEmail,
                         traits: propsChunk,
                         isCreation: isCreation === true && index === 0,
                         dryRun,
@@ -71,11 +73,13 @@ class SegmentSender {
     }
     private async identify({
         jseUserId,
+        jseUserEmail,
         traits,
         isCreation,
         dryRun,
     }: {
         jseUserId: SubjectId;
+        jseUserEmail?: string;
         traits: IdentifyScopedProperties;
         isCreation: boolean;
         dryRun?: boolean;
@@ -83,11 +87,14 @@ class SegmentSender {
         const _handleCallback =
             (error?: Error) => (resolve: any, reject: any) =>
                 error ? reject(error) : resolve(true);
-
         const payload = {
-            [isCreation !== true ? 'userId' : 'anonymousId']:
-                jseUserId.toString(),
-            traits,
+            [isCreation !== true ? 'userId' : 'anonymousId']: (
+                jseUserEmail || jseUserId
+            ).toString(),
+            traits: {
+                ...traits,
+                'JSE App User Id': jseUserId,
+            },
         };
         console.log(`identify(#${jseUserId}) : payload is : `, payload);
 
@@ -117,14 +124,21 @@ class SegmentSender {
         isCreation: boolean;
         dryRun?: boolean;
     }): Promise<boolean> {
+        const humanizedProperties = Object.entries(properties).reduce(
+            (humanizedProps, [propName, value]) => {
+                humanizedProps[getPropertyNameHumanized(propName)] = value;
+                return humanizedProps;
+            },
+            {} as Record<string, string>
+        );
         const payload = {
             [isCreation !== true ? 'userId' : 'anonymousId']:
                 jseUserId.toString(),
-            event: eventName.toString(),
+            event: getEventNameHumanized(eventName.toString()),
             properties: {
-                ...properties,
+                ...humanizedProperties,
                 ...(jseBpId ? { jseBpId } : undefined),
-                ...(jseUserEmail ? { jseUserEmail } : {}),
+                ...(jseUserEmail ? { jseUserEmail } : undefined),
             },
         };
         console.log(
@@ -143,9 +157,10 @@ class SegmentSender {
                 error ? reject(error) : resolve(true);
 
         return new Promise((resolve, reject) => {
-            this._client.track(payload, (error?: Error) =>
-                _handleCallback(error)(resolve, reject)
-            );
+            this._client.track(payload, (error?: Error) => {
+                console.log('live run');
+                return _handleCallback(error)(resolve, reject);
+            });
         });
     }
 
@@ -211,7 +226,6 @@ class SegmentSender {
                 segmentIdentifyScopedProps[segmentKey] = adaptedValue;
             }
         }
-
         return Intercom.chunkPayload<TEventProperties>(
             segmentIdentifyScopedProps
         );

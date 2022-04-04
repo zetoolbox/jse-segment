@@ -11,33 +11,34 @@ export const intercomCommonFields = {
 };
 
 export const intercomMapCustomFields = {
-    statutLeadEnvoyeAuCA: 'Statut lead envoyé au CA',
-    raisonRejetStatutLead: 'Raison rejet statut lead',
-    statutLeadsTelechargementBP: 'Statut lead téléchargement BP',
-    statutCoaching: 'Statut coaching',
-    formuleChoisie: 'Formule choisie',
-    dateDerniereConnexionOuUpdate: 'Date derniere connexion ou update',
-    //compteValide: 'Compte valide',
-    dateCreationCompte: 'Date création du compte',
-    tailleEntreprise: 'Company size',
-    statutJuridique: 'Statut juridique',
-    tauxCompletionBP: 'Taux complétion BP',
-    codeNAF: 'Code naf',
-    secteurActivite: 'Company industry',
+    statutLeadEnvoyeAuCA: 'Statut lead envoyé au CA', // v
+    raisonRejetStatutLead: 'Raison rejet statut lead', /// v
+    statutLeadsTelechargementBP: 'Statut lead téléchargement BP', // ?
+    statutCoaching: 'Statut coaching', //v
+    formuleChoisie: 'Formule choisie', //v
+    dateDerniereConnexionOuUpdate: 'Date derniere connexion ou update', // v
+    //compteValide: 'Compte valide',    
+    tailleEntreprise: 'Taille entreprise', // v
+    statutJuridique: 'Statut juridique',  // v
+    tauxCompletionBP: 'Taux complétion BP', //v
+    codeNAF: 'Code NAF', //v
+    secteurActivite: 'Secteur activite', // ?
     scoringJSE: 'Scoring JSE',
-    titreNomProjet: 'Titre nom du projet',
-    codePostal: 'Code postal',
-    dateLancementActivite: 'Date lancement activité',
-    chiffreAffairesAnnee1: 'Chiffre affaires année 1',
-    dateDernierCoachingRealise: 'Date dernier coaching realise',
-    demandeEnvoiProjetCA: 'Demande envoi projet au CA',
-    accepteEmailMarketing: 'Accepte email marketing',
-    BPGlobal: 'BP global',
-    previsionnel: 'Prévisionnel',
-    etudeMarche: 'Etude de marché',
-    societe: 'Société',
-    projet: 'Projet',
-    pageGarde: 'Page de garde',
-    codePromoUtilise: 'Code promo utilisé',
+    titreNomProjet: 'Titre nom du projet', // ?
+    codePostal: 'Code postal', //v
+    dateLancementActivite: 'Date lancement activité', //v 
+    chiffreAffairesAnnee1: 'Chiffre affaires année 1', //v 
+    dateDernierCoachingRealise: 'Date dernier coaching réalisé', // v
+    demandeEnvoiProjetCA: 'Demande envoi projet au CA', // v
+    accepteEmailMarketing: 'Accepte email marketing', //v 
+    BPGlobal: 'BP global', // v
+    previsionnel: 'Prévisionnel', //v
+    etudeMarche: 'Etude de marché', //v
+    societe: 'Société', // v
+    projet: 'Projet', // v
+    pageGarde: 'Page de garde', //v
+    codePromoUtilise: 'Code promo utilisé', //v
     jseUserId: 'User id',
+    lienVersPageConnexion: 'Lien page de connexion',
+    lienVersPageBP: 'Lien interface BP'
 };

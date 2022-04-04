@@ -1,17 +1,20 @@
 export const enum EventName {
     'inscription' = 'inscription',
+    'updateInscription' = 'updateInscription',
     'connexionApp' = 'connexionApp',
     'motDePasseOublie' = 'motDePasseOublie',
+    'suppressionCompte' = 'Account deleted',
+    'confirmationCompte' = 'Account confirmed',
     'coachingPlanifie' = 'coachingPlanifie',
     'paiementEffectue' = 'paiementEffectue',
-    'telechargementBusinessPlanDownload' = 'telechargementBusinessPlanDownload',
+    'telechargementBusinessPlanDownload' = 'telechargementBusinessPlanDownload', // OUI
     'telechargementBusinessPlanPreview' = 'telechargementBusinessPlanPreview',
-    'cliqueSurBoutonDemandePourEnvoyerDossierCA' = 'cliqueSurBoutonDemandePourEnvoyerDossierCA',
+    'clickedBoutonDemandePourEnvoyerDossierCA' = 'cliqueSurBoutonDemandePourEnvoyerDossierCA', // OUI
     'upsellSonOffreEnPayant' = 'upsellSonOffreEnPayant',
     'clickedBoutonSuivantDansFunnelOnboarding' = 'clickedBoutonSuivantDansFunnelOnboarding',
     'clickedBoutonRenvoyerEmailConfirmation' = 'clickedBoutonRenvoyerEmailConfirmation',
-    'statutCompteUpdatedEnValideDansBackendApp' = 'statutCompteUpdatedEnValideDansBackendApp',
-    'pourcentageCompletionBPUpdatedDansBackendApp' = 'pourcentageCompletionBPUpdatedDansBackendApp',
+    'statutCompteUpdatedEnValideDansBackendApp' = 'statutCompteUpdatedEnValideDansBackendApp', 
+    'pourcentageCompletionBPUpdatedDansBackendApp' = 'pourcentageCompletionBPUpdatedDansBackendApp', /// OUI
     'scoringLeadUpdatedDansBackendApp' = 'scoringLeadUpdatedDansBackendApp',
     'champPageGardeUpdated' = 'champPageGardeUpdated',
     'champPageProjetUpdated' = 'champPageProjetUpdated',
@@ -23,4 +26,15 @@ export const enum EventName {
     'pageSocieteComplete100pcent' = 'pageSocieteComplete100pcent',
     'pageEtudeMarcheComplete100pcent' = 'pageEtudeMarcheComplete100pcent',
     'pageGardeComplete100pcent' = 'pageGardeComplete100pcent',
+}
+
+import { EventNamesHumanized } from './humanize/event-name-humanized.data';
+
+export function getEventNameHumanized(
+    eventName: keyof typeof EventName | string
+): string {
+    const _eventName = eventName as keyof typeof EventName;
+    return _eventName in EventNamesHumanized
+        ? EventNamesHumanized[_eventName]
+        : _eventName;
 }
