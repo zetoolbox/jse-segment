@@ -12,9 +12,9 @@ export const EventPropertiesHumanized: Record<string, string> = {
     lienBPCompteAdmin: 'Lien vers le business plan (admin)',
     lienSnapshotDernierBP: 'Lien snapshot dernier BP',
     secteurActivite: 'Secteur activite',
-    
+
     // connexionApp
-    dateDerniereConnexionOuUpdate: 'Date dernière connexion ou update',
+    dateDerniereConnexionOuUpdate: 'Date derniere connexion ou update',
     nombreConnexions: 'Nombre de connexions',
 
     // motDePasseOublie
@@ -27,7 +27,7 @@ export const EventPropertiesHumanized: Record<string, string> = {
     confirme: 'Compte confirmé',
     urlValidationCompte: 'Lien de validation de compte',
 
-    // coachingPlanifie 
+    // coachingPlanifie
     statutCoaching: 'Statut coaching',
     dateDernierCoachingRealise: 'Date dernier coaching réalisé',
     dateProchainCoaching: 'Date prochain coaching',
@@ -77,7 +77,7 @@ export const EventPropertiesHumanized: Record<string, string> = {
     chiffreAffairesAnnee1: 'Chiffre affaires année 1',
     apportPersonnel: 'Apport personnel',
 
-    //optInCommuniationOnboarding
+    //optInCommunicationOnboarding
     accepteEmailMarketing: 'Accepte email marketing',
 
     //pagePrevisionnelComplete100pcent
@@ -96,6 +96,5 @@ export const EventPropertiesHumanized: Record<string, string> = {
     pageGarde: 'Page de garde',
 
     lienVersPageConnexion: 'Lien page de connexion',
-    lienVersPageBP: 'Lien interface BP'
+    lienVersPageBP: 'Lien interface BP',
 };
-

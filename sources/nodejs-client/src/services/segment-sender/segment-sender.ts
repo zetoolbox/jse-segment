@@ -2,7 +2,7 @@ import Analytics from 'analytics-node';
 import { ObjectId } from 'bson';
 import { EventName, getEventNameHumanized } from './events';
 import { getPropertyNameHumanized } from './payloads';
-import { Intercom } from './intercom/intercom-wrapper';
+import { Intercom } from '../intercom/intercom-wrapper';
 
 class SegmentSender {
     private _client: Analytics;

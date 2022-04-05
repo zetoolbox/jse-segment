@@ -20,7 +20,7 @@ export const enum EventName {
     'champPageProjetUpdated' = 'champPageProjetUpdated',
     'champPageSocieteUpdated' = 'champPageSocieteUpdated',
     'champPagePrevisionnelUpdated' = 'champPagePrevisionnelUpdated',
-    'optInCommuniationOnboarding' = 'optInCommuniationOnboarding',
+    'optInCommunicationOnboarding' = 'optInCommunicationOnboarding',
     'pagePrevisionnelComplete100pcent' = 'pagePrevisionnelComplete100pcent',
     'pageProjetComplete100pcent' = 'pageProjetComplete100pcent',
     'pageSocieteComplete100pcent' = 'pageSocieteComplete100pcent',
@@ -28,7 +28,7 @@ export const enum EventName {
     'pageGardeComplete100pcent' = 'pageGardeComplete100pcent',
 }
 
-import { EventNamesHumanized } from './humanize/event-name-humanized.data';
+import { EventNamesHumanized } from '../../humanize/event-name.humanized';
 
 export function getEventNameHumanized(
     eventName: keyof typeof EventName | string

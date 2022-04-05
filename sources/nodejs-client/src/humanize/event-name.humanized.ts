@@ -24,7 +24,7 @@ export const EventNamesHumanized: Record<string, string> = {
     champPageProjetUpdated: 'BP - Projet Update',
     champPageSocieteUpdated: 'BP - Société Update',
     champPagePrevisionnelUpdated: 'BP - Prévisionnel Update',
-    optInCommuniationOnboarding: 'Opt-in Marketing',
+    optInCommunicationOnboarding: 'Opt-in Marketing',
     pagePrevisionnelComplete100pcent: 'BP - Prévisionnel Completed',
     pageProjetComplete100pcent: 'BP - Projet Completed',
     pageSocieteComplete100pcent: 'BP - Société Completed',

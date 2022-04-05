@@ -53,8 +53,7 @@ export interface EventProperties {
     updateInscription: Partial<EventProperties['inscription']>;
     connexionApp: {
         dateDerniereConnexionOuUpdate: Date | string;
-        nombreConnexions: number;
-        lienPageConnexionBP: string;
+        nombreConnexions: number;        
     };
 
     motDePasseOublie: {
@@ -135,7 +134,7 @@ export interface EventProperties {
         chiffreAffairesAnnee1: number;
         apportPersonnel: number;
     };
-    optInCommuniationOnboarding: {
+    optInCommunicationOnboarding: {
         accepteEmailMarketing: boolean;
     };
     pagePrevisionnelComplete100pcent: {
@@ -155,7 +154,7 @@ export interface EventProperties {
     };
 }
 
-import { EventPropertiesHumanized } from './humanize/property-name-humanized.data';
+import { EventPropertiesHumanized } from '../../humanize/property-name.humanized';
 
 export function getPropertyNameHumanized(
     propertypName: keyof typeof EventPropertiesHumanized | string
