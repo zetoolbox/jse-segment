@@ -17,20 +17,20 @@ export const intercomMapCustomFields = {
     statutCoaching: 'Statut coaching', //v
     formuleChoisie: 'Formule choisie', //v
     dateDerniereConnexionOuUpdate: 'Date derniere connexion ou update', // v
-    //compteValide: 'Compte valide',    
+    //compteValide: 'Compte valide',
     tailleEntreprise: 'Taille entreprise', // v
-    statutJuridique: 'Statut juridique',  // v
+    statutJuridique: 'Statut juridique', // v
     tauxCompletionBP: 'Taux complétion BP', //v
     codeNAF: 'Code NAF', //v
     secteurActivite: 'Secteur activite', // ?
     scoringJSE: 'Scoring JSE',
     titreNomProjet: 'Titre nom du projet', // ?
     codePostal: 'Code postal', //v
-    dateLancementActivite: 'Date lancement activité', //v 
-    chiffreAffairesAnnee1: 'Chiffre affaires année 1', //v 
+    dateLancementActivite: 'Date lancement activité', //v
+    chiffreAffairesAnnee1: 'Chiffre affaires année 1', //v
     dateDernierCoachingRealise: 'Date dernier coaching réalisé', // v
     demandeEnvoiProjetCA: 'Demande envoi projet au CA', // v
-    accepteEmailMarketing: 'Accepte email marketing', //v 
+    accepteEmailMarketing: 'Accepte email marketing', //v
     BPGlobal: 'BP global', // v
     previsionnel: 'Prévisionnel', //v
     etudeMarche: 'Etude de marché', //v
@@ -40,5 +40,5 @@ export const intercomMapCustomFields = {
     codePromoUtilise: 'Code promo utilisé', //v
     jseUserId: 'User id',
     lienVersPageConnexion: 'Lien page de connexion',
-    lienVersPageBP: 'Lien interface BP'
+    lienVersPageBP: 'Lien interface BP',
 };

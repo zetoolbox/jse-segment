@@ -13,7 +13,7 @@ export const enum EventName {
     'upsellSonOffreEnPayant' = 'upsellSonOffreEnPayant',
     'clickedBoutonSuivantDansFunnelOnboarding' = 'clickedBoutonSuivantDansFunnelOnboarding',
     'clickedBoutonRenvoyerEmailConfirmation' = 'clickedBoutonRenvoyerEmailConfirmation',
-    'statutCompteUpdatedEnValideDansBackendApp' = 'statutCompteUpdatedEnValideDansBackendApp', 
+    'statutCompteUpdatedEnValideDansBackendApp' = 'statutCompteUpdatedEnValideDansBackendApp',
     'pourcentageCompletionBPUpdatedDansBackendApp' = 'pourcentageCompletionBPUpdatedDansBackendApp', /// OUI
     'scoringLeadUpdatedDansBackendApp' = 'scoringLeadUpdatedDansBackendApp',
     'champPageGardeUpdated' = 'champPageGardeUpdated',

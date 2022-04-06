@@ -13,7 +13,7 @@ interface ProcessEnv {
 const JSE_USER_ID = 'jse-uid-1993';
 const JSE_BP_ID = 'jse-bpid-1993';
 const JSE_USER_EMAIL = 'jorisE@zetoolbox.fr';
-const DATE_TEST = new Date('2022-04-08');
+//const DATE_TEST = new Date('2022-04-08');
 const LIEN_CONN = 'https://jse.fr/conn';
 const LIEN_BP = 'https://jse.fr/bp';
 const IDENTIFIERS = {
@@ -134,7 +134,7 @@ const IDENTIFIERS = {
     */
 
     // VERIFIED
-    
+
     await sender.send<
         EventProperties[EventName.clickedBoutonDemandePourEnvoyerDossierCA]
     >({
@@ -150,7 +150,7 @@ const IDENTIFIERS = {
             lienVersPageConnexion: LIEN_CONN,
         },
     });
-    
+
     /*
     // VERIFIED
     await sender.send<EventProperties[EventName.upsellSonOffreEnPayant]>({

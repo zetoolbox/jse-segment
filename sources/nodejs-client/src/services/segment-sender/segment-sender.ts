@@ -4,6 +4,28 @@ import { EventName, getEventNameHumanized } from './events';
 import { getPropertyNameHumanized } from './payloads';
 import { Intercom } from '../intercom/intercom-wrapper';
 
+type SubjectId = string | ObjectId;
+type IdentifyScopedProperties = Record<string, any>;
+
+type AllocateProperties<TEventProperties> = {
+    identify: {
+        toSend: boolean;
+        scopedProps: IdentifyScopedProperties[];
+    };
+    track: {
+        toSend: boolean;
+        scopedProps: TEventProperties | unknown;
+    };
+};
+
+let _instanceSegmentClient: Analytics;
+function getSegmentClient(apiKey: string): Analytics {
+    return (
+        _instanceSegmentClient ??
+        (_instanceSegmentClient = new Analytics(apiKey))
+    );
+}
+
 class SegmentSender {
     private _client: Analytics;
 
@@ -29,7 +51,7 @@ class SegmentSender {
         const isCreation: boolean = eventName === EventName.inscription;
         const allocate = this.reallocatePayloads(properties);
 
-        const bulkSend = [];
+        const bulkSend: Promise<boolean>[] = [];
         if (allocate.identify.toSend === true) {
             let index = 0;
             for (const propsChunk of allocate.identify.scopedProps) {
@@ -196,7 +218,7 @@ class SegmentSender {
         const map = Intercom.getAllFields();
 
         type JseObjectAsEntry = [keyof TEventProperties, string];
-        let segmentIdentifyScopedProps: any = {};
+        const segmentIdentifyScopedProps: any = {};
 
         const isPropValueAcceptable = (value: any) => {
             if (typeof value === 'string') {
@@ -212,14 +234,14 @@ class SegmentSender {
                 jsePropKey in map &&
                 isPropValueAcceptable(jseProperties[jsePropKey])
             ) {
-                let value = jseProperties[jsePropKey];
-                let adaptedValue = null;
+                const value = jseProperties[jsePropKey];
+                let adaptedValue: TEventProperties[keyof TEventProperties];
                 if (value instanceof Date) {
                     adaptedValue = (value as Date)[
                         this.isIntercomProperty(jsePropKey as string)
                             ? 'toDateString'
                             : 'toISOString'
-                    ]();
+                    ]() as unknown as TEventProperties[keyof TEventProperties];
                 } else {
                     adaptedValue = value;
                 }
@@ -234,7 +256,7 @@ class SegmentSender {
     private setupTrackProps<TEventProperties>(
         jseProperties: TEventProperties
     ): IdentifyScopedProperties {
-        let scopedProps: Record<string, any> = {};
+        const scopedProps: Record<string, any> = {};
         type JseObject = [keyof TEventProperties, string];
 
         const isPropValueAcceptable = (value: any) => {
@@ -252,13 +274,13 @@ class SegmentSender {
             }
 
             const value = jseProperties[jsePropKey];
-            let adaptedValue = null;
+            let adaptedValue: TEventProperties[keyof TEventProperties];
             if (value instanceof Date) {
                 adaptedValue = (value as Date)[
                     this.isIntercomProperty(jsePropKey as string)
                         ? 'toDateString'
                         : 'toISOString'
-                ]();
+                ]() as unknown as TEventProperties[keyof TEventProperties];
             } else {
                 adaptedValue = value;
             }
@@ -297,26 +319,4 @@ let inst: SegmentSender | null = null;
 
 export function getSegmentSender(apiKey: string): SegmentSender {
     return inst ?? (inst = new SegmentSender(apiKey));
-}
-
-type SubjectId = string | ObjectId;
-type IdentifyScopedProperties = Record<string, any>;
-
-type AllocateProperties<TEventProperties> = {
-    identify: {
-        toSend: boolean;
-        scopedProps: IdentifyScopedProperties[];
-    };
-    track: {
-        toSend: boolean;
-        scopedProps: TEventProperties | unknown;
-    };
-};
-
-let _instanceSegmentClient: Analytics;
-function getSegmentClient(apiKey: string): Analytics {
-    return (
-        _instanceSegmentClient ??
-        (_instanceSegmentClient = new Analytics(apiKey))
-    );
 }

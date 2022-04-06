@@ -9,13 +9,10 @@ export const EventNamesHumanized: Record<string, string> = {
     paiementEffectue: 'Payment Accepted',
     telechargementBusinessPlanDownload: 'Business Plan Preview',
     telechargementBusinessPlanPreview: 'Business Plan Downloaded',
-    clickedBoutonDemandePourEnvoyerDossierCA:
-        'Demand CA Sent',
+    clickedBoutonDemandePourEnvoyerDossierCA: 'Demand CA Sent',
     upsellSonOffreEnPayant: 'Upsell Paid BP',
-    clickedBoutonSuivantDansFunnelOnboarding:
-        'Funnel Onboarding',
-    clickedBoutonRenvoyerEmailConfirmation:
-        'Resend Confirmation Email',
+    clickedBoutonSuivantDansFunnelOnboarding: 'Funnel Onboarding',
+    clickedBoutonRenvoyerEmailConfirmation: 'Resend Confirmation Email',
     statutCompteUpdatedEnValideDansBackendApp: 'Account Confirmed',
     pourcentageCompletionBPUpdatedDansBackendApp:
         'BP - Pourcentage Completion Update',
@@ -31,4 +28,3 @@ export const EventNamesHumanized: Record<string, string> = {
     pageEtudeMarcheComplete100pcent: 'BP - Marché Completed',
     pageGardeComplete100pcent: 'BP - Page de Garde Completed',
 };
-

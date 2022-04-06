@@ -35,17 +35,23 @@ const fetcher = async <TEntity>(
     };
 
     const url = `https://api.pipedrive.com/v1/${endpoint}?api_token=${API_KEY}${
-        querystring ? '&' + querystring : ''
+        querystring ? `&${querystring}` : ''
     }`;
 
     try {
         const httpResponse: Response = await fetch(url, requestOptions);
+        const HTTP_OK = 200;
+        const HTTP_OK_NO_CONTENT = 204;
+        const HTTP_BAD_REQUEST = 400;
+        const getEntity = async () => {
+            const { data }: { data: TEntity } = await httpResponse.json();
+            return data;
+        };
         switch (httpResponse.status) {
-            case 200:
-                const { data }: { data: TEntity } = await httpResponse.json();
-                return data;
-            case 204:
-            case 400:
+            case HTTP_OK:
+                return getEntity();
+            case HTTP_OK_NO_CONTENT:
+            case HTTP_BAD_REQUEST:
             default:
                 return null;
         }
