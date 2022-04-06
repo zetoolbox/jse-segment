@@ -41,7 +41,7 @@ export const EventPropertiesHumanized: Record<string, string> = {
     //telechargementBusinessPlanPreview
     statutLeadsTelechargementBP: 'Téléchargement BP',
 
-    // cliqueSurBoutonDemandePourEnvoyerDossierCA
+    // clickedBoutonDemandePourEnvoyerDossierCA
     demandeEnvoiProjetCA: 'Demande envoi projet au CA',
     statutLeadEnvoyeAuCA: 'Statut lead envoyé au CA', //ok interfcom
     raisonRejetStatutLead: 'Raison rejet statut lead',

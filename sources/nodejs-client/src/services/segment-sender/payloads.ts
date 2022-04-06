@@ -24,7 +24,7 @@ type StatutLeadsTelechargementBP =
     | 'Rejeté';
 type StatutLeadsEnvoyeCA = 'En attente de relecture' | 'Validé' | 'Rejeté';
 type SubjectId = string | ObjectId;
-type StatutCoaching = null | 'rdv pris' | 'rdv effectue' | 'rdv manqué';
+type StatutCoaching = null | 'RDV pris' | 'RDV effectue' | 'RDV manqué';
 type FormuleChoisie =
     | BusinessPlanOffer['offerType']
     | null
@@ -85,7 +85,7 @@ export interface EventProperties {
     telechargementBusinessPlanPreview: {
         statutLeadsTelechargementBP: StatutLeadsTelechargementBP;
     };
-    cliqueSurBoutonDemandePourEnvoyerDossierCA: {
+    clickedBoutonDemandePourEnvoyerDossierCA: {
         demandeEnvoiProjetCA: string;
         statutLeadEnvoyeAuCA: StatutLeadsEnvoyeCA;
         raisonRejetStatutLead?: RaisonRejetStatutLead;

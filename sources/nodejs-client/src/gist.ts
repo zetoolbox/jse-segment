@@ -57,12 +57,13 @@ const IDENTIFIERS = {
         properties: {
             lienVersPageBP: 'https://bp.com',
             lienVersPageConnexion: 'https://page.com',
+            lienSnapshotDernierBP: 'https://snapshot.com',
         },
         //dryRun: true,
     });
 
     // VERIFIED
-
+    /*
     await sender.send<EventProperties[EventName.connexionApp]>({
         eventName: EventName.connexionApp,
         jseUserId: JSE_USER_ID,
@@ -75,20 +76,22 @@ const IDENTIFIERS = {
     });
 
     // VERIFIED
-
+    
     await sender.send<EventProperties[EventName.coachingPlanifie]>({
         eventName: EventName.coachingPlanifie,
-        jseUserId: JSE_USER_ID,
-        jseBpId: JSE_BP_ID,
+        ...IDENTIFIERS,
         properties: {
             dateDernierCoachingRealise: DATE_TEST, // V
             dateProchainCoaching: DATE_TEST, //V
-            statutCoaching: 'rdv pris', //V
+            statutCoaching: 'RDV manqué', //V
         },
         //dryRun: true
     });
+    
+    
 
     // VERIFIED
+    /*
     await sender.send<EventProperties[EventName.paiementEffectue]>({
         eventName: EventName.paiementEffectue,
         jseUserId: JSE_USER_ID,
@@ -98,8 +101,10 @@ const IDENTIFIERS = {
             codePromoUtilise: 'MY-CODE-PROMO',
         },
     });
+    */
 
     // VERIFIED
+    /*
     await sender.send<
         EventProperties[EventName.telechargementBusinessPlanDownload]
     >({
@@ -112,8 +117,10 @@ const IDENTIFIERS = {
             dateDernierPDFTelecharge: new Date(),
         },
     });
+    */
 
     // VERIFIED
+    /*
     await sender.send<
         EventProperties[EventName.telechargementBusinessPlanPreview]
     >({
@@ -124,8 +131,10 @@ const IDENTIFIERS = {
             statutLeadsTelechargementBP: 'En attente de relecture',
         },
     });
+    */
 
     // VERIFIED
+    
     await sender.send<
         EventProperties[EventName.clickedBoutonDemandePourEnvoyerDossierCA]
     >({
@@ -141,7 +150,8 @@ const IDENTIFIERS = {
             lienVersPageConnexion: LIEN_CONN,
         },
     });
-
+    
+    /*
     // VERIFIED
     await sender.send<EventProperties[EventName.upsellSonOffreEnPayant]>({
         eventName: EventName.upsellSonOffreEnPayant,
@@ -150,8 +160,10 @@ const IDENTIFIERS = {
             formuleChoisie: 'Gratuit avec Business case',
         },
     });
+    */
 
     // NOT YET SPECIFIED IN NOTION
+    /*
     await sender.send<
         EventProperties[EventName.clickedBoutonSuivantDansFunnelOnboarding]
     >({
@@ -161,8 +173,10 @@ const IDENTIFIERS = {
             boutonFunnelOnboarding: 'domaine-activite',
         },
     });
+    */
 
     // NOT YET SPECIFIED IN NOTION
+    /*
     await sender.send<
         EventProperties[EventName.clickedBoutonRenvoyerEmailConfirmation]
     >({
@@ -172,8 +186,10 @@ const IDENTIFIERS = {
             boutonEmailConfirmation: true,
         },
     });
+    */
 
     // VERIFIED
+    /*
     await sender.send<
         EventProperties[EventName.statutCompteUpdatedEnValideDansBackendApp]
     >({
@@ -184,8 +200,10 @@ const IDENTIFIERS = {
             dateValidationCompte: DATE_TEST,
         },
     });
+    */
 
     // VERIFIED
+    /*
     await sender.send<
         EventProperties[EventName.pourcentageCompletionBPUpdatedDansBackendApp]
     >({
@@ -198,8 +216,10 @@ const IDENTIFIERS = {
             lienVersPageConnexion: LIEN_CONN,
         },
     });
+    */
 
     // VERIFIED
+    /*
     await sender.send<
         EventProperties[EventName.scoringLeadUpdatedDansBackendApp]
     >({
@@ -209,8 +229,10 @@ const IDENTIFIERS = {
             scoringJSE: 42,
         },
     });
+    */
 
     // VERIFIED
+    /*
     await sender.send<EventProperties[EventName.champPageGardeUpdated]>({
         eventName: EventName.champPageGardeUpdated,
         ...IDENTIFIERS,
@@ -218,8 +240,9 @@ const IDENTIFIERS = {
             nomProjet: 'titre nom projet',
         },
     });
-
+    */
     // VERIFIED
+    /*
     await sender.send<EventProperties[EventName.champPageProjetUpdated]>({
         eventName: EventName.champPageProjetUpdated,
         ...IDENTIFIERS,
@@ -228,8 +251,10 @@ const IDENTIFIERS = {
             dateLancementActivite: DATE_TEST,
         },
     });
+    */
 
     // VERIFIED
+    /*
     await sender.send<EventProperties[EventName.champPageSocieteUpdated]>({
         eventName: EventName.champPageSocieteUpdated,
         ...IDENTIFIERS,
@@ -238,7 +263,9 @@ const IDENTIFIERS = {
             statutJuridique: 'SAS',
         },
     });
+    */
 
+    /*
     await sender.send<EventProperties[EventName.champPageSocieteUpdated]>({
         eventName: EventName.champPageSocieteUpdated,
         ...IDENTIFIERS,
@@ -315,4 +342,5 @@ const IDENTIFIERS = {
             pageGarde: 'pending',
         },
     });
+    */
 })();

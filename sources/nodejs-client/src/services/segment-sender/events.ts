@@ -9,7 +9,7 @@ export const enum EventName {
     'paiementEffectue' = 'paiementEffectue',
     'telechargementBusinessPlanDownload' = 'telechargementBusinessPlanDownload', // OUI
     'telechargementBusinessPlanPreview' = 'telechargementBusinessPlanPreview',
-    'clickedBoutonDemandePourEnvoyerDossierCA' = 'cliqueSurBoutonDemandePourEnvoyerDossierCA', // OUI
+    'clickedBoutonDemandePourEnvoyerDossierCA' = 'clickedBoutonDemandePourEnvoyerDossierCA', // OUI
     'upsellSonOffreEnPayant' = 'upsellSonOffreEnPayant',
     'clickedBoutonSuivantDansFunnelOnboarding' = 'clickedBoutonSuivantDansFunnelOnboarding',
     'clickedBoutonRenvoyerEmailConfirmation' = 'clickedBoutonRenvoyerEmailConfirmation',
