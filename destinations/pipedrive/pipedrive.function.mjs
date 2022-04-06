@@ -258,7 +258,7 @@ api.businessPlan = {
                     properties?.title ||
                     properties?.titre ||
                     properties[humanizedPropOf("nomProjet")] ||
-                    `Affaire de ${personFound?.nom ?? ""}`,
+                    `Affaire de ${personFound?.name ?? ""}`,
             }),
             [humanizedPropOf("codeNAF")]: (value) =>
                 api.businessPlan.getKVForCustomField(
@@ -348,7 +348,7 @@ api.businessPlan = {
                     "250fc0b12aa7add12b7abc343a8947a332a941fb",
                     value
                 ),
-            [humanizedPropOf("lienSnapshotDernierBPTelecharge")]: (value) =>
+            [humanizedPropOf("lienSnapshotDernierBP")]: (value) =>
                 api.businessPlan.getKVForCustomField(
                     "acd7fd0540cb26407f3b3f96b084325533fd9ae2",
                     value
@@ -506,7 +506,7 @@ var humanizedPropOf = ((listEventPropertiesHumanized) => (propertyName) => {
     //telechargementBusinessPlanPreview
     statutLeadsTelechargementBP: "Téléchargement BP",
 
-    // cliqueSurBoutonDemandePourEnvoyerDossierCA
+    // clickedBoutonDemandePourEnvoyerDossierCA
     demandeEnvoiProjetCA: "Demande envoi projet au CA",
     statutLeadEnvoyeAuCA: "Statut lead envoyé au CA", //ok interfcom
     raisonRejetStatutLead: "Raison rejet statut lead",
@@ -542,7 +542,7 @@ var humanizedPropOf = ((listEventPropertiesHumanized) => (propertyName) => {
     chiffreAffairesAnnee1: "Chiffre affaires année 1",
     apportPersonnel: "Apport personnel",
 
-    //optInCommuniationOnboarding
+    //optInCommunicationOnboarding
     accepteEmailMarketing: "Accepte email marketing",
 
     //pagePrevisionnelComplete100pcent

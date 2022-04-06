@@ -232,7 +232,7 @@ var humanizedPropOf = ((listEventPropertiesHumanized) => (propertyName) => {
     //telechargementBusinessPlanPreview
     statutLeadsTelechargementBP: "Téléchargement BP",
 
-    // cliqueSurBoutonDemandePourEnvoyerDossierCA
+    // clickedBoutonDemandePourEnvoyerDossierCA
     demandeEnvoiProjetCA: "Demande envoi projet au CA",
     statutLeadEnvoyeAuCA: "Statut lead envoyé au CA", //ok interfcom
     raisonRejetStatutLead: "Raison rejet statut lead",
@@ -268,7 +268,7 @@ var humanizedPropOf = ((listEventPropertiesHumanized) => (propertyName) => {
     chiffreAffairesAnnee1: "Chiffre affaires année 1",
     apportPersonnel: "Apport personnel",
 
-    //optInCommuniationOnboarding
+    //optInCommunicationOnboarding
     accepteEmailMarketing: "Accepte email marketing",
 
     //pagePrevisionnelComplete100pcent
@@ -295,7 +295,7 @@ const allowedEvents = [
     "paiementEffectue",
     "telechargementBusinessPlanDownload",
     "telechargementBusinessPlanPreview",
-    "cliqueSurBoutonDemandePourEnvoyerDossierCA",
+    "clickedBoutonDemandePourEnvoyerDossierCA",
     "upsellSonOffreEnPayant",
     "clickedBoutonSuivantDansFunnelOnboarding",
     "clickedBoutonRenvoyerEmailConfirmation",
@@ -306,7 +306,7 @@ const allowedEvents = [
     "champPageProjetUpdated",
     "champPageSocieteUpdated",
     "champPagePrevisionnelUpdated",
-    "optInCommuniationOnboarding",
+    "optInCommunicationOnboarding",
     "pagePrevisionnelComplete100pcent",
     "pageProjetComplete100pcent",
     "pageSocieteComplete100pcent",
@@ -343,8 +343,9 @@ async function onTrack(event, settings) {
  * Handle identify event
  * @param  {SegmentIdentifyEvent} event
  * @param  {FunctionSettings} settings
- */
+ *
 async function onIdentify(event, settings) {
     console.log("IDENTIFY");
     throw new EventNotSupported("identify is not handled.");
 }
+*/
