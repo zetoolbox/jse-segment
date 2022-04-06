@@ -11,13 +11,20 @@ export const intercomCommonFields = {
 };
 
 export const intercomMapCustomFields = {
+    compteValide: 'Compte valide',
+    confirme: 'Compte confirmé',
+    nomProjet: 'Nom du projet',
+    supprime: "Compte supprimé",
+    dateDernierPDFTelecharge: 'Date dernier BP téléchargé',
+    urlMotDePasseOublie: 'Lien mot de passe oublié',
+    urlValidationCompte: 'Lien de validation du compte',
+    dateValidationCompte: 'Date validation du compte',
     statutLeadEnvoyeAuCA: 'Statut lead envoyé au CA', // v
     raisonRejetStatutLead: 'Raison rejet statut lead', /// v
     statutLeadsTelechargementBP: 'Statut lead téléchargement BP', // ?
     statutCoaching: 'Statut coaching', //v
     formuleChoisie: 'Formule choisie', //v
     dateDerniereConnexionOuUpdate: 'Date derniere connexion ou update', // v
-    //compteValide: 'Compte valide',
     tailleEntreprise: 'Taille entreprise', // v
     statutJuridique: 'Statut juridique', // v
     tauxCompletionBP: 'Taux complétion BP', //v
