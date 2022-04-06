@@ -14,7 +14,9 @@ export const intercomMapCustomFields = {
     compteValide: 'Compte valide',
     confirme: 'Compte confirmé',
     nomProjet: 'Nom du projet',
-    supprime: "Compte supprimé",
+    supprime: 'Compte supprimé',
+    dateNaissance: "Date de naissance",
+    boutonEmailConfirmation: "Renvoi email confirmation cliqué",
     dateDernierPDFTelecharge: 'Date dernier BP téléchargé',
     urlMotDePasseOublie: 'Lien mot de passe oublié',
     urlValidationCompte: 'Lien de validation du compte',
@@ -24,6 +26,7 @@ export const intercomMapCustomFields = {
     statutLeadsTelechargementBP: 'Statut lead téléchargement BP', // ?
     statutCoaching: 'Statut coaching', //v
     formuleChoisie: 'Formule choisie', //v
+    boutonFunnelOnboarding: "Bouton suivant funnel onboard",
     dateDerniereConnexionOuUpdate: 'Date derniere connexion ou update', // v
     tailleEntreprise: 'Taille entreprise', // v
     statutJuridique: 'Statut juridique', // v
@@ -36,6 +39,7 @@ export const intercomMapCustomFields = {
     dateLancementActivite: 'Date lancement activité', //v
     chiffreAffairesAnnee1: 'Chiffre affaires année 1', //v
     dateDernierCoachingRealise: 'Date dernier coaching réalisé', // v
+    dateProchainCoaching: "Date prochain coaching",
     demandeEnvoiProjetCA: 'Demande envoi projet au CA', // v
     accepteEmailMarketing: 'Accepte email marketing', //v
     BPGlobal: 'BP global', // v

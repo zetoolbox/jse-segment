@@ -237,7 +237,9 @@ class SegmentSender {
                 const value = jseProperties[jsePropKey];
                 let adaptedValue: TEventProperties[keyof TEventProperties];
                 if (value instanceof Date) {
-                    adaptedValue = (value as Date).toDateString() as unknown as TEventProperties[keyof TEventProperties];                    
+                    adaptedValue = (
+                        value as Date
+                    ).toDateString() as unknown as TEventProperties[keyof TEventProperties];
                 } else {
                     adaptedValue = value;
                 }

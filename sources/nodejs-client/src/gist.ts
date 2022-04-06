@@ -13,7 +13,7 @@ interface ProcessEnv {
 const JSE_USER_ID = 'jse-uid-1993';
 const JSE_BP_ID = 'jse-bpid-1993';
 const JSE_USER_EMAIL = 'jorisE@zetoolbox.fr';
-//const DATE_TEST = new Date('2022-04-08');
+const DATE_TEST = new Date('2022-04-08');
 //const LIEN_CONN = 'https://jse.fr/conn';
 //const LIEN_BP = 'https://jse.fr/bp';
 const IDENTIFIERS = {
@@ -50,7 +50,7 @@ const IDENTIFIERS = {
         dryRun: true,
     });
     
-
+    
     await sender.send<EventProperties[EventName.updateInscription]>({
         eventName: EventName.updateInscription,
         ...IDENTIFIERS,
@@ -58,16 +58,16 @@ const IDENTIFIERS = {
             lienVersPageBP: 'https://bp.com',
             lienVersPageConnexion: 'https://page.com',
             lienSnapshotDernierBP: 'https://snapshot.com',
+            dateNaissance: DATE_TEST
         },
         //dryRun: true,
     });
 
     // VERIFIED
-    /*
+
     await sender.send<EventProperties[EventName.connexionApp]>({
         eventName: EventName.connexionApp,
-        jseUserId: JSE_USER_ID,
-        jseBpId: JSE_BP_ID,
+        ...IDENTIFIERS,
         properties: {
             dateDerniereConnexionOuUpdate: new Date('2022-04-04'),
             nombreConnexions: 42,
@@ -76,7 +76,7 @@ const IDENTIFIERS = {
     });
 
     // VERIFIED
-    
+    /*
     await sender.send<EventProperties[EventName.coachingPlanifie]>({
         eventName: EventName.coachingPlanifie,
         ...IDENTIFIERS,
@@ -128,18 +128,15 @@ const IDENTIFIERS = {
         properties: {
             statutLeadsTelechargementBP: 'En attente de relecture',
         },
-    });
-    */
+    });    
 
     // VERIFIED
-    /*
+    
     await sender.send<
         EventProperties[EventName.clickedBoutonDemandePourEnvoyerDossierCA]
     >({
         eventName: EventName.clickedBoutonDemandePourEnvoyerDossierCA,
-        jseUserId: JSE_USER_ID,
-        jseBpId: JSE_BP_ID,
-        jseUserEmail: JSE_USER_EMAIL,
+        ...IDENTIFIERS,
         properties: {
             demandeEnvoiProjetCA: 'demande envoi projet CA',
             raisonRejetStatutLead: 'Page de garde',
@@ -161,7 +158,7 @@ const IDENTIFIERS = {
     */
 
     // NOT YET SPECIFIED IN NOTION
-    /*
+    
     await sender.send<
         EventProperties[EventName.clickedBoutonSuivantDansFunnelOnboarding]
     >({
@@ -171,10 +168,10 @@ const IDENTIFIERS = {
             boutonFunnelOnboarding: 'domaine-activite',
         },
     });
-    */
+    
 
     // NOT YET SPECIFIED IN NOTION
-    /*
+    
     await sender.send<
         EventProperties[EventName.clickedBoutonRenvoyerEmailConfirmation]
     >({
@@ -184,7 +181,7 @@ const IDENTIFIERS = {
             boutonEmailConfirmation: true,
         },
     });
-    /
+    
 
     // VERIFIED
     
@@ -259,8 +256,7 @@ const IDENTIFIERS = {
         },
     });
 
-    */
-
+    
     await sender.send<EventProperties[EventName.suppressionCompte]>({
         eventName: EventName.suppressionCompte,
         ...IDENTIFIERS,

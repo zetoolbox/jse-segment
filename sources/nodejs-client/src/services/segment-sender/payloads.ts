@@ -47,6 +47,7 @@ export interface EventProperties {
         lienBPCompteAdmin: string;
         lienSnapshotDernierBP: string;
         secteurActivite: BusinessPlanModel['industryType'] | 'Industrie';
+        dateNaissance?: Date;
     } & LiensDirigentVersPages;
 
     updateInscription: Partial<EventProperties['inscription']>;

@@ -353,7 +353,7 @@ api.businessPlan = {
                     "acd7fd0540cb26407f3b3f96b084325533fd9ae2",
                     value
                 ),
-            [humanizedPropOf("statutLeadsEnvoyeAuCA")]: (value) =>
+            [humanizedPropOf("statutLeadEnvoyeAuCA")]: (value) =>
                 api.businessPlan.getKVForCustomField(
                     "8c7a0f4bdd6a09f2240b144c82f8afb8da477343",
                     value
@@ -392,7 +392,7 @@ api.businessPlan = {
                 api.businessPlan.getKVForCustomField(
                     "a5c39b77acee3316561b1582cbcba80fb964edc6",
                     value
-                ),
+                ),            
         };
     },
 
@@ -569,6 +569,7 @@ const allowedEvents = [
     "Account confirmed",
     "Coaching Statut Update",
     "Payment Accepted",
+    "Demand CA Sent",
     "Business Plan Preview",
     "Business Plan Downloaded",
     "clickedBoutonDemandePourEnvoyerDossierCA",
@@ -576,6 +577,7 @@ const allowedEvents = [
     "clickedBoutonSuivantDansFunnelOnboarding",
     "clickedBoutonRenvoyerEmailConfirmation",
     "Account Confirmed",
+    "Account Updated",
     "BP - Pourcentage Completion Update",
     "Scoring Lead Update",
     "BP - Page de Garde Update",
