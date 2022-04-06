@@ -13,9 +13,9 @@ interface ProcessEnv {
 const JSE_USER_ID = 'jse-uid-1993';
 const JSE_BP_ID = 'jse-bpid-1993';
 const JSE_USER_EMAIL = 'jorisE@zetoolbox.fr';
-const DATE_TEST = new Date('2022-04-08');
-const LIEN_CONN = 'https://jse.fr/conn';
-const LIEN_BP = 'https://jse.fr/bp';
+//const DATE_TEST = new Date('2022-04-08');
+//const LIEN_CONN = 'https://jse.fr/conn';
+//const LIEN_BP = 'https://jse.fr/bp';
 const IDENTIFIERS = {
     jseUserId: JSE_USER_ID,
     jseBpId: JSE_BP_ID,
@@ -49,7 +49,7 @@ const IDENTIFIERS = {
         },
         dryRun: true,
     });
-    */
+    
 
     await sender.send<EventProperties[EventName.updateInscription]>({
         eventName: EventName.updateInscription,
@@ -88,7 +88,7 @@ const IDENTIFIERS = {
         //dryRun: true
     });
     
-    
+    /*
 
     // VERIFIED
     /*
@@ -101,23 +101,21 @@ const IDENTIFIERS = {
             codePromoUtilise: 'MY-CODE-PROMO',
         },
     });
-    */
+    
 
     // VERIFIED
-    /*
+
     await sender.send<
         EventProperties[EventName.telechargementBusinessPlanDownload]
     >({
         eventName: EventName.telechargementBusinessPlanDownload,
-        jseUserId: JSE_USER_ID,
-        jseBpId: JSE_BP_ID,
+        ...IDENTIFIERS,
         properties: {
             lienVersPageBP: LIEN_BP,
             lienVersPageConnexion: LIEN_CONN,
             dateDernierPDFTelecharge: new Date(),
         },
     });
-    */
 
     // VERIFIED
     /*
@@ -134,7 +132,7 @@ const IDENTIFIERS = {
     */
 
     // VERIFIED
-    
+    /*
     await sender.send<
         EventProperties[EventName.clickedBoutonDemandePourEnvoyerDossierCA]
     >({
@@ -150,7 +148,7 @@ const IDENTIFIERS = {
             lienVersPageConnexion: LIEN_CONN,
         },
     });
-    
+
     /*
     // VERIFIED
     await sender.send<EventProperties[EventName.upsellSonOffreEnPayant]>({
@@ -186,10 +184,10 @@ const IDENTIFIERS = {
             boutonEmailConfirmation: true,
         },
     });
-    */
+    /
 
     // VERIFIED
-    /*
+    
     await sender.send<
         EventProperties[EventName.statutCompteUpdatedEnValideDansBackendApp]
     >({
@@ -200,7 +198,7 @@ const IDENTIFIERS = {
             dateValidationCompte: DATE_TEST,
         },
     });
-    */
+    
 
     // VERIFIED
     /*
@@ -216,33 +214,32 @@ const IDENTIFIERS = {
             lienVersPageConnexion: LIEN_CONN,
         },
     });
-    */
+    
 
     // VERIFIED
-    /*
+
     await sender.send<
         EventProperties[EventName.scoringLeadUpdatedDansBackendApp]
     >({
         eventName: EventName.scoringLeadUpdatedDansBackendApp,
         ...IDENTIFIERS,
         properties: {
-            scoringJSE: 42,
+            scoringJSE: 350,
         },
     });
-    */
 
     // VERIFIED
-    /*
+
     await sender.send<EventProperties[EventName.champPageGardeUpdated]>({
         eventName: EventName.champPageGardeUpdated,
         ...IDENTIFIERS,
         properties: {
-            nomProjet: 'titre nom projet',
+            nomProjet: 'nom de mon projet',
         },
     });
-    */
-    // VERIFIED
     /*
+    // VERIFIED
+    
     await sender.send<EventProperties[EventName.champPageProjetUpdated]>({
         eventName: EventName.champPageProjetUpdated,
         ...IDENTIFIERS,
@@ -251,7 +248,28 @@ const IDENTIFIERS = {
             dateLancementActivite: DATE_TEST,
         },
     });
+
+
+    await sender.send<EventProperties[EventName.confirmationCompte]>({
+        eventName: EventName.confirmationCompte,
+        ...IDENTIFIERS,
+        properties: {
+            confirme: true,
+            urlValidationCompte: 'https://jse.fr/urlconfirmcompte',
+        },
+    });
+
     */
+
+    await sender.send<EventProperties[EventName.suppressionCompte]>({
+        eventName: EventName.suppressionCompte,
+        ...IDENTIFIERS,
+        properties: {
+            supprime: true,
+        },
+    });
+
+    /*
 
     // VERIFIED
     /*
@@ -340,6 +358,16 @@ const IDENTIFIERS = {
         ...IDENTIFIERS,
         properties: {
             pageGarde: 'pending',
+        },
+    });
+
+
+
+    await sender.send<EventProperties[EventName.motDePasseOublie]>({
+        eventName: EventName.motDePasseOublie,
+        ...IDENTIFIERS,
+        properties: {
+            urlMotDePasseOublie: 'https://jse.fr/motdepasseoublie',
         },
     });
     */

@@ -1,4 +1,3 @@
-import { ObjectId } from 'bson';
 import {
     BusinessPlanModel,
     BusinessPlanOffer,
@@ -23,7 +22,7 @@ type StatutLeadsTelechargementBP =
     | 'Validé'
     | 'Rejeté';
 type StatutLeadsEnvoyeCA = 'En attente de relecture' | 'Validé' | 'Rejeté';
-type SubjectId = string | ObjectId;
+
 type StatutCoaching = null | 'RDV pris' | 'RDV effectue' | 'RDV manqué';
 type FormuleChoisie =
     | BusinessPlanOffer['offerType']
@@ -53,7 +52,7 @@ export interface EventProperties {
     updateInscription: Partial<EventProperties['inscription']>;
     connexionApp: {
         dateDerniereConnexionOuUpdate: Date | string;
-        nombreConnexions: number;        
+        nombreConnexions: number;
     };
 
     motDePasseOublie: {

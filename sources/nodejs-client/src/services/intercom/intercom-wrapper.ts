@@ -4,29 +4,29 @@ import {
 } from './intercom-fields';
 
 export const Intercom = {
-    getIntercomReservedIdentifyProperties() {
+    getIntercomReservedIdentifyProperties(): string[] {
         return Object.values(intercomCommonFields);
     },
 
-    getIntercomCommonFields() {
+    getIntercomCommonFields(): Record<string, string> {
         return intercomCommonFields;
     },
 
-    getIntercomCustomFields() {
+    getIntercomCustomFields(): Record<string, string> {
         return intercomMapCustomFields;
     },
 
-    getAllFields() {
+    getAllFields(): Record<string, string> {
         return {
             ...intercomCommonFields,
             ...intercomMapCustomFields,
         };
     },
 
-    getAllFieldsKeys() {
+    getAllFieldsKeys(): string[] {
         return [
-            ...this.getIntercomReservedIdentifyProperties(),
-            ...Object.keys(this.getIntercomCustomFields()),
+            ...Intercom.getIntercomReservedIdentifyProperties(),
+            ...Object.keys(Intercom.getIntercomCustomFields()),
         ];
     },
 
@@ -53,7 +53,7 @@ export const Intercom = {
                 return chunks;
             },
             [] as Partial<TEventProperties>[]
-        );        
+        );
         return payloadChunks;
     },
 };

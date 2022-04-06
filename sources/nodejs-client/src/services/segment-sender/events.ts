@@ -3,8 +3,8 @@ export const enum EventName {
     'updateInscription' = 'updateInscription',
     'connexionApp' = 'connexionApp',
     'motDePasseOublie' = 'motDePasseOublie',
-    'suppressionCompte' = 'Account deleted',
-    'confirmationCompte' = 'Account confirmed',
+    'suppressionCompte' = 'suppressionCompte',
+    'confirmationCompte' = 'confirmationCompte',
     'coachingPlanifie' = 'coachingPlanifie',
     'paiementEffectue' = 'paiementEffectue',
     'telechargementBusinessPlanDownload' = 'telechargementBusinessPlanDownload', // OUI
@@ -13,7 +13,7 @@ export const enum EventName {
     'upsellSonOffreEnPayant' = 'upsellSonOffreEnPayant',
     'clickedBoutonSuivantDansFunnelOnboarding' = 'clickedBoutonSuivantDansFunnelOnboarding',
     'clickedBoutonRenvoyerEmailConfirmation' = 'clickedBoutonRenvoyerEmailConfirmation',
-    'statutCompteUpdatedEnValideDansBackendApp' = 'statutCompteUpdatedEnValideDansBackendApp', 
+    'statutCompteUpdatedEnValideDansBackendApp' = 'statutCompteUpdatedEnValideDansBackendApp',
     'pourcentageCompletionBPUpdatedDansBackendApp' = 'pourcentageCompletionBPUpdatedDansBackendApp', /// OUI
     'scoringLeadUpdatedDansBackendApp' = 'scoringLeadUpdatedDansBackendApp',
     'champPageGardeUpdated' = 'champPageGardeUpdated',
