@@ -84,7 +84,7 @@ class SegmentSender {
         console.log('Calls to do : ', bulkSend.length);
         let callIdx = 0;
         for (const applyPromise of bulkSend) {
-            const called = await applyPromise;
+            const called = await applyPromise; // eslint-disable-line no-await-in-loop
             console.log(
                 `* call ${++callIdx}/${bulkSend.length} : `,
                 called === true ? 'done' : 'failed'
