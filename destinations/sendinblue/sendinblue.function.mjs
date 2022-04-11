@@ -111,7 +111,7 @@ api.contact = {
             SCORING_JSE: value,
         }),
         [humanizedPropOf("nomProjet")]: (value) => ({
-            NOM_PROJET: value,
+            TITRE_NOM_PROJET: value,
         }),
         [humanizedPropOf("codePostal")]: (value) => ({
             CODE_POSTAL: value,
@@ -140,13 +140,16 @@ api.contact = {
         [humanizedPropOf("BPGlobal")]: (value) => ({
             BP_GLOBAL: value,
         }),
+        [humanizedPropOf("nombreConnexions")]: (value) => ({
+            NB_CONNEXIONS: value,
+        }),
     }),
 
     async upsert({ jseEmailAsId, jseUserId, jseProperties }) {
         const contactFound = await api.contact.find(jseEmailAsId);
 
         let sibPayload = {
-            JSE_APP_ID: jseUserId,
+            JSE_APP_USER_ID: jseUserId,
         };
         const mapJsePropertiesToSibAttributes = api.contact.getMapJsePropertiesToSibAttributes();
         for (const [jsePropName, jsePropValue] of Object.entries(jseProperties)) {
@@ -205,7 +208,7 @@ var humanizedPropOf = ((listEventPropertiesHumanized) => (propertyName) => {
     secteurActivite: "Secteur activite",
 
     // connexionApp
-    dateDerniereConnexionOuUpdate: "Date dernière connexion ou update",
+    dateDerniereConnexionOuUpdate: "Date derniere connexion ou update",
     nombreConnexions: "Nombre de connexions",
 
     // motDePasseOublie
@@ -288,30 +291,34 @@ var humanizedPropOf = ((listEventPropertiesHumanized) => (propertyName) => {
 });
 
 const allowedEvents = [
-    "inscription",
-    "connexionApp",
-    "motDePasseOublie",
-    "coachingPlanifie",
-    "paiementEffectue",
-    "telechargementBusinessPlanDownload",
-    "telechargementBusinessPlanPreview",
+    "Account Created",
+    "Login",
+    "Password forgotten",
+    "Account deleted",
+    "Account confirmed",
+    "Coaching Statut Update",
+    "Payment Accepted",
+    "Demand CA Sent",
+    "Business Plan Preview",
+    "Business Plan Downloaded",
     "clickedBoutonDemandePourEnvoyerDossierCA",
-    "upsellSonOffreEnPayant",
+    "Upsell Paid BP",
     "clickedBoutonSuivantDansFunnelOnboarding",
     "clickedBoutonRenvoyerEmailConfirmation",
-    "statutCompteUpdatedEnValideDansBackendApp",
-    "pourcentageCompletionBPUpdatedDansBackendApp",
-    "scoringLeadUpdatedDansBackendApp",
-    "champPageGardeUpdated",
-    "champPageProjetUpdated",
-    "champPageSocieteUpdated",
-    "champPagePrevisionnelUpdated",
-    "optInCommunicationOnboarding",
-    "pagePrevisionnelComplete100pcent",
-    "pageProjetComplete100pcent",
-    "pageSocieteComplete100pcent",
-    "pageEtudeMarcheComplete100pcent",
-    "pageGardeComplete100pcent",
+    "Account Confirmed",
+    "Account Updated",
+    "BP - Pourcentage Completion Update",
+    "Scoring Lead Update",
+    "BP - Page de Garde Update",
+    "BP - Projet Update",
+    "BP - Société Update",
+    "BP - Prévisionnel Update",
+    "Opt-in Marketing",
+    "BP - Prévisionnel Completed",
+    "BP - Projet Completed",
+    "BP - Société Completed",
+    "BP - Marché Completed",
+    "BP - Page de Garde Completed",
 ];
 
 api.events = {};

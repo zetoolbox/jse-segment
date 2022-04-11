@@ -45,11 +45,11 @@ class SegmentSender {
         jseUserId: SubjectId;
         jseUserEmail?: string;
         jseBpId: SubjectId;
-        properties: TEventProperties;
+        properties: Partial<TEventProperties>;
         dryRun?: boolean;
     }): Promise<boolean[]> {
         const isCreation: boolean = eventName === EventName.inscription;
-        const allocate = this.reallocatePayloads(properties);
+        const allocate = this.reallocatePayloads(properties, jseUserId);
 
         const bulkSend: Promise<boolean>[] = [];
         if (allocate.identify.toSend === true) {
@@ -113,10 +113,7 @@ class SegmentSender {
             [isCreation !== true ? 'userId' : 'anonymousId']: (
                 jseUserEmail || jseUserId
             ).toString(),
-            traits: {
-                ...traits,
-                'JSE App User Id': jseUserId,
-            },
+            traits,
         };
         console.log(`identify(#${jseUserId}) : payload is : `, payload);
 
@@ -187,7 +184,8 @@ class SegmentSender {
     }
 
     private reallocatePayloads<TEventProperties>(
-        properties: TEventProperties
+        properties: TEventProperties,
+        jseUserId: SubjectId
     ): AllocateProperties<TEventProperties> {
         const split: AllocateProperties<TEventProperties> = {
             identify: {
@@ -202,7 +200,10 @@ class SegmentSender {
 
         if (this.hasAnyIdentifyProps(properties)) {
             split.identify.toSend = true;
-            split.identify.scopedProps = this.setupIdentifyProps(properties);
+            split.identify.scopedProps = this.setupIdentifyProps({
+                ...properties,
+                'JSE App User Id': jseUserId,
+            });
         }
         if (this.hasAnyTrackProps(properties)) {
             split.track.toSend = true;

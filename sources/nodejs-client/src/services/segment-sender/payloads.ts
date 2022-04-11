@@ -23,7 +23,7 @@ type StatutLeadsTelechargementBP =
     | 'Rejeté';
 type StatutLeadsEnvoyeCA = 'En attente de relecture' | 'Validé' | 'Rejeté';
 
-type StatutCoaching = null | 'RDV pris' | 'RDV effectue' | 'RDV manqué';
+type StatutCoaching = null | 'RDV pris' | 'RDV effectué' | 'RDV manqué';
 type FormuleChoisie =
     | BusinessPlanOffer['offerType']
     | null
@@ -31,6 +31,13 @@ type FormuleChoisie =
     | 'Gratuit sans Business case'
     | 'Gratuit avec Business case';
 type TailleEntreprise = 'Petit' | 'Moyen' | 'Grand' | 'Très grand';
+type BoutonFunnelOnboarding_OLD =
+    | 'domaine-activite'
+    | 'secteur-activite'
+    | 'lieu-implantation'
+    | 'taille-entreprise'
+    | 'offre';
+type BoutonFunnelOnboarding = boolean;
 
 export interface EventProperties {
     inscription: {
@@ -83,7 +90,7 @@ export interface EventProperties {
         lienVersPageBP: string;
     };
     telechargementBusinessPlanPreview: {
-        statutLeadsTelechargementBP: StatutLeadsTelechargementBP;
+        statutLeadsTelechargementBP: boolean;
     };
     clickedBoutonDemandePourEnvoyerDossierCA: {
         demandeEnvoiProjetCA: string;
@@ -95,12 +102,7 @@ export interface EventProperties {
         formuleChoisie: BusinessPlanOffer['offerType'] | FormuleChoisie;
     };
     clickedBoutonSuivantDansFunnelOnboarding: {
-        boutonFunnelOnboarding:
-            | 'domaine-activite'
-            | 'secteur-activite'
-            | 'lieu-implantation'
-            | 'taille-entreprise'
-            | 'offre';
+        boutonFunnelOnboarding: BoutonFunnelOnboarding;
     };
     clickedBoutonRenvoyerEmailConfirmation: {
         boutonEmailConfirmation: true; //?

@@ -33,7 +33,7 @@ export const Intercom = {
     chunkPayload<TEventProperties>(
         segmentIdentifyScopedProps: TEventProperties
     ): Partial<TEventProperties>[] {
-        const chunkTreshold = 5; // intercom takes up to 5 props per call., Must chunk'em when above
+        const chunkTreshold = 5; // intercom takes up to 5 props per call., Must chunk'em up
         const noChunkingRequired =
             Object.keys(segmentIdentifyScopedProps).length <= chunkTreshold;
 
@@ -42,18 +42,30 @@ export const Intercom = {
             return [segmentIdentifyScopedProps];
         }
 
+        const propsAsArray = Object.entries(segmentIdentifyScopedProps);
+        const payloadChunks: Partial<TEventProperties>[] = [];
+        let propAsRow: [string, any] | undefined = undefined;
         let chunk: Partial<TEventProperties> = {};
-        const payloadChunks = Object.entries(segmentIdentifyScopedProps).reduce(
-            (chunks, [key, value], index) => {
-                chunk[key as keyof TEventProperties] = value;
-                if (index > 0 && (index + 1) % chunkTreshold === 0) {
-                    chunks.push(chunk);
-                    chunk = {};
-                }
-                return chunks;
-            },
-            [] as Partial<TEventProperties>[]
-        );
+
+        while (propsAsArray.length > 0) {
+            propAsRow = propsAsArray.shift();
+            if (propAsRow === undefined) {
+                continue;
+            }
+            const [key, value] = propAsRow;
+
+            chunk[key] = value;
+            const isTresholdReached =
+                Object.keys(chunk).length === chunkTreshold;
+            const isChunksRest =
+                Object.keys(chunk).length < chunkTreshold &&
+                propsAsArray.length === 0;
+
+            if (isTresholdReached || isChunksRest) {
+                payloadChunks.push(chunk);
+                chunk = {};
+            }
+        }
         return payloadChunks;
     },
 };
