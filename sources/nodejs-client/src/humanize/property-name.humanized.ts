@@ -59,6 +59,7 @@ export const EventPropertiesHumanized: Record<string, string> = {
     // pourcentageCompletionBPUpdatedDansBackendApp
     tauxCompletionBP: 'Taux complétion BP',
     BPGlobal: 'BP global',
+    coachingGratuitOffert: 'Coaching gratuit offert',
 
     // scoringLeadUpdatedDansBackendApp
     scoringJSE: 'Scoring JSE',

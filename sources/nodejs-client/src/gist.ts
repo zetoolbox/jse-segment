@@ -24,7 +24,7 @@ const IDENTIFIERS = {
 
 (async () => {
     const sender = getSegmentSender((process.env as ProcessEnv).SEGMENT_KEY);
-    /*
+
     // VERIFIED
     await sender.send<EventProperties[EventName.inscription]>({
         eventName: EventName.inscription,
@@ -48,8 +48,7 @@ const IDENTIFIERS = {
         },
     });
 
-    
-   // VERIFIED
+    // VERIFIED
     await sender.send<EventProperties[EventName.updateInscription]>({
         eventName: EventName.updateInscription,
         ...IDENTIFIERS,
@@ -63,8 +62,6 @@ const IDENTIFIERS = {
         //dryRun: true,
     });
 
-    */
-
     // VERIFIED
     await sender.send<EventProperties[EventName.connexionApp]>({
         eventName: EventName.connexionApp,
@@ -76,7 +73,6 @@ const IDENTIFIERS = {
         //dryRun: true,
     });
 
-    /*
     // VERIFIED
     await sender.send<EventProperties[EventName.coachingPlanifie]>({
         eventName: EventName.coachingPlanifie,
@@ -89,7 +85,6 @@ const IDENTIFIERS = {
         //dryRun: true
     });
 
-    
     // VERIFIED
     await sender.send<EventProperties[EventName.paiementEffectue]>({
         eventName: EventName.paiementEffectue,
@@ -101,7 +96,6 @@ const IDENTIFIERS = {
         },
     });
 
-    
     // VERIFIED
     await sender.send<
         EventProperties[EventName.telechargementBusinessPlanDownload]
@@ -115,7 +109,6 @@ const IDENTIFIERS = {
         },
     });
 
-    
     // VERIFIED
     await sender.send<
         EventProperties[EventName.telechargementBusinessPlanPreview]
@@ -127,7 +120,6 @@ const IDENTIFIERS = {
         },
     });
 
-    
     // VERIFIED
     await sender.send<
         EventProperties[EventName.clickedBoutonDemandePourEnvoyerDossierCA]
@@ -142,18 +134,14 @@ const IDENTIFIERS = {
             lienVersPageConnexion: LIEN_CONN,
         },
     });
-
-
-
     // VERIFIED
     await sender.send<EventProperties[EventName.upsellSonOffreEnPayant]>({
         eventName: EventName.upsellSonOffreEnPayant,
         ...IDENTIFIERS,
         properties: {
-            formuleChoisie: "Gratuit sans Business case",
+            formuleChoisie: 'Gratuit sans Business case',
         },
     });
-
 
     // VERIFIED
 
@@ -166,9 +154,6 @@ const IDENTIFIERS = {
             boutonFunnelOnboarding: true,
         },
     });
-
-
-    
     // VERIFIED
     await sender.send<
         EventProperties[EventName.clickedBoutonRenvoyerEmailConfirmation]
@@ -179,7 +164,6 @@ const IDENTIFIERS = {
             boutonEmailConfirmation: true,
         },
     });
-
 
     // VERIFIED
     await sender.send<
@@ -192,8 +176,6 @@ const IDENTIFIERS = {
             dateValidationCompte: DATE_TEST,
         },
     });
-    
-    
 
     await sender.send<
         EventProperties[EventName.pourcentageCompletionBPUpdatedDansBackendApp]
@@ -201,14 +183,10 @@ const IDENTIFIERS = {
         eventName: EventName.pourcentageCompletionBPUpdatedDansBackendApp,
         ...IDENTIFIERS,
         properties: {
-            BPGlobal: 'completed',
-            tauxCompletionBP: 50,
-            lienVersPageBP: LIEN_BP,
-            lienVersPageConnexion: LIEN_CONN,
+            coachingGratuitOffert: true,
         },
     });
 
-    
     // VERIFIED
     await sender.send<
         EventProperties[EventName.scoringLeadUpdatedDansBackendApp]
@@ -220,7 +198,6 @@ const IDENTIFIERS = {
         },
     });
 
-    
     // VERIFIED
     await sender.send<EventProperties[EventName.champPageGardeUpdated]>({
         eventName: EventName.champPageGardeUpdated,
@@ -230,7 +207,6 @@ const IDENTIFIERS = {
         },
     });
 
-    
     // VERIFIED
     await sender.send<EventProperties[EventName.champPageProjetUpdated]>({
         eventName: EventName.champPageProjetUpdated,
@@ -240,7 +216,7 @@ const IDENTIFIERS = {
             dateLancementActivite: DATE_TEST,
         },
     });
-    
+
     // VERIFIED
     await sender.send<EventProperties[EventName.confirmationCompte]>({
         eventName: EventName.confirmationCompte,
@@ -251,7 +227,6 @@ const IDENTIFIERS = {
         },
     });
 
-    
     // VERIFIED
     await sender.send<EventProperties[EventName.suppressionCompte]>({
         eventName: EventName.suppressionCompte,
@@ -261,18 +236,16 @@ const IDENTIFIERS = {
         },
     });
 
-    
     // VERIFIED
     await sender.send<EventProperties[EventName.champPageSocieteUpdated]>({
         eventName: EventName.champPageSocieteUpdated,
         ...IDENTIFIERS,
         properties: {
             dateNaissance: DATE_TEST,
-            statutJuridique: 'SARL',            
+            statutJuridique: 'SARL',
         },
     });
-    
-    
+
     // VERIFIED
     await sender.send<EventProperties[EventName.champPageSocieteUpdated]>({
         eventName: EventName.champPageSocieteUpdated,
@@ -282,8 +255,6 @@ const IDENTIFIERS = {
             statutJuridique: 'SAS',
         },
     });
-
-    
 
     // VERIFIED
     await sender.send<EventProperties[EventName.champPagePrevisionnelUpdated]>({
@@ -295,7 +266,6 @@ const IDENTIFIERS = {
         },
     });
 
-    
     // VERIFIED
     await sender.send<EventProperties[EventName.optInCommunicationOnboarding]>({
         eventName: EventName.optInCommunicationOnboarding,
@@ -305,7 +275,6 @@ const IDENTIFIERS = {
         },
     });
 
-    
     // VERIFIED
     await sender.send<
         EventProperties[EventName.pagePrevisionnelComplete100pcent]
@@ -317,7 +286,6 @@ const IDENTIFIERS = {
         },
     });
 
-    
     // VERIFIED
     await sender.send<EventProperties[EventName.pageProjetComplete100pcent]>({
         eventName: EventName.pageProjetComplete100pcent,
@@ -327,7 +295,6 @@ const IDENTIFIERS = {
         },
     });
 
-    
     // VERIFIED
     await sender.send<EventProperties[EventName.pageSocieteComplete100pcent]>({
         eventName: EventName.pageSocieteComplete100pcent,
@@ -337,7 +304,6 @@ const IDENTIFIERS = {
         },
     });
 
-    
     // VERIFIED
     await sender.send<
         EventProperties[EventName.pageEtudeMarcheComplete100pcent]
@@ -348,7 +314,6 @@ const IDENTIFIERS = {
             etudeMarche: 'completed',
         },
     });
-    
 
     // VERIFIED
     await sender.send<EventProperties[EventName.pageGardeComplete100pcent]>({
@@ -359,7 +324,6 @@ const IDENTIFIERS = {
         },
     });
 
-    
     // VERIFIED
     await sender.send<EventProperties[EventName.motDePasseOublie]>({
         eventName: EventName.motDePasseOublie,
@@ -368,5 +332,4 @@ const IDENTIFIERS = {
             urlMotDePasseOublie: 'https://jse.fr/motdepasseoublie',
         },
     });
-    */
 })();

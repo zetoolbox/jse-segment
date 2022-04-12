@@ -26,6 +26,7 @@ export const intercomMapCustomFields = {
     raisonRejetStatutLead: 'Raison rejet statut lead',
     statutLeadsTelechargementBP: 'Téléchargement BP',
     statutCoaching: 'Statut coaching',
+    coachingGratuitOffert: 'Coaching gratuit offert',
     formuleChoisie: 'Formule choisie',
     boutonFunnelOnboarding: 'Bouton suivant funnel onboard',
     dateDerniereConnexionOuUpdate: 'Date derniere connexion ou update',

@@ -17,10 +17,11 @@ type RaisonRejetStatutLead =
     | 'Société'
     | 'Etude de marché'
     | 'Prévisionnel';
-type StatutLeadsTelechargementBP =
+/*type StatutLeadsTelechargementBP =
     | 'En attente de relecture'
     | 'Validé'
     | 'Rejeté';
+*/
 type StatutLeadsEnvoyeCA = 'En attente de relecture' | 'Validé' | 'Rejeté';
 
 type StatutCoaching = null | 'RDV pris' | 'RDV effectué' | 'RDV manqué';
@@ -31,12 +32,13 @@ type FormuleChoisie =
     | 'Gratuit sans Business case'
     | 'Gratuit avec Business case';
 type TailleEntreprise = 'Petit' | 'Moyen' | 'Grand' | 'Très grand';
-type BoutonFunnelOnboarding_OLD =
+/*type BoutonFunnelOnboarding_OLD =
     | 'domaine-activite'
     | 'secteur-activite'
     | 'lieu-implantation'
     | 'taille-entreprise'
     | 'offre';
+    */
 type BoutonFunnelOnboarding = boolean;
 
 export interface EventProperties {
@@ -115,6 +117,7 @@ export interface EventProperties {
     pourcentageCompletionBPUpdatedDansBackendApp: {
         tauxCompletionBP: number;
         BPGlobal: ElementStatus;
+        coachingGratuitOffert?: boolean
     } & LiensDirigentVersPages;
 
     scoringLeadUpdatedDansBackendApp: {
