@@ -21,11 +21,7 @@ export const EventPropertiesHumanized: Record<string, string> = {
     urlMotDePasseOublie: 'Lien pour mot de passe oublié',
 
     //suppressionCompte
-    supprime: 'Compte supprimé',
-
-    // confirmationCompte
-    confirme: 'Compte confirmé',
-    urlValidationCompte: 'Lien de validation de compte',
+    compteSupprime: 'Compte supprimé',
 
     // coachingPlanifie
     statutCoaching: 'Statut coaching',
@@ -55,6 +51,7 @@ export const EventPropertiesHumanized: Record<string, string> = {
     //statutCompteUpdatedEnValideDansBackendApp
     dateValidationCompte: 'Date validation compte',
     compteValide: 'Compte valide',
+    urlValidationCompte: 'Lien de validation du compte',
 
     // pourcentageCompletionBPUpdatedDansBackendApp
     tauxCompletionBP: 'Taux complétion BP',

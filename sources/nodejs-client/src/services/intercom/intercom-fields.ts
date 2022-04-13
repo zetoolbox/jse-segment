@@ -12,9 +12,8 @@ export const intercomCommonFields = {
 
 export const intercomMapCustomFields = {
     compteValide: 'Compte valide',
-    confirme: 'Compte confirmé',
     nomProjet: 'Nom du projet',
-    supprime: 'Compte supprimé',
+    compteSupprime: 'Compte supprimé',
     'JSE App User Id': 'JSE App User Id',
     dateNaissance: 'Date de naissance',
     boutonEmailConfirmation: 'Renvoi email confirmation cliqué',

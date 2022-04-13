@@ -3,8 +3,7 @@ export const enum EventName {
     'updateInscription' = 'updateInscription',
     'connexionApp' = 'connexionApp',
     'motDePasseOublie' = 'motDePasseOublie',
-    'suppressionCompte' = 'suppressionCompte',
-    'confirmationCompte' = 'confirmationCompte',
+    'suppressionCompte' = 'suppressionCompte',    
     'coachingPlanifie' = 'coachingPlanifie',
     'paiementEffectue' = 'paiementEffectue',
     'telechargementBusinessPlanDownload' = 'telechargementBusinessPlanDownload', // OUI

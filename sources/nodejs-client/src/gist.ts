@@ -10,9 +10,9 @@ interface ProcessEnv {
     SEGMENT_KEY: string;
 }
 
-const JSE_USER_ID = 'jse-uid-1985';
-const JSE_BP_ID = 'jse-bpid-1985';
-const JSE_USER_EMAIL = 'jorisK@zetoolbox.fr';
+const JSE_USER_ID = 'jse-uid-1988';
+const JSE_BP_ID = 'jse-bpid-1988';
+const JSE_USER_EMAIL = 'jorisN@zetoolbox.fr';
 const DATE_TEST = new Date('2022-04-08');
 const LIEN_CONN = 'https://conn2.com';
 const LIEN_BP = 'https://bp2.fr';
@@ -24,27 +24,27 @@ const IDENTIFIERS = {
 
 (async () => {
     const sender = getSegmentSender((process.env as ProcessEnv).SEGMENT_KEY);
-
+    
     // VERIFIED
     await sender.send<EventProperties[EventName.inscription]>({
         eventName: EventName.inscription,
         ...IDENTIFIERS,
         properties: {
-            formuleChoisie: 'Payant', // v
-            codeNAF: '98797979', //v
-            codePostal: '34000', //v
-            dateSouscriptionFormuleChoisie: new Date(), //v
-            lienBPCompteAdmin: 'https://bpadmin.com', // v
-            nom: 'GrouilletK', // v
-            prenom: 'JorisK', // v
-            email: JSE_USER_EMAIL, // v
-            lienSnapshotDernierBP: 'https://...', // v
-            secteurActivite: 'Industrie', // v
-            statutJuridique: 'SAS', //v
+            formuleChoisie: 'Payant',
+            codeNAF: '98797979',
+            codePostal: '34000',
+            dateSouscriptionFormuleChoisie: new Date(),
+            lienBPCompteAdmin: 'https://bpadmin.com',
+            nom: 'GrouilletN',
+            prenom: 'JorisN',
+            email: JSE_USER_EMAIL,
+            lienSnapshotDernierBP: 'https://...',
+            secteurActivite: 'Industrie',
+            statutJuridique: 'SAS',
             tailleEntreprise: 'Moyen',
-            nomProjet: 'projet JorisK', // v
-            lienVersPageBP: 'http://bp.com', // v
-            lienVersPageConnexion: 'https://conn.com', //v
+            nomProjet: 'projet JorisN',
+            lienVersPageBP: 'http://bp.com',
+            lienVersPageConnexion: 'https://conn.com',
         },
     });
 
@@ -63,23 +63,24 @@ const IDENTIFIERS = {
     });
 
     // VERIFIED
+    
     await sender.send<EventProperties[EventName.connexionApp]>({
         eventName: EventName.connexionApp,
         ...IDENTIFIERS,
         properties: {
-            dateDerniereConnexionOuUpdate: new Date('2022-04-04'), // v
-            nombreConnexions: 42, //v
+            dateDerniereConnexionOuUpdate: new Date('2022-04-12'),
+            nombreConnexions: 68,
         },
         //dryRun: true,
     });
-
+    
     // VERIFIED
     await sender.send<EventProperties[EventName.coachingPlanifie]>({
         eventName: EventName.coachingPlanifie,
         ...IDENTIFIERS,
         properties: {
-            dateDernierCoachingRealise: DATE_TEST, // v
-            dateProchainCoaching: DATE_TEST, // v
+            dateDernierCoachingRealise: DATE_TEST,
+            dateProchainCoaching: DATE_TEST,
             statutCoaching: 'RDV effectué',
         },
         //dryRun: true
@@ -92,7 +93,7 @@ const IDENTIFIERS = {
         jseUserEmail: JSE_USER_EMAIL,
         jseBpId: JSE_BP_ID,
         properties: {
-            codePromoUtilise: 'MY-CODE-PROMO', /// v
+            codePromoUtilise: 'MY-CODE-PROMO',
         },
     });
 
@@ -127,9 +128,9 @@ const IDENTIFIERS = {
         eventName: EventName.clickedBoutonDemandePourEnvoyerDossierCA,
         ...IDENTIFIERS,
         properties: {
-            demandeEnvoiProjetCA: 'demande envoi projet CA', //v
-            raisonRejetStatutLead: 'Page de garde', // v
-            statutLeadEnvoyeAuCA: 'Rejeté', // v
+            demandeEnvoiProjetCA: 'demande envoi projet CA',
+            raisonRejetStatutLead: 'Page de garde',
+            statutLeadEnvoyeAuCA: 'Rejeté',
             lienVersPageBP: LIEN_BP,
             lienVersPageConnexion: LIEN_CONN,
         },
@@ -174,9 +175,11 @@ const IDENTIFIERS = {
         properties: {
             compteValide: true,
             dateValidationCompte: DATE_TEST,
+            urlValidationCompte: 'https://jse.fr/urlconfirmcompte',
         },
     });
-
+    
+    // VERIFIED
     await sender.send<
         EventProperties[EventName.pourcentageCompletionBPUpdatedDansBackendApp]
     >({
@@ -184,9 +187,11 @@ const IDENTIFIERS = {
         ...IDENTIFIERS,
         properties: {
             coachingGratuitOffert: true,
+            tauxCompletionBP: 70,
+            BPGlobal: 'pending'
         },
     });
-
+    
     // VERIFIED
     await sender.send<
         EventProperties[EventName.scoringLeadUpdatedDansBackendApp]
@@ -218,21 +223,11 @@ const IDENTIFIERS = {
     });
 
     // VERIFIED
-    await sender.send<EventProperties[EventName.confirmationCompte]>({
-        eventName: EventName.confirmationCompte,
-        ...IDENTIFIERS,
-        properties: {
-            confirme: true,
-            urlValidationCompte: 'https://jse.fr/urlconfirmcompte',
-        },
-    });
-
-    // VERIFIED
     await sender.send<EventProperties[EventName.suppressionCompte]>({
         eventName: EventName.suppressionCompte,
         ...IDENTIFIERS,
         properties: {
-            supprime: true,
+            compteSupprime: true,
         },
     });
 
@@ -332,4 +327,6 @@ const IDENTIFIERS = {
             urlMotDePasseOublie: 'https://jse.fr/motdepasseoublie',
         },
     });
+    
+    
 })();

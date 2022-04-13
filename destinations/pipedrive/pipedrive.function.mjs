@@ -24,7 +24,7 @@ api.fetch = async ({ method, endpoint, querystring, payload }) => {
         querystring ? "&" + querystring : ""
     }`;
 
-    console.log("fetch url :", url);
+    console.log("fetch url :", method, " : ", url);
     console.log("payload : ", JSON.stringify(payload));
 
     try {
@@ -61,7 +61,7 @@ api.person = {
 
     customFields: [],
 
-    getCustomFields: async () => {
+    fetchCustomFields: async () => {
         if (api.person.customFields.length === 0) {
             const { data } = await api.fetch({
                 method: "GET",
@@ -74,9 +74,7 @@ api.person = {
     },
 
     getCustomFieldByKey: async (customFieldKey) => {
-        const field = (await api.person.getCustomFields()).find(
-            (item) => item.key === customFieldKey
-        );
+        const field = api.person.customFields.find((item) => item.key === customFieldKey);
         return field ?? null;
     },
 
@@ -89,8 +87,11 @@ api.person = {
             return value;
         }
         const customField = await api.person.getCustomFieldByKey(customFieldKey);
+        if (customField === null || customField === undefined) {
+            return undefined;
+        }
 
-        if (customField.options === undefined) {
+        if (customField?.options === undefined) {
             return { [customFieldKey]: value };
         }
 
@@ -112,8 +113,14 @@ api.person = {
     },
 
     getMapJseFieldToCustomFieldValueFormatter: (properties) => ({
-        nom: () => ({ name: `${properties.prenom} ${properties.nom}` }),
-        prenom: () => ({ name: `${properties.prenom} ${properties.nom}` }),
+        nom: () => ({
+            last_name: properties.nom,
+            name: `${properties.prenom} ${properties.nom}`,
+        }),
+        prenom: () => ({
+            first_name: properties.prenom,
+            name: `${properties.prenom} ${properties.nom}`,
+        }),
         email: (value) => ({
             email: [
                 {
@@ -143,6 +150,7 @@ api.person = {
     }),
 
     upsert: async ({ jseUserId, properties }) => {
+        await api.person.fetchCustomFields();
         let payload = {};
         const mapJseFieldToCustomFieldValueFormatter =
             api.person.getMapJseFieldToCustomFieldValueFormatter(properties);
@@ -183,38 +191,41 @@ api.person = {
 
 api.businessPlan = {
     customFields: [],
-    getCustomFields: async () => {
-        try {
-            if (api.businessPlan.customFields.length === 0) {
-                const { data } = await api.fetch({
-                    method: "GET",
-                    endpoint: "dealFields",
-                    querystring: "start=0&limit=0",
-                });
-                api.businessPlan.customFields = data;
-            }
-        } catch (error) {
-            console.log("customField Err : ", JSON.stringify(error));
+    fetchCustomFields: async () => {
+        if (api.businessPlan.customFields.length === 0) {
+            console.log("first fetch");
+            const { data } = await api.fetch({
+                method: "GET",
+                endpoint: "dealFields",
+                querystring: "start=0&limit=0",
+            });
+            api.businessPlan.customFields = data;
         }
-
         return api.businessPlan.customFields;
     },
     getCustomFieldByKey: async (customFieldKey) => {
-        const field = (await api.businessPlan.getCustomFields()).find(
-            (item) => item.key === customFieldKey
-        );
+        const field = api.businessPlan.customFields.find((item) => item.key === customFieldKey);
         return field ?? null;
     },
-    getKVForCustomField: async (customFieldKey, value) => {
+    getKVForCustomField: async (customFieldKey, value, options = { allowEmptyValue: false }) => {
+        console.log("getKVForCustomField");
+        console.log("customFieldKey : ", customFieldKey);
         if (
             value === undefined ||
             value === null ||
-            (typeof value === "string" && value.trim() === "")
+            (typeof value === "string" && value.trim() === "" && options.allowEmptyValue !== true)
         ) {
             return value;
         }
 
         const customField = await api.businessPlan.getCustomFieldByKey(customFieldKey);
+
+        console.log("customField : ", customField);
+        console.log("customField.options : ", customField.options);
+
+        if (customField === null || customField === undefined) {
+            return undefined;
+        }
 
         if (customField?.options === undefined) {
             return { [customFieldKey]: value };
@@ -308,7 +319,7 @@ api.businessPlan = {
                           "3ade93c4c1fc0a1bc4108cbf41c48752680aa171",
                           value
                       ),
-            [humanizedPropOf("dateDerniereConnexionOuUpdate")]: (value) =>
+            [humanizedPropOf("dateDerniereConnexionOuUpdate")]: async (value) =>
                 api.businessPlan.getKVForCustomField(
                     "2cb19d40d7d649b6eace9ec31fb79ba58358ecdb",
                     value
@@ -392,11 +403,17 @@ api.businessPlan = {
                 api.businessPlan.getKVForCustomField(
                     "a5c39b77acee3316561b1582cbcba80fb964edc6",
                     value
-                ),            
+                ),
+            [humanizedPropOf("coachingGratuitOffert")]: async (value) =>
+                api.businessPlan.getKVForCustomField(
+                    "6d64321bd1d6a61ddce43abbf009dc3db13ebc87",
+                    value === true ? "Offert" : "", { allowEmptyValue: true }
+                ),
         };
     },
 
     upsert: async ({ jseBpId, jseUserId, properties, contactUpserted }) => {
+        await api.businessPlan.fetchCustomFields();
         const businessPlanFound = await api.businessPlan.find(jseBpId);
         const personFound = contactUpserted ? contactUpserted : await api.person.find(jseUserId);
 
@@ -407,16 +424,19 @@ api.businessPlan = {
         });
 
         let payload = {};
+        const mapKeys = Object.keys(mapJsePropsToCustomFields);
 
         for (const [jsePropName, jsePropValue] of Object.entries(properties)) {
-            if (!(jsePropName in mapJsePropsToCustomFields)) {
+            if (!mapKeys.includes(jsePropName)) {
                 continue;
             }
             const pipedriveValueFormatter = mapJsePropsToCustomFields[jsePropName];
-            payload = {
-                ...payload,
-                ...(await pipedriveValueFormatter(jsePropValue ?? undefined)),
-            };
+            if (typeof pipedriveValueFormatter === "function") {
+                payload = {
+                    ...payload,
+                    ...(await pipedriveValueFormatter(jsePropValue)),
+                };
+            }
         }
 
         const businessPlanRelations = {
@@ -425,7 +445,7 @@ api.businessPlan = {
 
         const businessPlanPayload = {
             ...payload,
-            ...(await mapJsePropsToCustomFields.title()),
+            ...(!businessPlanFound ? await mapJsePropsToCustomFields.title() : {}),
             ...businessPlanRelations,
         };
 
@@ -445,17 +465,23 @@ api.events = {};
 
 api.events.handleTrack = async ({ jseUserId, jseBpId, jseProperties }) => {
     let contactUpserted = null;
-    contactUpserted = await api.person.upsert({
-        jseUserId,
-        properties: jseProperties,
-    });
+    if (jseUserId !== undefined) {
+        contactUpserted = await api.person.upsert({
+            jseUserId,
+            properties: jseProperties,
+        });
+    }
 
-    const bpUpserted = await api.businessPlan.upsert({
-        jseBpId,
-        jseUserId,
-        properties: jseProperties,
-        contactUpserted,
-    });
+    let bpUpserted = null;
+    if (jseBpId !== undefined) {
+        bpUpserted = await api.businessPlan.upsert({
+            jseBpId,
+            jseUserId,
+            properties: jseProperties,
+            contactUpserted,
+        });
+    }
+
     return { bpUpserted, contactUpserted };
 };
 
@@ -479,24 +505,14 @@ var humanizedPropOf = ((listEventPropertiesHumanized) => (propertyName) => {
     secteurActivite: "Secteur activite",
 
     // connexionApp
-    dateDerniereConnexionOuUpdate: "Date dernière connexion ou update",
+    dateDerniereConnexionOuUpdate: "Date derniere connexion ou update",
     nombreConnexions: "Nombre de connexions",
-
-    // motDePasseOublie
-    urlMotDePasseOublie: "Lien pour mot de passe oublié",
-
-    //suppressionCompte
-    supprime: "Compte supprimé",
-
-    // confirmationCompte
-    confirme: "Compte confirmé",
-    urlValidationCompte: "Lien de validation de compte",
 
     // coachingPlanifie
     statutCoaching: "Statut coaching",
     dateDernierCoachingRealise: "Date dernier coaching réalisé",
     dateProchainCoaching: "Date prochain coaching",
-
+    coachingGratuitOffert: "Coaching gratuit offert",
     // paiementEffectue
     codePromoUtilise: "Code promo utilisé",
 
@@ -507,15 +523,8 @@ var humanizedPropOf = ((listEventPropertiesHumanized) => (propertyName) => {
     statutLeadsTelechargementBP: "Téléchargement BP",
 
     // clickedBoutonDemandePourEnvoyerDossierCA
-    demandeEnvoiProjetCA: "Demande envoi projet au CA",
-    statutLeadEnvoyeAuCA: "Statut lead envoyé au CA", //ok interfcom
+    statutLeadEnvoyeAuCA: "Statut lead envoyé au CA",
     raisonRejetStatutLead: "Raison rejet statut lead",
-
-    //clickedBoutonSuivantDansFunnelOnboarding
-    boutonFunnelOnboarding: "Bouton suivant funnel onboard",
-
-    //clickedBoutonRenvoyerEmailConfirmation
-    boutonEmailConfirmation: "Renvoi email confirmation cliqué",
 
     //statutCompteUpdatedEnValideDansBackendApp
     dateValidationCompte: "Date validation compte",
@@ -523,7 +532,6 @@ var humanizedPropOf = ((listEventPropertiesHumanized) => (propertyName) => {
 
     // pourcentageCompletionBPUpdatedDansBackendApp
     tauxCompletionBP: "Taux complétion BP",
-    BPGlobal: "BP global",
 
     // scoringLeadUpdatedDansBackendApp
     scoringJSE: "Scoring JSE",
@@ -541,24 +549,6 @@ var humanizedPropOf = ((listEventPropertiesHumanized) => (propertyName) => {
     //champPagePrevisionnelUpdated
     chiffreAffairesAnnee1: "Chiffre affaires année 1",
     apportPersonnel: "Apport personnel",
-
-    //optInCommunicationOnboarding
-    accepteEmailMarketing: "Accepte email marketing",
-
-    //pagePrevisionnelComplete100pcent
-    previsionnel: "Prévisionnel",
-
-    //pageProjetComplete100pcent
-    projet: "Projet",
-
-    //pageSocieteComplete100pcent
-    societe: "Société",
-
-    // pageEtudeMarcheComplete100pcent
-    etudeMarche: "Etude de marché",
-
-    // pageGardeComplete100pcent
-    pageGarde: "Page de garde",
 });
 
 const allowedEvents = [
@@ -600,8 +590,8 @@ const allowedEvents = [
 async function onTrack(event, settings) {
     const { event: eventName, properties } = event;
     let { jseUserEmail, ...jseProperties } = properties;
-    jseUserId = event.anonymousId ?? event.userId;
-    jseBpId = properties.jseBpId;
+    const jseUserId = event.anonymousId ?? event.userId;
+    const jseBpId = properties.jseBpId;
 
     console.log("TRACK");
     if (allowedEvents.includes(eventName)) {

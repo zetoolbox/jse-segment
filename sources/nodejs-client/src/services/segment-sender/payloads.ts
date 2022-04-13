@@ -70,12 +70,7 @@ export interface EventProperties {
     };
 
     suppressionCompte: {
-        supprime: true;
-    };
-
-    confirmationCompte: {
-        confirme?: boolean;
-        urlValidationCompte?: string;
+        compteSupprime: true;
     };
 
     coachingPlanifie: {
@@ -113,11 +108,12 @@ export interface EventProperties {
     statutCompteUpdatedEnValideDansBackendApp: {
         dateValidationCompte: Date | string;
         compteValide: boolean;
+        urlValidationCompte?: string;
     };
     pourcentageCompletionBPUpdatedDansBackendApp: {
         tauxCompletionBP: number;
         BPGlobal: ElementStatus;
-        coachingGratuitOffert?: boolean
+        coachingGratuitOffert?: boolean;
     } & LiensDirigentVersPages;
 
     scoringLeadUpdatedDansBackendApp: {
