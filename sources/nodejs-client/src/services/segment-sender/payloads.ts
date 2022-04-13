@@ -55,7 +55,7 @@ export interface EventProperties {
         codePostal: BusinessPlanProjectLocation['postCode'];
         lienBPCompteAdmin: string;
         lienSnapshotDernierBP: string;
-        secteurActivite: BusinessPlanModel['industryType'] | 'Industrie';
+        secteurActivite: string;
         dateNaissance?: Date;  
         telephone: string;
     } & LiensDirigentVersPages;
