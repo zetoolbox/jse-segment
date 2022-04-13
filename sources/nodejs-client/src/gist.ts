@@ -10,12 +10,12 @@ interface ProcessEnv {
     SEGMENT_KEY: string;
 }
 
-const JSE_USER_ID = 'jse-uid-1988';
-const JSE_BP_ID = 'jse-bpid-1988';
+const JSE_USER_ID = 'jse-uid-1989';
+const JSE_BP_ID = 'jse-bpid-1989';
 const JSE_USER_EMAIL = 'jorisN@zetoolbox.fr';
-const DATE_TEST = new Date('2022-04-08');
-const LIEN_CONN = 'https://conn2.com';
-const LIEN_BP = 'https://bp2.fr';
+// const DATE_TEST = new Date('2022-04-08');
+// const LIEN_CONN = 'https://conn2.com';
+// const LIEN_BP = 'https://bp2.fr';
 const IDENTIFIERS = {
     jseUserId: JSE_USER_ID,
     jseBpId: JSE_BP_ID,
@@ -35,19 +35,19 @@ const IDENTIFIERS = {
             codePostal: '34000',
             dateSouscriptionFormuleChoisie: new Date(),
             lienBPCompteAdmin: 'https://bpadmin.com',
-            nom: 'GrouilletN',
-            prenom: 'JorisN',
+            nom: 'GrouilletO',
+            prenom: 'JorisO',
             email: JSE_USER_EMAIL,
             lienSnapshotDernierBP: 'https://...',
             secteurActivite: 'Industrie',
             statutJuridique: 'SAS',
             tailleEntreprise: 'Moyen',
-            nomProjet: 'projet JorisN',
+            nomProjet: 'projet JorisO',
             lienVersPageBP: 'http://bp.com',
-            lienVersPageConnexion: 'https://conn.com',
+            lienVersPageConnexion: 'https://conn.com'            
         },
     });
-
+    
     // VERIFIED
     await sender.send<EventProperties[EventName.updateInscription]>({
         eventName: EventName.updateInscription,
@@ -56,12 +56,14 @@ const IDENTIFIERS = {
             lienVersPageBP: 'https://bp2.com',
             lienVersPageConnexion: 'https://page2.com',
             lienSnapshotDernierBP: 'https://snap2.com',
-            dateNaissance: DATE_TEST,
+            //dateNaissance: DATE_TEST,
             statutJuridique: 'SAS',
+            telephone: "06 78 86"
+
         },
         //dryRun: true,
     });
-
+    
     // VERIFIED
     
     await sender.send<EventProperties[EventName.connexionApp]>({
@@ -327,6 +329,6 @@ const IDENTIFIERS = {
             urlMotDePasseOublie: 'https://jse.fr/motdepasseoublie',
         },
     });
-    
+
     
 })();

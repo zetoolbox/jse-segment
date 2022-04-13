@@ -95,4 +95,5 @@ export const EventPropertiesHumanized: Record<string, string> = {
 
     lienVersPageConnexion: 'Lien page de connexion',
     lienVersPageBP: 'Lien interface BP',
+    telephone: "Téléphone"
 };

@@ -129,7 +129,7 @@ api.person = {
                 },
             ],
         }),
-        telephone: (value) => ({
+        [humanizedPropOf("telephone")]: (value) => ({
             phone: [
                 {
                     value,
@@ -549,6 +549,7 @@ var humanizedPropOf = ((listEventPropertiesHumanized) => (propertyName) => {
     //champPagePrevisionnelUpdated
     chiffreAffairesAnnee1: "Chiffre affaires année 1",
     apportPersonnel: "Apport personnel",
+    telephone: "Téléphone"
 });
 
 const allowedEvents = [
