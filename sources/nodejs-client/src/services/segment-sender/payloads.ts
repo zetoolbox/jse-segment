@@ -5,6 +5,8 @@ import {
     UserModel,
 } from '../../models';
 
+import { EventPropertiesHumanized } from '../../humanize/property-name.humanized';
+
 type LiensDirigentVersPages = {
     lienVersPageConnexion: string;
     lienVersPageBP: string;
@@ -17,11 +19,7 @@ type RaisonRejetStatutLead =
     | 'Société'
     | 'Etude de marché'
     | 'Prévisionnel';
-/*type StatutLeadsTelechargementBP =
-    | 'En attente de relecture'
-    | 'Validé'
-    | 'Rejeté';
-*/
+
 type StatutLeadsEnvoyeCA = 'En attente de relecture' | 'Validé' | 'Rejeté';
 
 type StatutCoaching = null | 'RDV pris' | 'RDV effectué' | 'RDV manqué';
@@ -32,14 +30,6 @@ type FormuleChoisie =
     | 'Gratuit sans Business case'
     | 'Gratuit avec Business case';
 type TailleEntreprise = 'Petit' | 'Moyen' | 'Grand' | 'Très grand';
-/*type BoutonFunnelOnboarding_OLD =
-    | 'domaine-activite'
-    | 'secteur-activite'
-    | 'lieu-implantation'
-    | 'taille-entreprise'
-    | 'offre';
-    */
-type BoutonFunnelOnboarding = boolean;
 
 export interface EventProperties {
     inscription: {
@@ -47,20 +37,24 @@ export interface EventProperties {
         prenom: UserModel['firstName'];
         email: UserModel['email'];
         formuleChoisie: FormuleChoisie;
-        nomProjet?: string;
+        nomProjet?: string; // ?
         dateSouscriptionFormuleChoisie: Date | string;
         tailleEntreprise: TailleEntreprise;
         statutJuridique: BusinessPlanModel['legalStatus'] | 'SAS' | 'SARL';
-        codeNAF: string | BusinessPlanProjectLocation['irisCode']; // ?
+        codeNAF: string | BusinessPlanProjectLocation['irisCode'];
         codePostal: BusinessPlanProjectLocation['postCode'];
         lienBPCompteAdmin: string;
         lienSnapshotDernierBP: string;
         secteurActivite: string;
-        dateNaissance?: Date;  
-        telephone: string;
+        dateNaissance?: Date; // ?
+        telephone: string; //?
+        compteValide?: boolean;
+        urlValidationCompte?: string;
+        accepteEmailMarketing?: boolean;
     } & LiensDirigentVersPages;
 
     updateInscription: Partial<EventProperties['inscription']>;
+
     connexionApp: {
         dateDerniereConnexionOuUpdate: Date | string;
         nombreConnexions: number;
@@ -75,7 +69,7 @@ export interface EventProperties {
     };
 
     coachingPlanifie: {
-        statutCoaching: StatutCoaching; //?
+        statutCoaching: StatutCoaching;
         dateDernierCoachingRealise: Date | string;
         dateProchainCoaching: Date | string;
     };
@@ -88,6 +82,7 @@ export interface EventProperties {
         lienVersPageBP: string;
     };
     telechargementBusinessPlanPreview: {
+        //
         statutLeadsTelechargementBP: boolean;
     };
     clickedBoutonDemandePourEnvoyerDossierCA: {
@@ -100,7 +95,8 @@ export interface EventProperties {
         formuleChoisie: BusinessPlanOffer['offerType'] | FormuleChoisie;
     };
     clickedBoutonSuivantDansFunnelOnboarding: {
-        boutonFunnelOnboarding: BoutonFunnelOnboarding;
+        page: number;
+        onboardingId: string;
     };
     clickedBoutonRenvoyerEmailConfirmation: {
         boutonEmailConfirmation: true; //?
@@ -108,14 +104,15 @@ export interface EventProperties {
 
     statutCompteUpdatedEnValideDansBackendApp: {
         dateValidationCompte: Date | string;
-        compteValide: boolean;
-        urlValidationCompte?: string;
     };
     pourcentageCompletionBPUpdatedDansBackendApp: {
         tauxCompletionBP: number;
         BPGlobal: ElementStatus;
-        coachingGratuitOffert?: boolean;
     } & LiensDirigentVersPages;
+
+    coachingGratuit: {
+        coachingGratuitOffert: boolean;
+    };
 
     scoringLeadUpdatedDansBackendApp: {
         scoringJSE: number;
@@ -136,9 +133,7 @@ export interface EventProperties {
         chiffreAffairesAnnee1: number;
         apportPersonnel: number;
     };
-    optInCommunicationOnboarding: {
-        accepteEmailMarketing: boolean;
-    };
+
     pagePrevisionnelComplete100pcent: {
         previsionnel: ElementStatus;
     };
@@ -156,13 +151,10 @@ export interface EventProperties {
     };
 }
 
-import { EventPropertiesHumanized } from '../../humanize/property-name.humanized';
-
 export function getPropertyNameHumanized(
     propertypName: keyof typeof EventPropertiesHumanized | string
 ): string {
-    const _propertyName =
-        propertypName as keyof typeof EventPropertiesHumanized;
+    const _propertyName = propertypName as keyof typeof EventPropertiesHumanized;
 
     return _propertyName in EventPropertiesHumanized
         ? EventPropertiesHumanized[_propertyName]

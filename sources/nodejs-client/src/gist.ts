@@ -1,9 +1,5 @@
 import 'dotenv/config';
-import {
-    getSegmentSender,
-    EventName,
-    EventProperties,
-} from './services/segment-sender';
+import { getSegmentSender, EventName, EventProperties } from './services/segment-sender';
 
 interface ProcessEnv {
     [key: string]: string;
@@ -24,7 +20,7 @@ const IDENTIFIERS = {
 
 (async () => {
     const sender = getSegmentSender((process.env as ProcessEnv).SEGMENT_KEY);
-    
+    /*
     // VERIFIED
     await sender.send<EventProperties[EventName.inscription]>({
         eventName: EventName.inscription,
@@ -53,13 +49,13 @@ const IDENTIFIERS = {
         eventName: EventName.updateInscription,
         ...IDENTIFIERS,
         properties: {
-            lienVersPageBP: 'https://bp2.com',
-            lienVersPageConnexion: 'https://page2.com',
-            lienSnapshotDernierBP: 'https://snap2.com',
-            //dateNaissance: DATE_TEST,
-            statutJuridique: 'SAS',
-            telephone: "06 78 86"
-
+            // lienVersPageBP: 'https://bp2.com',
+            // lienVersPageConnexion: 'https://page2.com',
+            // lienSnapshotDernierBP: 'https://snap2.com',
+            // dateNaissance: DATE_TEST,
+            // statutJuridique: 'SAS',
+            // telephone: "06 78 86",
+            accepteEmailMarketing: true,
         },
         //dryRun: true,
     });
@@ -147,16 +143,18 @@ const IDENTIFIERS = {
     });
 
     // VERIFIED
-
+    
     await sender.send<
         EventProperties[EventName.clickedBoutonSuivantDansFunnelOnboarding]
     >({
         eventName: EventName.clickedBoutonSuivantDansFunnelOnboarding,
         ...IDENTIFIERS,
         properties: {
-            boutonFunnelOnboarding: true,
+            onboardingId: "897349",
+            page: 2
         },
     });
+    
     // VERIFIED
     await sender.send<
         EventProperties[EventName.clickedBoutonRenvoyerEmailConfirmation]
@@ -180,6 +178,18 @@ const IDENTIFIERS = {
             urlValidationCompte: 'https://jse.fr/urlconfirmcompte',
         },
     });
+
+    
+
+    await sender.send<EventProperties[EventName.coachingGratuit]>({
+        ...IDENTIFIERS,
+        eventName: EventName.coachingGratuit,
+        properties: {
+            coachingGratuitOffert: true
+        }
+    })
+
+    
     
     // VERIFIED
     await sender.send<
@@ -329,6 +339,5 @@ const IDENTIFIERS = {
             urlMotDePasseOublie: 'https://jse.fr/motdepasseoublie',
         },
     });
-
-    
+    */
 })();

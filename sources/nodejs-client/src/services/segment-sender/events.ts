@@ -5,6 +5,7 @@ export const enum EventName {
     'motDePasseOublie' = 'motDePasseOublie',
     'suppressionCompte' = 'suppressionCompte',    
     'coachingPlanifie' = 'coachingPlanifie',
+    'coachingGratuit' = "coachingGratuit",
     'paiementEffectue' = 'paiementEffectue',
     'telechargementBusinessPlanDownload' = 'telechargementBusinessPlanDownload', // OUI
     'telechargementBusinessPlanPreview' = 'telechargementBusinessPlanPreview',
