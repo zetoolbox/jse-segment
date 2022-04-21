@@ -58,7 +58,7 @@ class SegmentSender {
                 bulkSend.push(
                     this.identify({
                         jseUserId,
-                        jseUserEmail,
+                        jseUserEmail: jseUserEmail?.toLowerCase(),
                         traits: propsChunk,
                         isCreation: isCreation === true && index === 0,
                         dryRun,
@@ -72,7 +72,7 @@ class SegmentSender {
                 this.track({
                     eventName: eventName as EventName,
                     jseUserId,
-                    jseUserEmail,
+                    jseUserEmail: jseUserEmail?.toLowerCase(),
                     jseBpId,
                     properties: allocate.track.scopedProps,
                     isCreation,

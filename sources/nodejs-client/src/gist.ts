@@ -8,10 +8,10 @@ interface ProcessEnv {
 
 const JSE_USER_ID = 'jse-uid-1990';
 const JSE_BP_ID = 'jse-bpid-1990';
-const JSE_USER_EMAIL = 'jorisQ@zetoolbox.fr';
-const DATE_TEST = new Date('2022-04-08');
-const LIEN_CONN = 'https://conn2.com';
-const LIEN_BP = 'https://bp2.fr';
+const JSE_USER_EMAIL = 'jorisq@zetoolbox.fr';
+// const DATE_TEST = new Date('2022-04-08');
+// const LIEN_CONN = 'https://conn2.com';
+// const LIEN_BP = 'https://bp2.fr';
 const IDENTIFIERS = {
     jseUserId: JSE_USER_ID,
     jseBpId: JSE_BP_ID,
@@ -20,7 +20,7 @@ const IDENTIFIERS = {
 
 (async () => {
     const sender = getSegmentSender((process.env as ProcessEnv).SEGMENT_KEY);
-
+    
     // VERIFIED
     await sender.send<EventProperties[EventName.inscription]>({
         eventName: EventName.inscription,
@@ -68,12 +68,12 @@ const IDENTIFIERS = {
         eventName: EventName.connexionApp,
         ...IDENTIFIERS,
         properties: {
-            dateDerniereConnexionOuUpdate: new Date('2022-04-12'),
+            dateDerniereConnexionOuUpdate: new Date(),
             nombreConnexions: 68,
         },
         //dryRun: true,
     });
-
+    
     // VERIFIED
     await sender.send<EventProperties[EventName.coachingPlanifie]>({
         eventName: EventName.coachingPlanifie,
@@ -304,7 +304,7 @@ const IDENTIFIERS = {
             pageGarde: 'pending',
         },
     });
-
+    */
     // VERIFIED
     await sender.send<EventProperties[EventName.motDePasseOublie]>({
         eventName: EventName.motDePasseOublie,
