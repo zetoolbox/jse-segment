@@ -51,6 +51,7 @@ export interface EventProperties {
         compteValide?: boolean;
         urlValidationCompte?: string;
         accepteEmailMarketing?: boolean;
+        dateCreationCompte: Date;
     } & LiensDirigentVersPages;
 
     updateInscription: Partial<EventProperties['inscription']>;

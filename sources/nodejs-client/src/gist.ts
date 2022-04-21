@@ -6,12 +6,12 @@ interface ProcessEnv {
     SEGMENT_KEY: string;
 }
 
-const JSE_USER_ID = 'jse-uid-1989';
-const JSE_BP_ID = 'jse-bpid-1989';
-const JSE_USER_EMAIL = 'jorisN@zetoolbox.fr';
-// const DATE_TEST = new Date('2022-04-08');
-// const LIEN_CONN = 'https://conn2.com';
-// const LIEN_BP = 'https://bp2.fr';
+const JSE_USER_ID = 'jse-uid-1990';
+const JSE_BP_ID = 'jse-bpid-1990';
+const JSE_USER_EMAIL = 'jorisQ@zetoolbox.fr';
+const DATE_TEST = new Date('2022-04-08');
+const LIEN_CONN = 'https://conn2.com';
+const LIEN_BP = 'https://bp2.fr';
 const IDENTIFIERS = {
     jseUserId: JSE_USER_ID,
     jseBpId: JSE_BP_ID,
@@ -20,7 +20,7 @@ const IDENTIFIERS = {
 
 (async () => {
     const sender = getSegmentSender((process.env as ProcessEnv).SEGMENT_KEY);
-    /*
+
     // VERIFIED
     await sender.send<EventProperties[EventName.inscription]>({
         eventName: EventName.inscription,
@@ -31,37 +31,39 @@ const IDENTIFIERS = {
             codePostal: '34000',
             dateSouscriptionFormuleChoisie: new Date(),
             lienBPCompteAdmin: 'https://bpadmin.com',
-            nom: 'GrouilletO',
-            prenom: 'JorisO',
+            nom: 'GrouilletQ',
+            prenom: 'JorisQ',
             email: JSE_USER_EMAIL,
             lienSnapshotDernierBP: 'https://...',
             secteurActivite: 'Industrie',
             statutJuridique: 'SAS',
             tailleEntreprise: 'Moyen',
-            nomProjet: 'projet JorisO',
+            nomProjet: 'projet JorisQ',
             lienVersPageBP: 'http://bp.com',
-            lienVersPageConnexion: 'https://conn.com'            
+            lienVersPageConnexion: 'https://conn.com',
+            dateCreationCompte: new Date(),
+            compteValide: true,
         },
     });
-    
+
     // VERIFIED
     await sender.send<EventProperties[EventName.updateInscription]>({
         eventName: EventName.updateInscription,
         ...IDENTIFIERS,
         properties: {
-            // lienVersPageBP: 'https://bp2.com',
-            // lienVersPageConnexion: 'https://page2.com',
-            // lienSnapshotDernierBP: 'https://snap2.com',
-            // dateNaissance: DATE_TEST,
-            // statutJuridique: 'SAS',
-            // telephone: "06 78 86",
+            lienVersPageBP: 'https://bp2.com',
+            lienVersPageConnexion: 'https://page2.com',
+            lienSnapshotDernierBP: 'https://snap2.com',
+            dateNaissance: DATE_TEST,
+            statutJuridique: 'SAS',
+            telephone: '06 78 86',
             accepteEmailMarketing: true,
+            urlValidationCompte: 'https://jse.fr/urlconfirmcompte',
         },
         //dryRun: true,
     });
-    
+
     // VERIFIED
-    
     await sender.send<EventProperties[EventName.connexionApp]>({
         eventName: EventName.connexionApp,
         ...IDENTIFIERS,
@@ -71,7 +73,7 @@ const IDENTIFIERS = {
         },
         //dryRun: true,
     });
-    
+
     // VERIFIED
     await sender.send<EventProperties[EventName.coachingPlanifie]>({
         eventName: EventName.coachingPlanifie,
@@ -96,9 +98,7 @@ const IDENTIFIERS = {
     });
 
     // VERIFIED
-    await sender.send<
-        EventProperties[EventName.telechargementBusinessPlanDownload]
-    >({
+    await sender.send<EventProperties[EventName.telechargementBusinessPlanDownload]>({
         eventName: EventName.telechargementBusinessPlanDownload,
         ...IDENTIFIERS,
         properties: {
@@ -109,9 +109,7 @@ const IDENTIFIERS = {
     });
 
     // VERIFIED
-    await sender.send<
-        EventProperties[EventName.telechargementBusinessPlanPreview]
-    >({
+    await sender.send<EventProperties[EventName.telechargementBusinessPlanPreview]>({
         eventName: EventName.telechargementBusinessPlanPreview,
         ...IDENTIFIERS,
         properties: {
@@ -143,22 +141,20 @@ const IDENTIFIERS = {
     });
 
     // VERIFIED
-    
+
     await sender.send<
         EventProperties[EventName.clickedBoutonSuivantDansFunnelOnboarding]
     >({
         eventName: EventName.clickedBoutonSuivantDansFunnelOnboarding,
         ...IDENTIFIERS,
         properties: {
-            onboardingId: "897349",
-            page: 2
+            onboardingId: '897349',
+            page: 2,
         },
     });
-    
+
     // VERIFIED
-    await sender.send<
-        EventProperties[EventName.clickedBoutonRenvoyerEmailConfirmation]
-    >({
+    await sender.send<EventProperties[EventName.clickedBoutonRenvoyerEmailConfirmation]>({
         eventName: EventName.clickedBoutonRenvoyerEmailConfirmation,
         ...IDENTIFIERS,
         properties: {
@@ -173,24 +169,18 @@ const IDENTIFIERS = {
         eventName: EventName.statutCompteUpdatedEnValideDansBackendApp,
         ...IDENTIFIERS,
         properties: {
-            compteValide: true,
             dateValidationCompte: DATE_TEST,
-            urlValidationCompte: 'https://jse.fr/urlconfirmcompte',
         },
     });
-
-    
 
     await sender.send<EventProperties[EventName.coachingGratuit]>({
         ...IDENTIFIERS,
         eventName: EventName.coachingGratuit,
         properties: {
-            coachingGratuitOffert: true
-        }
-    })
+            coachingGratuitOffert: true,
+        },
+    });
 
-    
-    
     // VERIFIED
     await sender.send<
         EventProperties[EventName.pourcentageCompletionBPUpdatedDansBackendApp]
@@ -198,16 +188,13 @@ const IDENTIFIERS = {
         eventName: EventName.pourcentageCompletionBPUpdatedDansBackendApp,
         ...IDENTIFIERS,
         properties: {
-            coachingGratuitOffert: true,
             tauxCompletionBP: 70,
-            BPGlobal: 'pending'
+            BPGlobal: 'pending',
         },
     });
-    
+
     // VERIFIED
-    await sender.send<
-        EventProperties[EventName.scoringLeadUpdatedDansBackendApp]
-    >({
+    await sender.send<EventProperties[EventName.scoringLeadUpdatedDansBackendApp]>({
         eventName: EventName.scoringLeadUpdatedDansBackendApp,
         ...IDENTIFIERS,
         properties: {
@@ -274,18 +261,7 @@ const IDENTIFIERS = {
     });
 
     // VERIFIED
-    await sender.send<EventProperties[EventName.optInCommunicationOnboarding]>({
-        eventName: EventName.optInCommunicationOnboarding,
-        ...IDENTIFIERS,
-        properties: {
-            accepteEmailMarketing: true,
-        },
-    });
-
-    // VERIFIED
-    await sender.send<
-        EventProperties[EventName.pagePrevisionnelComplete100pcent]
-    >({
+    await sender.send<EventProperties[EventName.pagePrevisionnelComplete100pcent]>({
         eventName: EventName.pagePrevisionnelComplete100pcent,
         ...IDENTIFIERS,
         properties: {
@@ -312,9 +288,7 @@ const IDENTIFIERS = {
     });
 
     // VERIFIED
-    await sender.send<
-        EventProperties[EventName.pageEtudeMarcheComplete100pcent]
-    >({
+    await sender.send<EventProperties[EventName.pageEtudeMarcheComplete100pcent]>({
         eventName: EventName.pageEtudeMarcheComplete100pcent,
         ...IDENTIFIERS,
         properties: {
@@ -339,5 +313,4 @@ const IDENTIFIERS = {
             urlMotDePasseOublie: 'https://jse.fr/motdepasseoublie',
         },
     });
-    */
 })();

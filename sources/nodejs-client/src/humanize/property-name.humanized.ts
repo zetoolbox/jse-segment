@@ -12,7 +12,7 @@ export const EventPropertiesHumanized: Record<string, string> = {
     lienBPCompteAdmin: 'Lien vers le business plan (admin)',
     lienSnapshotDernierBP: 'Lien snapshot dernier BP',
     secteurActivite: 'Secteur activite',
-
+    dateCreationCompte: 'Date création du compte',
     // connexionApp
     dateDerniereConnexionOuUpdate: 'Date derniere connexion ou update',
     nombreConnexions: 'Nombre de connexions',
@@ -95,5 +95,5 @@ export const EventPropertiesHumanized: Record<string, string> = {
 
     lienVersPageConnexion: 'Lien page de connexion',
     lienVersPageBP: 'Lien interface BP',
-    telephone: "Téléphone"
+    telephone: 'Téléphone',
 };

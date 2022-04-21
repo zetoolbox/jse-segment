@@ -1,4 +1,4 @@
-export const intercomCommonFields = {
+export const intercomCommonFields = {    
     nom: 'lastName',
     prenom: 'firstName',
     email: 'email',
@@ -11,11 +11,15 @@ export const intercomCommonFields = {
 };
 
 export const intercomMapCustomFields = {
+    nom: 'Nom',
+    prenom: 'Prénom', 
     compteValide: 'Compte valide',
     nomProjet: 'Nom du projet',
+    apportPersonnel: 'Apport personnel',
     compteSupprime: 'Compte supprimé',
     'JSE App User Id': 'JSE App User Id',
     dateNaissance: 'Date de naissance',
+    dateCreationCompte: "Date création du compte",
     boutonEmailConfirmation: 'Renvoi email confirmation cliqué',
     dateDernierPDFTelecharge: 'Date dernier BP téléchargé',
     urlMotDePasseOublie: 'Lien mot de passe oublié',
@@ -31,7 +35,7 @@ export const intercomMapCustomFields = {
     dateDerniereConnexionOuUpdate: 'Date derniere connexion ou update',
     tailleEntreprise: 'Taille entreprise',
     statutJuridique: 'Statut juridique',
-    tauxCompletionBP: 'Taux complétion BP',
+    tauxCompletionBP: 'Taux complétion du BP',
     codeNAF: 'Code NAF',
     secteurActivite: 'Secteur activite',
     scoringJSE: 'Scoring JSE',

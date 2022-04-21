@@ -147,6 +147,8 @@ api.person = {
             api.person.getKVForCustomField("d10fee2baa9f5a1705f414f005af58abc4a7f3a8", value),
         [humanizedPropOf("dateDernierCoachingRealise")]: (value) =>
             api.person.getKVForCustomField("0db59344588c09a70dd3433314183c1a5918567d", value),
+        [humanizedPropOf("dateCreationCompte")]: (value) =>
+            api.person.getKVForCustomField("72cf19b0277319322f122a0da8df8f4726056cfb", value),
     }),
 
     upsert: async ({ jseUserId, properties }) => {
@@ -407,7 +409,8 @@ api.businessPlan = {
             [humanizedPropOf("coachingGratuitOffert")]: async (value) =>
                 api.businessPlan.getKVForCustomField(
                     "6d64321bd1d6a61ddce43abbf009dc3db13ebc87",
-                    value === true ? "Offert" : "", { allowEmptyValue: true }
+                    value === true ? "Offert" : "",
+                    { allowEmptyValue: true }
                 ),
         };
     },
@@ -549,7 +552,8 @@ var humanizedPropOf = ((listEventPropertiesHumanized) => (propertyName) => {
     //champPagePrevisionnelUpdated
     chiffreAffairesAnnee1: "Chiffre affaires année 1",
     apportPersonnel: "Apport personnel",
-    telephone: "Téléphone"
+    telephone: "Téléphone",
+    dateCreationCompte: "Date création du compte",
 });
 
 const allowedEvents = [
@@ -561,7 +565,7 @@ const allowedEvents = [
     "Coaching Statut Update",
     "Coaching Offered",
     "Payment Accepted",
-    "Demand CA Sent",    
+    "Demand CA Sent",
     "Business Plan Downloaded",
     "clickedBoutonDemandePourEnvoyerDossierCA",
     "Upsell Paid BP",
@@ -574,7 +578,7 @@ const allowedEvents = [
     "BP - Page de Garde Update",
     "BP - Projet Update",
     "BP - Société Update",
-    "BP - Prévisionnel Update",    
+    "BP - Prévisionnel Update",
     "BP - Prévisionnel Completed",
     "BP - Projet Completed",
     "BP - Société Completed",
