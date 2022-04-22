@@ -20,8 +20,9 @@ const IDENTIFIERS = {
 
 (async () => {
     const sender = getSegmentSender((process.env as ProcessEnv).SEGMENT_KEY);
-    
+
     // VERIFIED
+    /*
     await sender.send<EventProperties[EventName.inscription]>({
         eventName: EventName.inscription,
         ...IDENTIFIERS,
@@ -45,24 +46,24 @@ const IDENTIFIERS = {
             compteValide: true,
         },
     });
-
+    */
     // VERIFIED
     await sender.send<EventProperties[EventName.updateInscription]>({
         eventName: EventName.updateInscription,
         ...IDENTIFIERS,
         properties: {
-            lienVersPageBP: 'https://bp2.com',
-            lienVersPageConnexion: 'https://page2.com',
-            lienSnapshotDernierBP: 'https://snap2.com',
-            dateNaissance: DATE_TEST,
-            statutJuridique: 'SAS',
-            telephone: '06 78 86',
-            accepteEmailMarketing: true,
-            urlValidationCompte: 'https://jse.fr/urlconfirmcompte',
+            // lienVersPageBP: 'https://bp2.com',
+            // lienVersPageConnexion: 'https://page2.com',
+            // lienSnapshotDernierBP: 'https://snap2.com',
+            // dateNaissance: DATE_TEST,
+            // statutJuridique: 'SAS',
+            // telephone: '06 78 86',
+            // accepteEmailMarketing: true,
+            // urlValidationCompte: 'https://jse.fr/urlconfirmcompte',
+            codePostal: "32000"
         },
-        //dryRun: true,
     });
-
+    /*
     // VERIFIED
     await sender.send<EventProperties[EventName.connexionApp]>({
         eventName: EventName.connexionApp,
@@ -71,9 +72,8 @@ const IDENTIFIERS = {
             dateDerniereConnexionOuUpdate: new Date(),
             nombreConnexions: 68,
         },
-        //dryRun: true,
     });
-    
+
     // VERIFIED
     await sender.send<EventProperties[EventName.coachingPlanifie]>({
         eventName: EventName.coachingPlanifie,
@@ -82,8 +82,7 @@ const IDENTIFIERS = {
             dateDernierCoachingRealise: DATE_TEST,
             dateProchainCoaching: DATE_TEST,
             statutCoaching: 'RDV effectué',
-        },
-        //dryRun: true
+        },        
     });
 
     // VERIFIED
@@ -304,7 +303,7 @@ const IDENTIFIERS = {
             pageGarde: 'pending',
         },
     });
-    */
+
     // VERIFIED
     await sender.send<EventProperties[EventName.motDePasseOublie]>({
         eventName: EventName.motDePasseOublie,
@@ -313,4 +312,5 @@ const IDENTIFIERS = {
             urlMotDePasseOublie: 'https://jse.fr/motdepasseoublie',
         },
     });
+    */
 })();
