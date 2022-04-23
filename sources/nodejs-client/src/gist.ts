@@ -8,10 +8,10 @@ interface ProcessEnv {
 
 const JSE_USER_ID = 'jse-uid-1990';
 const JSE_BP_ID = 'jse-bpid-1990';
-const JSE_USER_EMAIL = 'jorisq@zetoolbox.fr';
-// const DATE_TEST = new Date('2022-04-08');
-// const LIEN_CONN = 'https://conn2.com';
-// const LIEN_BP = 'https://bp2.fr';
+const JSE_USER_EMAIL = 'jorisr@zetoolbox.fr';
+const DATE_TEST = new Date('2022-04-08');
+const LIEN_CONN = 'https://conn2.com';
+const LIEN_BP = 'https://bp2.fr';
 const IDENTIFIERS = {
     jseUserId: JSE_USER_ID,
     jseBpId: JSE_BP_ID,
@@ -22,7 +22,7 @@ const IDENTIFIERS = {
     const sender = getSegmentSender((process.env as ProcessEnv).SEGMENT_KEY);
 
     // VERIFIED
-    /*
+    
     await sender.send<EventProperties[EventName.inscription]>({
         eventName: EventName.inscription,
         ...IDENTIFIERS,
@@ -32,38 +32,38 @@ const IDENTIFIERS = {
             codePostal: '34000',
             dateSouscriptionFormuleChoisie: new Date(),
             lienBPCompteAdmin: 'https://bpadmin.com',
-            nom: 'GrouilletQ',
-            prenom: 'JorisQ',
+            nom: 'GrouilletR',
+            prenom: 'JorisR',
             email: JSE_USER_EMAIL,
             lienSnapshotDernierBP: 'https://...',
             secteurActivite: 'Industrie',
             statutJuridique: 'SAS',
             tailleEntreprise: 'Moyen',
-            nomProjet: 'projet JorisQ',
+            nomProjet: 'projet JorisR',
             lienVersPageBP: 'http://bp.com',
             lienVersPageConnexion: 'https://conn.com',
             dateCreationCompte: new Date(),
             compteValide: true,
         },
     });
-    */
+    
     // VERIFIED
     await sender.send<EventProperties[EventName.updateInscription]>({
         eventName: EventName.updateInscription,
         ...IDENTIFIERS,
         properties: {
-            // lienVersPageBP: 'https://bp2.com',
-            // lienVersPageConnexion: 'https://page2.com',
-            // lienSnapshotDernierBP: 'https://snap2.com',
-            // dateNaissance: DATE_TEST,
-            // statutJuridique: 'SAS',
-            // telephone: '06 78 86',
-            // accepteEmailMarketing: true,
-            // urlValidationCompte: 'https://jse.fr/urlconfirmcompte',
+            lienVersPageBP: 'https://bp2.com',
+            lienVersPageConnexion: 'https://page2.com',
+            lienSnapshotDernierBP: 'https://snap2.com',
+            dateNaissance: DATE_TEST,
+            statutJuridique: 'SAS',
+            telephone: '06 78 86',
+            accepteEmailMarketing: true,
+            urlValidationCompte: 'https://jse.fr/urlconfirmcompte',
             codePostal: "32000"
         },
     });
-    /*
+    
     // VERIFIED
     await sender.send<EventProperties[EventName.connexionApp]>({
         eventName: EventName.connexionApp,
@@ -312,5 +312,5 @@ const IDENTIFIERS = {
             urlMotDePasseOublie: 'https://jse.fr/motdepasseoublie',
         },
     });
-    */
+    
 })();

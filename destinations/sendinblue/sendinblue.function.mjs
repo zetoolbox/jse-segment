@@ -143,6 +143,9 @@ api.contact = {
         [humanizedPropOf("nombreConnexions")]: (value) => ({
             NB_CONNEXIONS: value,
         }),
+        [humanizedPropOf("telephone")]: (value) => ({
+            NUMERO_DE_TEL: value,
+        }),
     }),
 
     async upsert({ jseEmailAsId, jseUserId, jseProperties }) {
@@ -199,6 +202,7 @@ var humanizedPropOf = ((listEventPropertiesHumanized) => (propertyName) => {
     email: "email",
     formuleChoisie: "Formule Choisie",
     statutJuridique: "Statut juridique",
+    dateCreationCompte: "Date création du compte",
     codeNAF: "Code NAF",
     codePostal: "Code postal",
     secteurActivite: "Secteur activite",
@@ -216,6 +220,7 @@ var humanizedPropOf = ((listEventPropertiesHumanized) => (propertyName) => {
     chiffreAffairesAnnee1: "Chiffre affaires année 1",
     apportPersonnel: "Apport personnel",
     accepteEmailMarketing: "Accepte email marketing",
+    telephone: 'Téléphone',
 });
 
 const allowedEvents = [

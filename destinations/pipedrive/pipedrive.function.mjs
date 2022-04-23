@@ -470,7 +470,7 @@ api.events.handleTrack = async ({ jseUserId, jseBpId, jseProperties }) => {
     let contactUpserted = null;
     if (jseUserId !== undefined) {
         contactUpserted = await api.person.upsert({
-            jseUserId,
+            jseUserId: jseProperties.jseUserId,
             properties: jseProperties,
         });
     }
@@ -479,7 +479,7 @@ api.events.handleTrack = async ({ jseUserId, jseBpId, jseProperties }) => {
     if (jseBpId !== undefined) {
         bpUpserted = await api.businessPlan.upsert({
             jseBpId,
-            jseUserId,
+            jseUserId: jseProperties.jseUserId,
             properties: jseProperties,
             contactUpserted,
         });
