@@ -6,7 +6,7 @@ interface ProcessEnv {
     SEGMENT_KEY: string;
 }
 
-const JSE_USER_ID = 'jse-uid-1990';
+const JSE_USER_ID = '6267acff8de14a9b5615a7a2';
 const JSE_BP_ID = 'jse-bpid-1990';
 const JSE_USER_EMAIL = 'jorisr@zetoolbox.fr';
 const DATE_TEST = new Date('2022-04-08');

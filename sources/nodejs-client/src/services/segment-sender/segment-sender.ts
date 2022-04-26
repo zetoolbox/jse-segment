@@ -88,6 +88,7 @@ class SegmentSender {
             );
             httpResponses.push(called);
         }
+        this._client.flush();
         return httpResponses;
     }
     private async identify({
@@ -164,6 +165,7 @@ class SegmentSender {
         );
 
         if (dryRun === true) {
+            console.log('Run mode: dry-run');
             return Promise.resolve(true);
         }
 
@@ -172,7 +174,7 @@ class SegmentSender {
 
         return new Promise((resolve, reject) => {
             this._client.track(payload, (error?: Error) => {
-                console.log('live run');
+                console.log('Run mode : live-run');
                 return _handleCallback(error)(resolve, reject);
             });
         });
