@@ -40,7 +40,7 @@ export interface EventProperties {
         nomProjet?: string; // ?
         dateSouscriptionFormuleChoisie: Date | string;
         tailleEntreprise: TailleEntreprise;
-        statutJuridique: BusinessPlanModel['legalStatus'] | 'SAS' | 'SARL';
+        statutJuridique: string;
         codeNAF: string | BusinessPlanProjectLocation['irisCode'];
         codePostal: BusinessPlanProjectLocation['postCode'];
         lienBPCompteAdmin: string;
@@ -126,7 +126,7 @@ export interface EventProperties {
         dateLancementActivite: Date | string;
     };
     champPageSocieteUpdated: {
-        statutJuridique: BusinessPlanModel['legalStatus'] | 'SAS' | 'SARL';
+        statutJuridique: string;
         dateNaissance: Date | string;
     };
 

@@ -306,7 +306,7 @@ api.businessPlan = {
                 ),
             [humanizedPropOf("statutJuridique")]: (value) =>
                 api.businessPlan.getKVForCustomField(
-                    "5216fa2fe2ae23cd1b5c2d90099fa15ef601b75c",
+                    "3c8bcf41dfb092dcb3c299b562127b640601a8b0",
                     value
                 ),
             [humanizedPropOf("tailleEntreprise")]: (value) =>
