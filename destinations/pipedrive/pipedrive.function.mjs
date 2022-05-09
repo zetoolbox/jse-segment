@@ -24,8 +24,8 @@ api.fetch = async ({ method, endpoint, querystring, payload }) => {
         querystring ? "&" + querystring : ""
     }`;
 
-    console.log("fetch url :", method, " : ", url);
-    console.log("payload : ", JSON.stringify(payload));
+    console.log("url to call :", method, " : ", url);
+    console.log("payload to send : ", JSON.stringify(payload));
 
     try {
         const httpResponse = await fetch(url, requestOptions);
@@ -221,9 +221,6 @@ api.businessPlan = {
         }
 
         const customField = await api.businessPlan.getCustomFieldByKey(customFieldKey);
-
-        console.log("customField : ", customField);
-        console.log("customField.options : ", customField.options);
 
         if (customField === null || customField === undefined) {
             return undefined;

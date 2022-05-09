@@ -1,5 +1,4 @@
 import {
-    BusinessPlanModel,
     BusinessPlanOffer,
     BusinessPlanProjectLocation,
     UserModel,
